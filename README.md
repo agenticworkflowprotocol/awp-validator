@@ -8,6 +8,8 @@ conformance profile, with digest verification and machine-readable diagnostics.
   in the browser, the manifest is not uploaded.
 - **CLI:** `awp validate`, with the output formats and exit codes of the
   [AWP CLI output formats](https://github.com/agenticworkflowprotocol/agenticworkflowprotocol.org/blob/main/docs/cli.md#4-awp-validate).
+- **Editor and viewer:** [editor.agenticworkflowprotocol.org](https://editor.agenticworkflowprotocol.org)
+  ([awp-editor](https://github.com/agenticworkflowprotocol/awp-editor)) is built on this validator.
 - **Library:** for Node.js and for the browser (one ES module, no `eval`), to validate manifests
   inside your own runtime, editor or CI.
 
