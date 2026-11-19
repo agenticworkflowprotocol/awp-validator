@@ -1,5 +1,7 @@
 # AWP Validator
 
+[![npm](https://img.shields.io/npm/v/@agenticworkflowprotocol/validator?label=npm)](https://www.npmjs.com/package/@agenticworkflowprotocol/validator) [![ci](https://github.com/agenticworkflowprotocol/awp-validator/actions/workflows/ci.yml/badge.svg)](https://github.com/agenticworkflowprotocol/awp-validator/actions/workflows/ci.yml) [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+
 Reference validator for [Agentic Workflow Protocol (AWP)](https://agenticworkflowprotocol.org)
 manifests: the YAML restrictions, the JSON Schema and the semantic rules of AWP `v1alpha1`, per
 conformance profile, with digest verification and machine-readable diagnostics.
