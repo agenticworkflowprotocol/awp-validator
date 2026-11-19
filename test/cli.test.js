@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { main } from '../src/cli.js';
 
-const VALID = readFileSync(new URL('../vendor/awp-v1alpha1/spec/v1alpha1/examples/vulnerability-fixer.workflow.yaml', import.meta.url), 'utf8');
+const VALID = readFileSync(new URL('../vendor/awp/spec/v1alpha1/examples/vulnerability-fixer.workflow.yaml', import.meta.url), 'utf8');
 const INVALID = VALID.replace(/dependsOn: \[fix\]|dependsOn:\n(\s+)- fix/, (m) => m.replace('fix', 'ghost'));
 const files = { 'ok.yaml': VALID, 'bad.yaml': INVALID };
 
@@ -98,7 +98,7 @@ test('--strict fails on warnings, --quiet prints only errors', () => {
 });
 
 test('--version and --help', () => {
-  assert.match(run(['--version']).out, /^awp-validator \d+\.\d+\.\d+ \(AWP v1alpha1, specification [0-9a-f]{7}\)\n$/);
+  assert.match(run(['--version']).out, /^awp-validator \d+\.\d+\.\d+ \(AWP v1alpha1, v1alpha2, specification [0-9a-f]{7}\)\n$/);
   assert.match(run(['--help']).out, /Usage: awp validate/);
 });
 

@@ -1,6 +1,7 @@
 // Types of @agenticworkflowprotocol/validator (Node.js entry and the `./browser` entry).
 
-/** Conformance profiles of AWP v1alpha1 (spec 11.2). */
+/** Conformance profiles of AWP (spec 11.2; the same in v1alpha1 and v1alpha2). */
+export type ApiVersion = 'v1alpha1' | 'v1alpha2';
 export type Profile = 'core' | 'governance' | 'audit' | 'security' | 'mcp' | 'a2a';
 
 /** A finding, as in the AWP CLI output formats, section 3. */
@@ -23,6 +24,8 @@ export interface ManifestResult {
   kind?: string;
   name?: string;
   version?: string;
+  /** API version the document was validated as: its `apiVersion`, or the latest when that is not supported. Absent when the document could not be parsed. */
+  awp?: ApiVersion;
   valid: boolean;
   diagnostics: Diagnostic[];
 }
@@ -67,13 +70,18 @@ export function jcs(value: unknown): string;
 /** Manifest digest of spec 9.1, for example `sha256:…`. */
 export function manifestDigest(manifest: unknown, algorithm?: 'sha256' | 'sha384' | 'sha512'): string;
 
-export const API_VERSION: 'v1alpha1';
+/** Supported API versions, oldest first. */
+export const API_VERSIONS: ApiVersion[];
+/** The latest supported API version. */
+export const API_VERSION: ApiVersion;
 export const KNOWN_PROFILES: Profile[];
-/** The AWP JSON Schema (draft 2020-12) used by the validator. */
+/** The AWP JSON Schemas (draft 2020-12) used by the validator, by API version. */
+export const schemas: Record<ApiVersion, Record<string, unknown>>;
+/** The JSON Schema of the latest supported API version. */
 export const schema: Record<string, unknown>;
 /** Commit and file hashes of the vendored specification artefacts. */
 export const provenance: {
-  awpVersion: string;
+  awpVersions: ApiVersion[];
   source: { repository: string; commit: string; commitDate: string };
   files: { path: string; sha256: string }[];
 };
@@ -82,7 +90,8 @@ export const provenance: {
 export function formatDiagnostic(diagnostic: Diagnostic): string;
 export function formatText(files: FileResult[], options?: { quiet?: boolean }): string;
 export function formatJson(files: FileResult[], options?: { profiles?: Profile[]; strict?: boolean }): {
-  awp: 'v1alpha1';
+  /** API version the documents were processed as; a list when they differ. */
+  awp: ApiVersion | ApiVersion[];
   command: 'validate';
   ok: boolean;
   result: { profiles?: Profile[]; files: FileResult[]; summary: Summary };

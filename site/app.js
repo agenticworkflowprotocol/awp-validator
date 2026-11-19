@@ -1,9 +1,9 @@
 // Validator page: runs the bundled validator locally; nothing leaves the browser.
 import { KNOWN_PROFILES, formatJson, isOk, validateText } from './lib/awp-validator.mjs';
 
-const SPEC_URL = 'https://agenticworkflowprotocol.org/specification/v1alpha1/';
+const SPEC_URL = 'https://agenticworkflowprotocol.org/specification/';
 const DEBOUNCE_MS = 300;
-const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
+const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha2
 kind: Workflow
 metadata:
   name: hello-workflow
@@ -65,12 +65,14 @@ function jumpTo(line, column) {
   els.manifest.scrollTop = Math.max(0, (line - 3) * lineHeight);
 }
 
-function diagnosticItem(d) {
+/** @param {string} [awp] API version the document was validated as; links go to its specification. */
+function diagnosticItem(d, awp) {
   const src = d.source ?? {};
   const where = src.line
     ? el('button', { type: 'button', class: 'pos', title: 'Show in editor', onclick: () => jumpTo(src.line, src.column) }, `${src.line}:${src.column}`)
     : el('span', { class: 'pos' }, '–');
-  const section = d.section ? el('a', { href: SPEC_URL, class: 'section', title: `Specification section ${d.section}` }, `spec ${d.section}`) : null;
+  const href = awp ? `${SPEC_URL}${awp}/` : SPEC_URL;
+  const section = d.section ? el('a', { href, class: 'section', title: `Specification section ${d.section}` }, `spec ${d.section}`) : null;
   return el('li', { class: `diag ${d.severity}` },
     el('span', { class: 'sev' }, d.severity),
     where,
@@ -88,7 +90,7 @@ function render(file, options) {
   const label = docs.map((d) => [d.kind, d.name, d.version].filter(Boolean).join(' ')).filter(Boolean).join(', ');
   els.status.className = `status ${ok ? 'ok' : 'fail'}`;
   els.status.textContent = `${ok ? 'Valid' : 'Invalid'}${label ? ` – ${label}` : ''}: ${docs.length} document${docs.length === 1 ? '' : 's'}, ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}.`;
-  els.list.replaceChildren(...docs.flatMap((d) => d.diagnostics).map(diagnosticItem));
+  els.list.replaceChildren(...docs.flatMap((doc) => doc.diagnostics.map((d) => diagnosticItem(d, doc.awp))));
   els.json.textContent = JSON.stringify(formatJson(files, { profiles: options.profiles, strict: options.strict }), null, 2);
   els.jsonDetails.hidden = false;
 }

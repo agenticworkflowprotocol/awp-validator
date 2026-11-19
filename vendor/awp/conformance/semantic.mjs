@@ -1,6 +1,7 @@
-// Semantic validation rules of AWP v1alpha1 that JSON Schema cannot express.
+// Semantic validation rules of AWP v1alpha1 and v1alpha2 that JSON Schema cannot express.
 // Rule catalogue: schema/README.md. Every diagnostic has a stable `code`.
-// Runs on documents that already passed the structural schema.
+// Runs on documents that already passed the structural schema of their apiVersion; fields that
+// only exist in v1alpha2 (forEach) cannot reach these rules in a v1alpha1 document.
 
 import { createHash } from 'node:crypto';
 
@@ -262,12 +263,15 @@ export function semanticCheck(doc, opts = {}) {
     // 3.9 / 5.6.3: expression references
     const inputNames = new Set((spec.inputs ?? []).map(i => i.name));
     const outputsOf = new Map(steps.map(s => [s.id, new Set((s.outputs ?? []).map(o => o.name))]));
-    const checkExpr = (str, path, stepId) => {
+    // `iterating`: the field belongs to a step with forEach, so forEach.* references are allowed (3.9).
+    const checkExpr = (str, path, stepId, iterating = false) => {
       if (typeof str !== 'string') return;
       for (const m of str.matchAll(EXPR_RE)) {
         const ref = m[1].trim();
         let mm;
-        if ((mm = /^inputs\.(.+)$/.exec(ref))) {
+        if (/^forEach\./.test(ref)) {
+          if (!iterating) err('expr.iteration-outside-forEach', '3.9', path, `${ref} is only allowed in task and env of a step that declares forEach`);
+        } else if ((mm = /^inputs\.(.+)$/.exec(ref))) {
           if (!inputNames.has(mm[1])) warn('expr.undeclared-input', '3.9', path, `expression references undeclared input "${mm[1]}"`);
         } else if ((mm = /^steps\.([^.]+)\.outputs\.(.+)$/.exec(ref))) {
           const [, sid, out] = mm;
@@ -278,10 +282,29 @@ export function semanticCheck(doc, opts = {}) {
         }
       }
     };
+    // 5.6.4: iteration (v1alpha2)
+    const inputTypes = new Map((spec.inputs ?? []).map(i => [i.name, i.type]));
+    const agentsById = new Map((spec.agents ?? []).map(a => [a.id, a]));
+    const checkForEach = (s, base) => {
+      const f = s.forEach;
+      checkExpr(f.items, ptr(...base, 'forEach', 'items'), s.id);
+      const input = /^\$\{\{ *inputs\.([^ }]+) *\}\}$/.exec(f.items ?? '');
+      if (input && inputTypes.has(input[1]) && inputTypes.get(input[1]) !== 'array') {
+        err('forEach.input-not-array', '5.6.4', ptr(...base, 'forEach', 'items'), `forEach.items references input "${input[1]}" of type ${inputTypes.get(input[1])}; it MUST have type array`);
+      }
+      // Each item run counts as a running step: maxConcurrency of workflow (default 1), agent and step.
+      const limits = [spec.budget?.resources?.maxConcurrency ?? 1, agentsById.get(s.agent)?.budget?.resources?.maxConcurrency, s.budget?.resources?.maxConcurrency];
+      const effective = Math.min(...limits.filter(v => v !== undefined));
+      if ((f.concurrency ?? 1) > effective) {
+        err('forEach.concurrency-exceeds-budget', '5.6.4', ptr(...base, 'forEach', 'concurrency'), `forEach.concurrency (${f.concurrency}) exceeds the effective budget.resources.maxConcurrency (${effective})`);
+      }
+    };
     steps.forEach((s, i) => {
       const base = ['spec', 'workflow', i];
-      checkExpr(s.task, ptr(...base, 'task'), s.id);
-      for (const [k, v] of Object.entries(s.env ?? {})) checkExpr(v, ptr(...base, 'env', k), s.id);
+      const iterating = isObj(s.forEach);
+      if (iterating) checkForEach(s, base);
+      checkExpr(s.task, ptr(...base, 'task'), s.id, iterating);
+      for (const [k, v] of Object.entries(s.env ?? {})) checkExpr(v, ptr(...base, 'env', k), s.id, iterating);
       checkExpr(s.approval?.message, ptr(...base, 'approval', 'message'), s.id);
       if (typeof s.command === 'string' && s.command.includes('${{')) {
         warn('lint.command-expression', '5.6.2', ptr(...base, 'command'), 'command is not expression-enabled; ${{ }} is passed literally. Use env.');

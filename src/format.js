@@ -2,6 +2,16 @@
 // (docs/cli.md in the specification repository).
 import { API_VERSION, summarize } from './validator.js';
 
+/**
+ * The API version(s) the documents were processed as: one string when all agree, a list when a
+ * run mixes versions, the latest version when no document got that far (for example YAML errors).
+ */
+function processedAs(files) {
+  const versions = [...new Set(files.flatMap((f) => f.documents.map((d) => d.awp)).filter(Boolean))];
+  if (versions.length > 1) return versions.sort();
+  return versions[0] ?? API_VERSION;
+}
+
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 /** One diagnostic as a text line: `<file>:<line>:<column>: <severity> <code> <path>: <message>`. */
@@ -46,7 +56,7 @@ export function isOk(files, { strict = false } = {}) {
 /** JSON envelope `{ awp, command, ok, result }` of `awp validate --output json`. */
 export function formatJson(files, { profiles, strict = false } = {}) {
   return {
-    awp: API_VERSION,
+    awp: processedAs(files),
     command: 'validate',
     ok: isOk(files, { strict }),
     result: { profiles, files, summary: summarize(files) },

@@ -1,7 +1,7 @@
 // `awp validate` with the options, streams and exit codes of the AWP CLI output formats
 // (docs/cli.md in the specification repository, sections 1, 2 and 4).
 import { readFileSync } from 'node:fs';
-import { API_VERSION, KNOWN_PROFILES, UsageError, provenance, resolveProfiles, validateText } from './index.js';
+import { API_VERSIONS, KNOWN_PROFILES, UsageError, provenance, resolveProfiles, validateText } from './index.js';
 import { formatJson, formatText, isOk } from './format.js';
 
 export const EXIT = { OK: 0, CHECK_FAILED: 1, USAGE: 2, CANNOT_WORK: 3 };
@@ -69,7 +69,7 @@ export function main(argv, io = {}) {
     return EXIT.OK;
   }
   if (command === '--version') {
-    stdout(`awp-validator ${pkg.version} (AWP ${API_VERSION}, specification ${provenance.source.commit.slice(0, 7)})\n`);
+    stdout(`awp-validator ${pkg.version} (AWP ${API_VERSIONS.join(', ')}, specification ${provenance.source.commit.slice(0, 7)})\n`);
     return EXIT.OK;
   }
   if (command !== 'validate') {

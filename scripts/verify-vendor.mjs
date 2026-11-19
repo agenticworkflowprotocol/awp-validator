@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Checks that vendor/awp-v1alpha1 is exactly what PROVENANCE.json records: every listed file exists
+// Checks that vendor/awp is exactly what PROVENANCE.json records: every listed file exists
 // with its SHA-256 hash, and no unlisted file was added. Run in CI so that a hand edit fails.
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'vendor', 'awp-v1alpha1');
+const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'vendor', 'awp');
 const provenance = JSON.parse(readFileSync(join(dir, 'PROVENANCE.json'), 'utf8'));
 
 const walk = (d) => readdirSync(d).flatMap((n) => {

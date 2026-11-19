@@ -1,20 +1,25 @@
-// Node.js entry point: compiles the vendored JSON Schema with Ajv once and exposes the validator.
+// Node.js entry point: compiles the vendored JSON Schemas with Ajv once and exposes the validator.
 import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020.js';
 import { createValidator } from './validator.js';
+import { API_VERSION, API_VERSIONS } from './versions.js';
 
-export { API_VERSION, KNOWN_PROFILES, UsageError, resolveProfiles, summarize } from './validator.js';
-export { jcs, manifestDigest } from '../vendor/awp-v1alpha1/conformance/semantic.mjs';
+export { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, resolveProfiles, summarize } from './validator.js';
+export { jcs, manifestDigest } from '../vendor/awp/conformance/semantic.mjs';
 export { formatDiagnostic, formatJson, formatText, isOk } from './format.js';
 
-const vendor = new URL('../vendor/awp-v1alpha1/', import.meta.url);
+const vendor = new URL('../vendor/awp/', import.meta.url);
 
-/** The AWP v1alpha1 JSON Schema (draft 2020-12) this validator uses. */
-export const schema = JSON.parse(readFileSync(new URL('schema/awp.v1alpha1.json', vendor), 'utf8'));
+/** The AWP JSON Schemas (draft 2020-12) this validator uses, by API version. */
+export const schemas = Object.fromEntries(API_VERSIONS.map((v) => [v, JSON.parse(readFileSync(new URL(`schema/awp.${v}.json`, vendor), 'utf8'))]));
+/** The JSON Schema of the latest supported API version. */
+export const schema = schemas[API_VERSION];
 /** Commit and file hashes of the vendored specification artefacts. */
 export const provenance = JSON.parse(readFileSync(new URL('PROVENANCE.json', vendor), 'utf8'));
 
-// Same Ajv options as the reference checker of the specification repository.
+// Same Ajv options as the reference checker of the specification repository. One instance holds
+// all schemas; their $id differ by version.
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
+const schemaValidators = Object.fromEntries(API_VERSIONS.map((v) => [v, ajv.compile(schemas[v])]));
 
-export const { validateManifest, validateText } = createValidator({ validateSchema: ajv.compile(schema) });
+export const { validateManifest, validateText } = createValidator({ schemaValidators });

@@ -39,7 +39,7 @@
   <main class="wrap">
     <section class="intro">
       <h1>Validate an AWP manifest</h1>
-      <p>Checks the YAML restrictions, the JSON Schema and the semantic rules of <strong>AWP v1alpha1</strong> for the conformance profiles you select. Validation runs entirely in your browser; the manifest is not uploaded.</p>
+      <p>Checks the YAML restrictions, the JSON Schema and the semantic rules of <strong>AWP {{awpVersions}}</strong> (chosen by the <code>apiVersion</code> of the manifest) for the conformance profiles you select. Validation runs entirely in your browser; the manifest is not uploaded.</p>
     </section>
 
     <form id="form" class="grid" novalidate>
@@ -122,7 +122,7 @@ const result = validateManifest(manifest, { profiles: ['core'] });</code></pre>
   </main>
 
   <footer class="wrap foot">
-    <p>Validator {{version}} · AWP v1alpha1 (specification <code>{{specCommit}}</code>) · Apache-2.0</p>
+    <p>Validator {{version}} · AWP {{awpVersions}} (specification <code>{{specCommit}}</code>) · Apache-2.0</p>
     <p>AWP is a specification, not a platform. Any runtime may implement it. Contact: <a href="mailto:info@agenticworkflowprotocol.org">info@agenticworkflowprotocol.org</a></p>
   </footer>
 </body>

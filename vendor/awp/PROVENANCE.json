@@ -1,11 +1,14 @@
 {
   "schemaVersion": 1,
   "description": "Unchanged copy of the AWP schema, semantic rules, conformance suite and examples. Never edit by hand; run scripts/sync-spec.mjs and review the diff.",
-  "awpVersion": "v1alpha1",
+  "awpVersions": [
+    "v1alpha1",
+    "v1alpha2"
+  ],
   "source": {
     "repository": "https://github.com/agenticworkflowprotocol/agenticworkflowprotocol.org",
-    "commit": "7b3f3817b8a2168cf85012b72ce66280d5000850",
-    "commitDate": "2026-11-19T05:36:23+01:00"
+    "commit": "46f9e6a27035c9c0478f04bac63f333d930726e5",
+    "commitDate": "2026-11-19T07:10:26+01:00"
   },
   "licenses": {
     "Apache-2.0": "code, JSON schema, conformance manifests and examples (LICENSE)",
@@ -25,12 +28,16 @@
       "sha256": "834fa4256f471a81b273254cfeaebc379c62aa435d558b214fca07b67070ff56"
     },
     {
+      "path": "schema/awp.v1alpha2.json",
+      "sha256": "dd7a5b289e0fdd2a7aba0c89e06bad583a956c2d4709596f10a6a0f8873c3c6c"
+    },
+    {
       "path": "conformance/semantic.mjs",
-      "sha256": "93dd62a4929b75ae10fa8813b5c5b87ffb21fc365e9fc78ad84687c83e89ba2e"
+      "sha256": "5732300ebb37f7ef802cd498396d348559a3f6edbdcfc7bff4941467a29ca836"
     },
     {
       "path": "conformance/index.json",
-      "sha256": "696e301df7c50b1d11735d91bdec0508a49c4eebb486d54af475347ffdeb0df1"
+      "sha256": "a7c13f6ee2e529e3bbacfc9cb3c448a3f088bbdf1c601116fdfb43fb322a9ffd"
     },
     {
       "path": "conformance/valid/10.2-audit-configuration.yaml",
@@ -95,6 +102,10 @@
     {
       "path": "conformance/valid/5.6.3-transitive-step-reference.yaml",
       "sha256": "8f8191c33e6acf280d884fe4309f79485223a7b79e8c91963dbedc0a46867e0e"
+    },
+    {
+      "path": "conformance/valid/5.6.4-for-each.yaml",
+      "sha256": "e53dd2c857592462fb6520f162815be4bb784ec8234567e87590ac27080d2a0f"
     },
     {
       "path": "conformance/valid/5.7-nested-budgets.yaml",
@@ -182,11 +193,15 @@
     },
     {
       "path": "conformance/invalid/3.2-unsupported-api-version.yaml",
-      "sha256": "d5281b0c11e36462aec4a42dc4a38c58f6bbf3a146f0f3b79228d5e70882b9a9"
+      "sha256": "30c64b5ec1441a4368f79356c4a6b133671fb2096e4c0265054036965a51bcae"
     },
     {
       "path": "conformance/invalid/3.2-unsupported-kind.yaml",
       "sha256": "4dc1eaaf512004fccc242b9e8ea92d2211d7c96fa3ce8576aff42105887d4c9e"
+    },
+    {
+      "path": "conformance/invalid/3.3-for-each-in-v1alpha1.yaml",
+      "sha256": "f1114491605443a613ae7b9e7674727aeb794a7eb261c88866dea431e880deaf"
     },
     {
       "path": "conformance/invalid/3.3-profile-a2a-agent.yaml",
@@ -303,6 +318,10 @@
     {
       "path": "conformance/invalid/3.9-expression-unterminated.yaml",
       "sha256": "685c6a0565a1f7e31b0bb52bf643bc5959a2c05356b56cbec1e9d930dbfc7e25"
+    },
+    {
+      "path": "conformance/invalid/3.9-iteration-reference-outside-for-each.yaml",
+      "sha256": "74d96e5e8c7c88b9d376ae3923ceda21d42860444e5b485a35ac79a149b577c5"
     },
     {
       "path": "conformance/invalid/3.9-step-reference-in-permissions.yaml",
@@ -519,6 +538,30 @@
     {
       "path": "conformance/invalid/5.6.3-unknown-agent.yaml",
       "sha256": "e8ef35d7821dc78446b626f8abca9a1cdee083f189545e0691b05ae81cde4b07"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-concurrency-exceeds-budget.yaml",
+      "sha256": "ab364fc7ae217dd4140e885d84e7fafcaa71c1a9856b7cab25f9983b1b958f2b"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-input-not-array.yaml",
+      "sha256": "23684c963ca100e4ac02cab433a21c570ee3bf95db41fb1d34abfd1ed976895a"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-items-not-a-dependency.yaml",
+      "sha256": "6d32fa0ae550df530e5b94169444c8eba213716c38ea5d1bde363b2b54d4ee3a"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-items-not-a-reference.yaml",
+      "sha256": "6033576421d66723ad7fe3b3d4cd0dec2addf55b802224da6281117a262f464d"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-missing-max-items.yaml",
+      "sha256": "217e0d62e088da7111957ba8dedf25c3a23c600f4165b826725f4abdf9eeff3a"
+    },
+    {
+      "path": "conformance/invalid/5.6.4-for-each-on-approval-step.yaml",
+      "sha256": "256883a3635d17c363a200e11cbc069bca6d59016746dc676bb1b13a0d43fd79"
     },
     {
       "path": "conformance/invalid/5.7-negative-cost.yaml",
@@ -743,6 +786,46 @@
     {
       "path": "spec/v1alpha1/examples/vulnerability-fixer.workflow.yaml",
       "sha256": "8002fdd2837d8ef2eaab0846e544891ed634f34fad05623b92d269c16f455898"
+    },
+    {
+      "path": "spec/v1alpha2/examples/audit-events.yaml",
+      "sha256": "293c50db5e705023295b92252fa91c5870b444e93e64929a346b209625eaa050"
+    },
+    {
+      "path": "spec/v1alpha2/examples/conformance-statement.yaml",
+      "sha256": "36642e3c265f1fee2836bcbf26de473e761475ee841706da5711c3ad915edd9a"
+    },
+    {
+      "path": "spec/v1alpha2/examples/eu-data-residency.policy.yaml",
+      "sha256": "03256945d7f94c0351851d7791d38458f88f0e983811d423bab6856102963b12"
+    },
+    {
+      "path": "spec/v1alpha2/examples/execution-record.yaml",
+      "sha256": "557c00e80022170539bb35bbd3a7fb084c27025ef62ab002906e8a03009e6f20"
+    },
+    {
+      "path": "spec/v1alpha2/examples/image-review.workflow.yaml",
+      "sha256": "9bda2ad551a2352eaac5d7ee018f3916d81da442751b045959ed4ef317dc0095"
+    },
+    {
+      "path": "spec/v1alpha2/examples/invoice-extractor.agent.yaml",
+      "sha256": "c6ac51ca503016d969f2773a96bcf16196ff3368230156b1f9a09b78fd4deacd"
+    },
+    {
+      "path": "spec/v1alpha2/examples/invoice-processing.workflow.yaml",
+      "sha256": "fd7e4a97dd76030bf9352bc723ccb1602257ebc0249b4b23dceb165d633ed2e2"
+    },
+    {
+      "path": "spec/v1alpha2/examples/no-production-autonomy.policy.yaml",
+      "sha256": "5fe4194ee9d39e1d9967f4f9d741ec58430d378f91a066944aa515c2b05fa01c"
+    },
+    {
+      "path": "spec/v1alpha2/examples/security-review.a2a.workflow.yaml",
+      "sha256": "1f085edf4e19c6f7f8e41a869ed9f5aeb32cd8a2aa01de4a609409fbb8c7b8bd"
+    },
+    {
+      "path": "spec/v1alpha2/examples/vulnerability-fixer.workflow.yaml",
+      "sha256": "f424cfa73dd6a70045c98d186f4a2b67ba0410be6a0155e9a54a01ee2251b5ea"
     }
   ]
 }

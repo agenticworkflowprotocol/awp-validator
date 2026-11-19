@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Copies the normative AWP artefacts this validator is built on from a checkout of the
-// specification repository into vendor/awp-<version>/ and records commit and SHA-256 hashes in
-// PROVENANCE.json. The vendored files are never edited by hand: update them with this script and
-// review the diff.
+// specification repository into vendor/awp/ and records commit and SHA-256 hashes in
+// PROVENANCE.json. One commit of the specification provides every supported API version: one
+// schema and one example directory per version, one set of semantic rules and one conformance
+// suite for all of them. The vendored files are never edited by hand: update them with this
+// script and review the diff.
 //
 //   node scripts/sync-spec.mjs <path-to-agenticworkflowprotocol.org-checkout>
 import { execFileSync } from 'node:child_process';
@@ -10,23 +12,23 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { API_VERSIONS } from '../src/versions.js';
 
-const API_VERSION = 'v1alpha1';
 const SPEC_REPOSITORY = 'https://github.com/agenticworkflowprotocol/agenticworkflowprotocol.org';
 /** Paths copied from the specification repository (files or directories). */
 const SOURCES = [
   'LICENSE',
   'LICENSE-SPEC',
-  `schema/awp.${API_VERSION}.json`,
+  ...API_VERSIONS.map((v) => `schema/awp.${v}.json`),
   'conformance/semantic.mjs',
   'conformance/index.json',
   'conformance/valid',
   'conformance/invalid',
-  `spec/${API_VERSION}/examples`,
+  ...API_VERSIONS.map((v) => `spec/${v}/examples`),
 ];
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const target = join(root, 'vendor', `awp-${API_VERSION}`);
+const target = join(root, 'vendor', 'awp');
 
 function listFiles(dir) {
   return readdirSync(dir).sort().flatMap((name) => {
@@ -64,7 +66,7 @@ function main(specRoot) {
   const provenance = {
     schemaVersion: 1,
     description: 'Unchanged copy of the AWP schema, semantic rules, conformance suite and examples. Never edit by hand; run scripts/sync-spec.mjs and review the diff.',
-    awpVersion: API_VERSION,
+    awpVersions: API_VERSIONS,
     source: {
       repository: SPEC_REPOSITORY,
       commit: git(src, 'rev-parse', 'HEAD'),

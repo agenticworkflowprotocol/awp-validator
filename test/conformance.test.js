@@ -29,7 +29,7 @@ test('browser bundle passes the same suite with identical diagnostics', { skip: 
   // Same codes, paths and positions as the Node.js build for every case.
   for (const t of index.tests) {
     const opts = { file: t.file, profiles: t.profiles, verifyDigest: t.verifyDigest };
-    const text = (await import('node:fs')).readFileSync(new URL(`../vendor/awp-v1alpha1/conformance/${t.file}`, import.meta.url), 'utf8');
+    const text = (await import('node:fs')).readFileSync(new URL(`../vendor/awp/conformance/${t.file}`, import.meta.url), 'utf8');
     assert.deepEqual(browser.validateText(text, opts), node.validateText(text, opts), t.id);
   }
 });

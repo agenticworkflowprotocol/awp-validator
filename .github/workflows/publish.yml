@@ -79,7 +79,7 @@ jobs:
           mkdir -p release
           npm pack --pack-destination release
           cp dist/browser/awp-validator.mjs release/
-          cp vendor/awp-v1alpha1/schema/awp.v1alpha1.json release/
+          cp vendor/awp/schema/awp.v1alpha*.json release/
           cd release && sha256sum * > SHA256SUMS
       - name: Tag and create the GitHub release
         env:

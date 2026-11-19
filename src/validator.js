@@ -2,10 +2,11 @@
 // of how the JSON Schema validator is created: Node.js compiles it at load time, the browser build
 // uses a precompiled one (no eval). Results follow the diagnostics of the AWP CLI output formats,
 // section 3 (docs/cli.md in the specification repository).
-import { KNOWN_PROFILES, semanticCheck } from '../vendor/awp-v1alpha1/conformance/semantic.mjs';
+import { KNOWN_PROFILES, semanticCheck } from '../vendor/awp/conformance/semantic.mjs';
+import { versionOf } from './versions.js';
 import { loadDocuments, positionAt, positionOf } from './yaml.js';
 
-export const API_VERSION = 'v1alpha1';
+export { API_VERSION, API_VERSIONS } from './versions.js';
 export { KNOWN_PROFILES };
 
 /** Thrown for invalid options (CLI exit code 2). */
@@ -65,23 +66,27 @@ function identity(value) {
 const countBy = (diagnostics, severity) => diagnostics.filter((d) => d.severity === severity).length;
 
 /**
- * @param {{ validateSchema: ((value: unknown) => boolean) & { errors?: object[] | null } }} deps
+ * @param {{ schemaValidators: Record<string, ((value: unknown) => boolean) & { errors?: object[] | null }> }} deps
+ *   one compiled JSON Schema per API version (`v1alpha1`, `v1alpha2`, ...)
  */
-export function createValidator({ validateSchema }) {
+export function createValidator({ schemaValidators }) {
   /**
-   * Validate an already parsed manifest (no positions).
+   * Validate an already parsed manifest (no positions). The schema is chosen by `apiVersion`
+   * (`awp` in the result); an unsupported version is checked against the latest schema.
    * @param {unknown} value
    * @param {{ profiles?: string[] | string, verifyDigest?: boolean }} [options]
    */
   function validateManifest(value, options = {}) {
     const profiles = resolveProfiles(options.profiles);
+    const awp = versionOf(value);
+    const validateSchema = schemaValidators[awp];
     if (!validateSchema(value)) {
       // The semantic rules assume a structurally valid document.
       const diagnostics = schemaDiagnostics(validateSchema.errors).map((d) => diagnostic(d));
-      return { ...identity(value), valid: false, diagnostics };
+      return { ...identity(value), awp, valid: false, diagnostics };
     }
     const diagnostics = semanticCheck(value, { profiles, verifyDigest: !!options.verifyDigest }).map((d) => diagnostic(d));
-    return { ...identity(value), valid: countBy(diagnostics, 'error') === 0, diagnostics };
+    return { ...identity(value), awp, valid: countBy(diagnostics, 'error') === 0, diagnostics };
   }
 
   /**

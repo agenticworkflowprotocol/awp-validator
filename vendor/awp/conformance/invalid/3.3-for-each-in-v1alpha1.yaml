@@ -1,0 +1,69 @@
+# Conformance case 3.3-for-each-in-v1alpha1
+# Spec section 3.3: forEach is not a field of v1alpha1; a v1alpha1 validator MUST reject it as an unknown field.
+# Expected: invalid (schema.additionalProperties at /spec/workflow/1/forEach)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
+kind: Workflow
+metadata:
+  name: conformance-base
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+spec:
+  inputs:
+    - name: repo
+      type: string
+      required: true
+    - name: images
+      type: array
+      required: true
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 2
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: list
+      agent: worker
+      task: List the files of ${{ inputs.repo }}.
+      outputs:
+        - name: files
+    - id: review
+      agent: worker
+      task: Review the files.
+      dependsOn:
+        - list
+      forEach:
+        items: "${{ steps.list.outputs.files }}"
+        maxItems: 20
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true

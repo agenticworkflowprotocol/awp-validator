@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { KNOWN_PROFILES, UsageError, provenance, schema, validateManifest, validateText } from '../src/index.js';
+import { API_VERSIONS, KNOWN_PROFILES, UsageError, provenance, schema, validateManifest, validateText } from '../src/index.js';
 
 const VALID = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
 kind: Workflow
@@ -25,7 +25,33 @@ test('a valid manifest has no errors and carries kind, name and version', () => 
   const { file, documents } = validateText(VALID, { file: 'hello.yaml' });
   assert.equal(file, 'hello.yaml');
   assert.equal(documents.length, 1);
-  assert.deepEqual({ ...documents[0], diagnostics: undefined }, { document: 0, kind: 'Workflow', name: 'hello', version: '0.1.0', valid: true, diagnostics: undefined });
+  assert.deepEqual({ ...documents[0], diagnostics: undefined }, { document: 0, kind: 'Workflow', name: 'hello', version: '0.1.0', awp: 'v1alpha1', valid: true, diagnostics: undefined });
+});
+
+const V2 = VALID.replace('awp.agenticworkflowprotocol.org/v1alpha1', 'awp.agenticworkflowprotocol.org/v1alpha2');
+const ITERATING = `${V2.trimEnd()}
+      dependsOn: []
+      forEach:
+        items: "\${{ inputs.files }}"
+        maxItems: 10
+`;
+
+test('each document is validated against the schema of its own apiVersion', () => {
+  assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2']);
+  assert.equal(validateText(V2).documents[0].awp, 'v1alpha2');
+  assert.equal(validateText(V2).documents[0].valid, true);
+  const unknown = validateText(VALID.replace('/v1alpha1', '/v1alpha99')).documents[0];
+  assert.equal(unknown.awp, 'v1alpha2', 'an unsupported version is checked against the latest schema');
+  assert.deepEqual(unknown.diagnostics.map((d) => [d.code, d.path]), [['schema.const', '/apiVersion']]);
+});
+
+test('forEach is a v1alpha2 field: accepted there, an unknown field in v1alpha1', () => {
+  const withInput = ITERATING.replace('spec:\n', 'spec:\n  inputs:\n    - name: files\n      type: array\n      required: true\n');
+  const v2 = validateText(withInput).documents[0];
+  assert.deepEqual(v2.diagnostics.filter((d) => d.severity === 'error'), []);
+  const v1 = validateText(withInput.replace('/v1alpha2', '/v1alpha1')).documents[0];
+  assert.equal(v1.valid, false);
+  assert.ok(v1.diagnostics.some((d) => d.code === 'schema.additionalProperties' && d.path.endsWith('/forEach')));
 });
 
 test('extension fields are accepted, unknown fields are rejected with position', () => {

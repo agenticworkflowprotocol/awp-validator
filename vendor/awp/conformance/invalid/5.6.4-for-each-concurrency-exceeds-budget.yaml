@@ -1,6 +1,6 @@
-# Conformance case 3.2-unsupported-api-version
-# Spec section 3.2: apiVersion MUST be awp.agenticworkflowprotocol.org/v1alpha1.
-# Expected: invalid (schema.const at /apiVersion)
+# Conformance case 5.6.4-for-each-concurrency-exceeds-budget
+# Spec section 5.6.4: forEach.concurrency MUST NOT exceed the effective budget.resources.maxConcurrency.
+# Expected: invalid (forEach.concurrency-exceeds-budget at /spec/workflow/1/forEach/concurrency)
 apiVersion: awp.agenticworkflowprotocol.org/v1alpha2
 kind: Workflow
 metadata:
@@ -15,6 +15,9 @@ spec:
   inputs:
     - name: repo
       type: string
+      required: true
+    - name: images
+      type: array
       required: true
   budget:
     maxCostUsd: 1
@@ -46,16 +49,20 @@ spec:
         - type: mcp
           server: tools
   workflow:
-    - id: analyze
+    - id: list
       agent: worker
-      task: Analyze ${{ inputs.repo }}.
+      task: List the files of ${{ inputs.repo }}.
       outputs:
-        - name: report
-    - id: apply
+        - name: files
+    - id: review
       agent: worker
-      task: Apply ${{ steps.analyze.outputs.report }}.
+      task: Review ${{ forEach.item }}.
       dependsOn:
-        - analyze
+        - list
+      forEach:
+        items: "${{ steps.list.outputs.files }}"
+        maxItems: 20
+        concurrency: 2
   permissions:
     default: deny
     tools:

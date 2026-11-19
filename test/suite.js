@@ -2,8 +2,9 @@
 // pass criteria as the reference checker of the specification repository.
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { API_VERSIONS } from '../src/versions.js';
 
-const vendor = fileURLToPath(new URL('../vendor/awp-v1alpha1/', import.meta.url));
+const vendor = fileURLToPath(new URL('../vendor/awp/', import.meta.url));
 export const index = JSON.parse(readFileSync(`${vendor}conformance/index.json`, 'utf8'));
 
 const errorsOf = (fileResult) => fileResult.documents.flatMap((d) => d.diagnostics).filter((d) => d.severity === 'error');
@@ -22,11 +23,13 @@ export function runSuite(validateText) {
     const stray = errs.filter((e) => e.code.split('.')[0] !== t.code.split('.')[0]);
     results.push({ id: t.id, ok: hit.length > 0 && stray.length === 0, detail: `expected ${t.code} at ${t.path ?? '*'}, got: ${errs.map((e) => `${e.code} ${e.path}`).join('; ') || 'accepted'}` });
   }
-  const examples = `${vendor}spec/v1alpha1/examples/`;
-  for (const f of readdirSync(examples).sort()) {
-    if (!/\.(ya?ml|json)$/.test(f) || index.nonManifestExamples.includes(f)) continue;
-    const errs = errorsOf(validateText(readFileSync(examples + f, 'utf8'), { file: f }));
-    results.push({ id: `example:${f}`, ok: errs.length === 0, detail: errs.map((e) => `${e.code} ${e.path}`).join('; ') });
+  for (const version of API_VERSIONS) {
+    const examples = `${vendor}spec/${version}/examples/`;
+    for (const f of readdirSync(examples).sort()) {
+      if (!/\.(ya?ml|json)$/.test(f) || index.nonManifestExamples.includes(f)) continue;
+      const errs = errorsOf(validateText(readFileSync(examples + f, 'utf8'), { file: f }));
+      results.push({ id: `example:${version}/${f}`, ok: errs.length === 0, detail: errs.map((e) => `${e.code} ${e.path}`).join('; ') });
+    }
   }
   return results;
 }
