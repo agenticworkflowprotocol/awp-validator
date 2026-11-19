@@ -23,7 +23,6 @@ spec:
   workflow:
     - id: greet
       agent: helper
-      dependsOn: [missing-step]
   permissions:
     default: deny
 `;

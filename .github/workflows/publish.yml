@@ -1,0 +1,57 @@
+# Publishes a released version to the npm registry. Started by the release workflow after the
+# GitHub release exists, or by hand (Actions → publish → Run workflow) with the tag.
+#
+# Authentication: npm trusted publishing (OIDC, no stored token) for this repository and the
+# workflow file publish.yml. A brand-new package cannot have a trusted publisher yet: for the very
+# first version either set the repository secret NPM_TOKEN or create the package, configure the
+# trusted publisher on npmjs.com and re-run the failed job.
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish, for example v0.1.0
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ inputs.tag }}
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check tag format
+        env:
+          TAG: ${{ inputs.tag }}
+        run: '[[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "invalid tag: $TAG"; exit 1; }'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      # Trusted publishing needs npm 11.5.1 or newer; Node.js 22 ships npm 10.
+      - run: npm install -g npm@11.21.3
+      - run: npm ci --ignore-scripts
+      - name: Tag matches package version
+        env:
+          TAG: ${{ inputs.tag }}
+        run: test "v$(node -p 'require("./package.json").version')" = "$TAG"
+      - run: npm test
+      - name: Publish (skipped when the version is already on npm)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          name="$(node -p 'require("./package.json").name')"
+          version="$(node -p 'require("./package.json").version')"
+          if npm view "$name@$version" version >/dev/null 2>&1; then echo "$name@$version is already published"; exit 0; fi
+          npm publish --access public --provenance

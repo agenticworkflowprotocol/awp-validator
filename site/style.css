@@ -52,7 +52,8 @@ code, pre, textarea { font-family: var(--mono); font-size: 0.9rem; }
 .brand span { color: var(--accent); }
 .top nav { display: flex; gap: 1.25rem; }
 .top nav a { text-decoration: none; }
-.top nav a:hover { text-decoration: underline; }
+.top nav a:hover, .top nav a[aria-current] { text-decoration: underline; }
+.top nav a[aria-current] { font-weight: 600; }
 
 .intro h1 { font-size: 1.8rem; margin: 1.75rem 0 0.5rem; }
 .intro p { color: var(--muted); max-width: 70ch; margin-top: 0; }

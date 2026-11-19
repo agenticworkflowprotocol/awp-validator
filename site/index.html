@@ -16,7 +16,9 @@
       <a class="brand" href="./">AWP <span>Validator</span></a>
       <nav aria-label="Project">
         <a href="https://agenticworkflowprotocol.org/">Specification</a>
+        <a href="./" aria-current="page">Validator</a>
         <a href="https://editor.agenticworkflowprotocol.org/">Editor</a>
+        <a href="https://editor.agenticworkflowprotocol.org/viewer">Viewer</a>
         <a href="#use">Install</a>
         <a href="https://github.com/agenticworkflowprotocol/awp-validator">GitHub</a>
       </nav>
@@ -76,12 +78,11 @@
 
     <section id="use" class="use" aria-labelledby="use-title">
       <h2 id="use-title">Use it in your application</h2>
-      <p>The same validator is available as a command-line tool, a Node.js library and a browser module without <code>eval</code>. Install the package from the latest <a href="https://github.com/agenticworkflowprotocol/awp-validator/releases/latest">GitHub release</a>.</p>
+      <p>The same validator is available as a command-line tool, a Node.js library and a browser module without <code>eval</code>: <code>npm install @agenticworkflowprotocol/validator</code>. Every <a href="https://github.com/agenticworkflowprotocol/awp-validator/releases/latest">GitHub release</a> also contains the package tarball and the browser bundle.</p>
       <div class="cards">
         <article>
           <h3>Command line</h3>
-<pre tabindex="0" role="region" aria-label="Command-line example"><code>npm install --save-dev \
-  https://github.com/agenticworkflowprotocol/awp-validator/releases/download/v{{version}}/agenticworkflowprotocol-validator-{{version}}.tgz
+<pre tabindex="0" role="region" aria-label="Command-line example"><code>npm install --save-dev @agenticworkflowprotocol/validator
 npx awp validate --profiles core,mcp workflow.yaml
 npx awp validate --output json workflow.yaml</code></pre>
           <p>Exit codes: <code>0</code> valid, <code>1</code> invalid, <code>2</code> usage error, <code>3</code> unreadable file.</p>

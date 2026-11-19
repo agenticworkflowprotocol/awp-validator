@@ -18,8 +18,12 @@ role, spec 11.1); it is not a runtime and says nothing about runtime conformance
 
 ## Install
 
-Until the package is on the npm registry, install it from a
-[GitHub release](https://github.com/agenticworkflowprotocol/awp-validator/releases):
+```sh
+npm install --save-exact @agenticworkflowprotocol/validator
+```
+
+Published to npm with provenance by the `publish` workflow. Without registry access, install the
+tarball of a [GitHub release](https://github.com/agenticworkflowprotocol/awp-validator/releases):
 
 ```sh
 npm install --save-exact \
