@@ -1,0 +1,66 @@
+{
+  "name": "@agenticworkflowprotocol/validator",
+  "version": "0.1.0",
+  "description": "Reference validator and CLI for Agentic Workflow Protocol (AWP) manifests: YAML rules, JSON Schema and semantic checks per conformance profile, digest verification and machine-readable diagnostics.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://validator.agenticworkflowprotocol.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agenticworkflowprotocol/awp-validator.git"
+  },
+  "bugs": "https://github.com/agenticworkflowprotocol/awp-validator/issues",
+  "keywords": [
+    "awp",
+    "agentic-workflows",
+    "validator",
+    "json-schema",
+    "mcp",
+    "ai-governance"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "awp": "bin/awp.js"
+  },
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./browser": {
+      "types": "./types/index.d.ts",
+      "default": "./dist/browser/awp-validator.mjs"
+    },
+    "./schema.json": "./vendor/awp-v1alpha1/schema/awp.v1alpha1.json",
+    "./provenance.json": "./vendor/awp-v1alpha1/PROVENANCE.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "types/",
+    "dist/browser/",
+    "vendor/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node --test test/",
+    "verify:vendor": "node scripts/verify-vendor.mjs",
+    "prepack": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@noble/hashes": "2.4.0",
+    "esbuild": "0.28.2"
+  }
+}

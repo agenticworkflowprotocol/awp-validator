@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWP Validator</title>
+  <meta name="description" content="Validate Agentic Workflow Protocol (AWP) manifests in your browser: YAML rules, JSON Schema and semantic checks per conformance profile. Nothing is uploaded.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#manifest">Skip to the editor</a>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="brand" href="./">AWP <span>Validator</span></a>
+      <nav aria-label="Project">
+        <a href="https://agenticworkflowprotocol.org/">Specification</a>
+        <a href="#use">Install</a>
+        <a href="https://github.com/agenticworkflowprotocol/awp-validator">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>Validate an AWP manifest</h1>
+      <p>Checks the YAML restrictions, the JSON Schema and the semantic rules of <strong>AWP v1alpha1</strong> for the conformance profiles you select. Validation runs entirely in your browser; the manifest is not uploaded.</p>
+    </section>
+
+    <form id="form" class="grid" novalidate>
+      <div class="editor">
+        <div class="editor-bar">
+          <label for="manifest">Manifest (YAML or JSON)</label>
+          <div class="editor-actions">
+            <label class="sr-only" for="example">Load an example</label>
+            <select id="example">
+              <option value="">Load an example…</option>
+            </select>
+            <label class="button secondary" for="file">Open file</label>
+            <input id="file" type="file" accept=".yaml,.yml,.json,text/yaml,application/json" class="sr-only">
+          </div>
+        </div>
+        <textarea id="manifest" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-hint"></textarea>
+        <p id="editor-hint" class="hint">Several documents separated by <code>---</code> are validated one by one. Drop a file onto the editor to open it.</p>
+      </div>
+
+      <div class="options">
+        <fieldset>
+          <legend>Supported profiles</legend>
+          <p class="hint">Fields of profiles you do not select are rejected (spec 3.3).</p>
+          <div id="profiles" class="checks"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Options</legend>
+          <div class="checks">
+            <label><input type="checkbox" id="verify-digest"> Verify the manifest digest (spec 9.1)</label>
+            <label><input type="checkbox" id="strict"> Strict (warnings fail)</label>
+          </div>
+        </fieldset>
+        <button type="submit" class="button">Validate</button>
+      </div>
+    </form>
+
+    <section class="results" aria-labelledby="results-title">
+      <h2 id="results-title">Result</h2>
+      <div id="status" role="status" aria-live="polite" class="status">Paste a manifest or load an example.</div>
+      <ol id="diagnostics" class="diagnostics"></ol>
+      <details id="json-details" hidden>
+        <summary>JSON result (<code>awp validate --output json</code>)</summary>
+        <button type="button" id="copy-json" class="button secondary small">Copy</button>
+        <pre id="json" tabindex="0" role="region" aria-label="JSON result"></pre>
+      </details>
+    </section>
+
+    <section id="use" class="use" aria-labelledby="use-title">
+      <h2 id="use-title">Use it in your application</h2>
+      <p>The same validator is available as a command-line tool, a Node.js library and a browser module without <code>eval</code>. Install the package from the latest <a href="https://github.com/agenticworkflowprotocol/awp-validator/releases/latest">GitHub release</a>.</p>
+      <div class="cards">
+        <article>
+          <h3>Command line</h3>
+<pre tabindex="0" role="region" aria-label="Command-line example"><code>npm install --save-dev \
+  https://github.com/agenticworkflowprotocol/awp-validator/releases/download/v{{version}}/agenticworkflowprotocol-validator-{{version}}.tgz
+npx awp validate --profiles core,mcp workflow.yaml
+npx awp validate --output json workflow.yaml</code></pre>
+          <p>Exit codes: <code>0</code> valid, <code>1</code> invalid, <code>2</code> usage error, <code>3</code> unreadable file.</p>
+        </article>
+        <article>
+          <h3>Node.js</h3>
+<pre tabindex="0" role="region" aria-label="Node.js example"><code>import { validateText, validateManifest } from '@agenticworkflowprotocol/validator';
+
+const { documents } = validateText(yamlText, {
+  file: 'workflow.yaml',
+  profiles: ['core', 'mcp'],
+});
+const ok = documents.every((d) =&gt; d.valid);
+
+// already parsed (e.g. a request body)
+const result = validateManifest(manifest, { profiles: ['core'] });</code></pre>
+        </article>
+        <article>
+          <h3>Browser</h3>
+<pre tabindex="0" role="region" aria-label="Browser example"><code>import { validateText } from '@agenticworkflowprotocol/validator/browser';
+// or the file awp-validator.mjs from the release</code></pre>
+          <p>One ES module, no dependencies, works under a strict Content-Security-Policy.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Validator {{version}} · AWP v1alpha1 (specification <code>{{specCommit}}</code>) · Apache-2.0</p>
+    <p>AWP is a specification, not a platform. Any runtime may implement it. Contact: <a href="mailto:info@agenticworkflowprotocol.org">info@agenticworkflowprotocol.org</a></p>
+  </footer>
+</body>
+</html>
