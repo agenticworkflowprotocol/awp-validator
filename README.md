@@ -24,7 +24,7 @@ role, spec 11.1); it is not a runtime and says nothing about runtime conformance
 npm install --save-exact @agenticworkflowprotocol/validator
 ```
 
-Published to npm with provenance by the `publish` workflow. Without registry access, install the
+Every push to `main` with a new `version` in `package.json` is released automatically: tag, GitHub release and npm with provenance (`.github/workflows/publish.yml`). Without registry access, install the
 tarball of a [GitHub release](https://github.com/agenticworkflowprotocol/awp-validator/releases):
 
 ```sh
@@ -129,6 +129,16 @@ The website in `site/` is built into `dist/site/` and deployed by the Cloudflare
 `awp-validator` on every push to `main`. The output directory is set in `wrangler.toml`; the build
 command `npm ci && npm run build` is set in the Pages dashboard. `site/_headers` sets a strict
 Content-Security-Policy (no inline scripts, no external requests).
+
+## Releasing
+
+1. Set the new `version` in `package.json` (semantic versioning) and add a `## [x.y.z]` section to
+   `CHANGELOG.md`.
+2. Push to `main` (directly or by merging a pull request).
+
+The `publish` workflow runs on every push to `main`. If the version is not on npm yet, it runs the
+tests, tags the commit `vx.y.z`, creates the GitHub release with the artefacts and publishes to npm
+through trusted publishing. Pushes without a new version stop after the check.
 
 ## License
 

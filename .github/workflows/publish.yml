@@ -1,37 +1,64 @@
-# Publishes a released version to the npm registry. Started by the release workflow after the
-# GitHub release exists, or by hand (Actions → publish → Run workflow) with the tag.
+# Release on every push to main that carries a new version.
 #
-# Authentication: npm trusted publishing (OIDC, no stored token) for this repository and the
-# workflow file publish.yml. A brand-new package cannot have a trusted publisher yet: for the very
-# first version either set the repository secret NPM_TOKEN or create the package, configure the
-# trusted publisher on npmjs.com and re-run the failed job.
+# When package.json on main has a version that is not on npm yet, this workflow tests the package,
+# tags the commit (v<version>), creates the GitHub release with the artefacts and publishes to npm
+# with provenance. Pushes that do not change the version (docs, site, refactoring) only run the
+# check and stop. To release: bump "version" in package.json, add the CHANGELOG entry, push to main.
+#
+# npm authentication: trusted publishing (OIDC). The trusted publisher on npmjs.com is configured
+# for this repository and the workflow file publish.yml; do not rename this file. NPM_TOKEN is used
+# only if it is set, as a fallback.
 name: publish
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      tag:
-        description: Release tag to publish, for example v0.1.0
-        required: true
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
-  group: publish-${{ inputs.tag }}
+  group: publish
+  cancel-in-progress: false
 
 jobs:
-  npm:
+  check:
     runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.version.outputs.release }}
+      version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Check tag format
-        env:
-          TAG: ${{ inputs.tag }}
-        run: '[[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "invalid tag: $TAG"; exit 1; }'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.tag }}
+          persist-credentials: false
+      - id: version
+        name: Is this version already published?
+        run: |
+          set -euo pipefail
+          name="$(node -p 'require("./package.json").name')"
+          version="$(node -p 'require("./package.json").version')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already on npm: nothing to release."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$name@$version is new: releasing."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    needs: check
+    if: needs.check.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -41,17 +68,31 @@ jobs:
       # Trusted publishing needs npm 11.5.1 or newer; Node.js 22 ships npm 10.
       - run: npm install -g npm@11.21.3
       - run: npm ci --ignore-scripts
-      - name: Tag matches package version
-        env:
-          TAG: ${{ inputs.tag }}
-        run: test "v$(node -p 'require("./package.json").version')" = "$TAG"
+      - name: CHANGELOG has an entry for this version
+        run: grep -q "^## \[$VERSION\]" CHANGELOG.md || { echo "CHANGELOG.md has no section ## [$VERSION]"; exit 1; }
       - run: npm test
-      - name: Publish (skipped when the version is already on npm)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Pack and collect artefacts
         run: |
           set -euo pipefail
-          name="$(node -p 'require("./package.json").name')"
-          version="$(node -p 'require("./package.json").version')"
-          if npm view "$name@$version" version >/dev/null 2>&1; then echo "$name@$version is already published"; exit 0; fi
-          npm publish --access public --provenance
+          mkdir -p release
+          npm pack --pack-destination release
+          cp dist/browser/awp-validator.mjs release/
+          cp vendor/awp-v1alpha1/schema/awp.v1alpha1.json release/
+          cd release && sha256sum * > SHA256SUMS
+      - name: Tag and create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="v$VERSION"
+          notes="$(awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md)"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release $tag exists; uploading artefacts again"
+            gh release upload "$tag" release/* --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$tag" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$tag" --notes "$notes"
+          fi
+      - name: Publish to npm with provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
