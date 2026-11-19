@@ -51,7 +51,7 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node scripts/build.mjs && node --test test/",
+    "test": "node scripts/build.mjs && node --test test/*.test.js",
     "verify:vendor": "node scripts/verify-vendor.mjs",
     "prepack": "node scripts/build.mjs"
   },
