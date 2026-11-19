@@ -1,11 +1,11 @@
 :root {
   color-scheme: light dark;
   --bg: #ffffff;
-  --fg: #17202a;
-  --muted: #4d5966;
-  --line: #d5dbe1;
-  --panel: #f5f7f9;
-  --accent: #0b5cad;
+  --fg: #14171a;
+  --muted: #59606a;
+  --line: #e3e6ea;
+  --panel: #f6f7f8;
+  --accent: #0b6b63;
   --accent-fg: #ffffff;
   --ok: #146c2e;
   --ok-bg: #e7f4ea;
@@ -19,13 +19,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #12161b;
-    --fg: #e6eaee;
-    --muted: #a9b3bd;
-    --line: #2f3842;
-    --panel: #1a2027;
-    --accent: #7db7f0;
-    --accent-fg: #0b1622;
+    --bg: #101214;
+    --fg: #f4f5f6;
+    --muted: #b2b7be;
+    --line: #2a2e33;
+    --panel: #181a1d;
+    --accent: #5fd6c8;
+    --accent-fg: #06201d;
     --ok: #8fd6a2;
     --ok-bg: #16301f;
     --err: #f3a3a5;
@@ -53,9 +53,11 @@ code, pre, textarea { font-family: var(--mono); font-size: 0.9rem; }
 .brand { display: inline-flex; align-items: center; gap: 0.5rem; }
 .brand .logo { display: block; width: 30px; height: 30px; }
 .top nav { display: flex; gap: 1.25rem; }
-.top nav a { text-decoration: none; }
+.top nav a { text-decoration: none; color: var(--fg); font-weight: 600; font-size: 0.95rem; }
 .top nav a:hover, .top nav a[aria-current] { text-decoration: underline; }
-.top nav a[aria-current] { font-weight: 600; }
+.top nav a[aria-current] { color: var(--accent); }
+.top nav a:hover { color: var(--accent); }
+input[type="checkbox"] { accent-color: var(--accent); }
 
 .intro h1 { font-size: 1.8rem; margin: 1.75rem 0 0.5rem; }
 .intro p { color: var(--muted); max-width: 70ch; margin-top: 0; }
