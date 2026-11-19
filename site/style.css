@@ -50,6 +50,8 @@ code, pre, textarea { font-family: var(--mono); font-size: 0.9rem; }
 .top-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; flex-wrap: wrap; }
 .brand { font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--fg); }
 .brand span { color: var(--accent); }
+.brand { display: inline-flex; align-items: center; gap: 0.5rem; }
+.brand .logo { display: block; width: 30px; height: 30px; }
 .top nav { display: flex; gap: 1.25rem; }
 .top nav a { text-decoration: none; }
 .top nav a:hover, .top nav a[aria-current] { text-decoration: underline; }
