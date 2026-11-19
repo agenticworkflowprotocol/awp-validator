@@ -1,0 +1,5 @@
+# Cloudflare Pages project of validator.agenticworkflowprotocol.org.
+# The build command is set in the Pages dashboard: npm ci && npm run build
+name = "awp-validator"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "dist/site"

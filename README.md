@@ -117,8 +117,10 @@ npm test          # builds dist/, then runs the conformance suite (Node.js and b
 npm run build     # dist/browser/ and dist/site/
 ```
 
-The website in `site/` is built into `dist/site/` and deployed by Cloudflare Pages
-(build command `npm ci && npm run build`, output directory `dist/site`).
+The website in `site/` is built into `dist/site/` and deployed by the Cloudflare Pages project
+`awp-validator` on every push to `main`. The output directory is set in `wrangler.toml`; the build
+command `npm ci && npm run build` is set in the Pages dashboard. `site/_headers` sets a strict
+Content-Security-Policy (no inline scripts, no external requests).
 
 ## License
 
