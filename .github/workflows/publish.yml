@@ -69,7 +69,9 @@ jobs:
       - run: npm install -g npm@11.21.3
       - run: npm ci --ignore-scripts
       - name: CHANGELOG has an entry for this version
-        run: grep -q "^## \[$VERSION\]" CHANGELOG.md || { echo "CHANGELOG.md has no section ## [$VERSION]"; exit 1; }
+        # Block scalar: in a plain YAML scalar " #" would start a comment and cut the command.
+        run: |
+          grep -q "^## \[$VERSION\]" CHANGELOG.md || { echo "CHANGELOG.md has no section ## [$VERSION]"; exit 1; }
       - run: npm test
       - name: Pack and collect artefacts
         run: |
