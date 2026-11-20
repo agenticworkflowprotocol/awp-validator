@@ -1,8 +1,9 @@
 // Types of @agenticworkflowprotocol/validator (Node.js entry and the `./browser` entry).
 
-/** Conformance profiles of AWP (spec 11.2; the same in v1alpha1 and v1alpha2). */
-export type ApiVersion = 'v1alpha1' | 'v1alpha2';
-export type Profile = 'core' | 'governance' | 'audit' | 'security' | 'mcp' | 'a2a';
+/** Supported AWP API versions. */
+export type ApiVersion = 'v1alpha1' | 'v1alpha2' | 'v1alpha3';
+/** Conformance profiles of AWP (spec 11.2); `interaction` exists from v1alpha3 on. */
+export type Profile = 'core' | 'governance' | 'audit' | 'security' | 'mcp' | 'a2a' | 'interaction';
 
 /** A finding, as in the AWP CLI output formats, section 3. */
 export interface Diagnostic {
@@ -64,6 +65,9 @@ export function summarize(files: FileResult[]): Summary;
 /** Normalise a profile list; throws `UsageError` for unknown profiles. */
 export function resolveProfiles(profiles?: Profile[] | string): Profile[];
 export class UsageError extends Error {}
+
+/** Mechanical migration of a v1alpha1 or v1alpha2 manifest to v1alpha3 (spec v1alpha3 section 14). */
+export function migrateToV1alpha3(manifest: unknown): { document: Record<string, unknown>; notes: string[] };
 
 /** JSON Canonicalization Scheme (RFC 8785) for manifest values. */
 export function jcs(value: unknown): string;

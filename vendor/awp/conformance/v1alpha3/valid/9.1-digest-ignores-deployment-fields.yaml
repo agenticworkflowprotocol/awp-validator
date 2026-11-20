@@ -1,0 +1,30 @@
+# Conformance case 9.1-digest-ignores-deployment-fields
+# Spec section 9.1: The digest covers apiVersion, kind, metadata.name and spec without integrity, signature and provenance; namespace, labels, annotations and status do not change it.
+# Expected: valid
+# Profiles supported by the validator for this case: core
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: hello
+  namespace: team-b
+  labels:
+    tier: gold
+  annotations:
+    note: deployed by a tool
+spec:
+  version: 0.1.0
+  owner:
+    team: platform-team
+  agents:
+    - id: assistant
+      model:
+        provider: ollama
+        name: qwen3
+  workflow:
+    - id: greet
+      agent: assistant
+      task: Say hello.
+  integrity:
+    digest: sha256:11c7dc8fc53f58a2095011a2ab01bd4cedc7a42c4afcd688bd941a6fa8574b0a
+status:
+  observedGeneration: 1

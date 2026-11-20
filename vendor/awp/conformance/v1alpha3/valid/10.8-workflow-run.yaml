@@ -1,0 +1,15 @@
+# Conformance case 10.8-workflow-run
+# Spec section 10.8: A WorkflowRun requests one execution of a workflow with inputs and an environment.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: WorkflowRun
+metadata:
+  name: conformance-base-20261119
+  namespace: conformance
+spec:
+  workflowRef:
+    name: conformance-base
+    version: 1.0.0
+  inputs:
+    repo: example-org/web-shop
+  environment: staging

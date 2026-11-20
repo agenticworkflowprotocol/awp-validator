@@ -208,7 +208,7 @@
       }
     },
     "Approval": {
-      "description": "Workflow-level approval configuration and approval step payload (spec 7.6).",
+      "description": "Workflow-level approval configuration (spec 7.6).",
       "type": "object",
       "properties": {
         "requiredFor": {
@@ -241,6 +241,31 @@
         },
         "separationOfDuties": {
           "$ref": "#/$defs/SeparationOfDuties"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      }
+    },
+    "ApprovalStep": {
+      "description": "Payload of an approval step (spec 5.6.1, 7.6): the fields of Approval without requiredFor and separationOfDuties, which apply only at workflow level.",
+      "type": "object",
+      "properties": {
+        "approvers": {
+          "$ref": "#/$defs/Approval/properties/approvers"
+        },
+        "minApprovals": {
+          "$ref": "#/$defs/Approval/properties/minApprovals"
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "onTimeout": {
+          "$ref": "#/$defs/Approval/properties/onTimeout"
+        },
+        "message": {
+          "$ref": "#/$defs/Expression"
         }
       },
       "additionalProperties": false,
@@ -1277,7 +1302,7 @@
           "minLength": 1
         },
         "approval": {
-          "$ref": "#/$defs/Approval"
+          "$ref": "#/$defs/ApprovalStep"
         }
       },
       "required": [

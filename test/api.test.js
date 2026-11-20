@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { API_VERSIONS, KNOWN_PROFILES, UsageError, provenance, schema, validateManifest, validateText } from '../src/index.js';
+import { API_VERSIONS, KNOWN_PROFILES, UsageError, migrateToV1alpha3, provenance, schema, schemas, validateManifest, validateText } from '../src/index.js';
+import { parse as parseFirst, stringify } from 'yaml';
 
 const VALID = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
 kind: Workflow
@@ -37,11 +38,11 @@ const ITERATING = `${V2.trimEnd()}
 `;
 
 test('each document is validated against the schema of its own apiVersion', () => {
-  assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2']);
+  assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2', 'v1alpha3']);
   assert.equal(validateText(V2).documents[0].awp, 'v1alpha2');
   assert.equal(validateText(V2).documents[0].valid, true);
   const unknown = validateText(VALID.replace('/v1alpha1', '/v1alpha99')).documents[0];
-  assert.equal(unknown.awp, 'v1alpha2', 'an unsupported version is checked against the latest schema');
+  assert.equal(unknown.awp, 'v1alpha2', 'an unsupported version is checked against the current draft');
   assert.deepEqual(unknown.diagnostics.map((d) => [d.code, d.path]), [['schema.const', '/apiVersion']]);
 });
 
@@ -104,6 +105,23 @@ test('unknown profiles are a usage error', () => {
 
 test('schema, profiles and provenance are exported', () => {
   assert.equal(schema.$schema, 'https://json-schema.org/draft/2020-12/schema');
-  assert.deepEqual(KNOWN_PROFILES, ['core', 'governance', 'audit', 'security', 'mcp', 'a2a']);
+  assert.deepEqual(KNOWN_PROFILES, ['core', 'governance', 'audit', 'security', 'mcp', 'a2a', 'interaction']);
+  assert.equal(schema.$id, 'https://agenticworkflowprotocol.org/schema/awp.v1alpha2.json', 'the default schema is the current draft');
   assert.match(provenance.source.commit, /^[0-9a-f]{40}$/);
+});
+
+test('v1alpha3: governance fields in spec, forEach as in v1alpha2, migration from v1alpha2', () => {
+  const withInput = ITERATING.replace('spec:\n', 'spec:\n  inputs:\n    - name: files\n      type: array\n      required: true\n');
+  const { document, notes } = migrateToV1alpha3(parseFirst(withInput));
+  assert.deepEqual(notes, []);
+  assert.equal(document.apiVersion, 'awp.agenticworkflowprotocol.org/v1alpha3');
+  assert.equal(document.spec.version, '0.1.0');
+  assert.equal(document.metadata.version, undefined);
+  const v3 = validateText(stringify(document)).documents[0];
+  assert.equal(v3.awp, 'v1alpha3');
+  assert.deepEqual(v3.diagnostics.filter((d) => d.severity === 'error'), []);
+  assert.ok(schemas.v1alpha3.$defs.ForEach, 'v1alpha3 has step iteration');
+  // v1alpha1 layout is rejected in v1alpha3: version belongs to spec there.
+  const oldLayout = validateText(withInput.replace('/v1alpha2', '/v1alpha3')).documents[0];
+  assert.equal(oldLayout.valid, false);
 });

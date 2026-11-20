@@ -1,0 +1,23 @@
+# Conformance case 4-governance-field-in-metadata
+# Spec section 4: Governance fields are spec fields; metadata.owner is unknown.
+# Expected: invalid (schema.additionalProperties at /metadata/owner)
+# Profiles supported by the validator for this case: core
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: hello
+  owner:
+    team: platform-team
+spec:
+  version: 0.1.0
+  owner:
+    team: platform-team
+  agents:
+    - id: assistant
+      model:
+        provider: ollama
+        name: qwen3
+  workflow:
+    - id: greet
+      agent: assistant
+      task: Say hello.

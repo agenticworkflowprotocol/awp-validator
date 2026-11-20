@@ -1,0 +1,87 @@
+# Example: review every container image of a repository for known vulnerabilities, one item run
+# per image (forEach, spec 5.6.5), then write one migration plan.
+# Profiles exercised: core, mcp.
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: image-review
+spec:
+  version: 0.1.0
+  description: Find the container images of a repository, scan each one and plan the upgrade.
+  owner:
+    team: platform-team
+  classification: internal
+  risk:
+    level: low
+  triggers:
+    - type: manual
+  inputs:
+    - name: repository
+      type: string
+      required: true
+      description: Repository in the form owner/name.
+  budget:
+    maxCostUsd: 3
+    maxSteps: 40
+    maxDuration: 1h
+    resources:
+      maxToolCalls: 60
+      maxConcurrency: 2
+  mcpServers:
+    - name: scanner
+      transport: streamable-http
+      url: https://mcp.example.com/scanner
+  agents:
+    - id: inventory
+      model:
+        provider: ollama
+        name: qwen3
+      instructions: List every container image reference with its tag.
+      tools:
+        - type: mcp
+          server: scanner
+          tools:
+            - image_refs
+    - id: reviewer
+      model:
+        provider: ollama
+        name: qwen3
+      instructions: Scan one image and summarize its critical and high findings.
+      tools:
+        - type: mcp
+          server: scanner
+          tools:
+            - scan_image
+  workflow:
+    - id: images
+      agent: inventory
+      task: List the container images of ${{ inputs.repository }} as a JSON list of strings.
+      outputs:
+        - name: refs
+    - id: scan
+      agent: reviewer
+      dependsOn:
+        - images
+      task: Scan image ${{ forEach.item }} (number ${{ forEach.index }} of the list).
+      forEach:
+        items: ${{ steps.images.outputs.refs }}
+        maxItems: 20
+        concurrency: 2
+      timeout: 10m
+      retries: 1
+      outputs:
+        - name: findings
+    - id: plan
+      agent: reviewer
+      dependsOn:
+        - scan
+      task: "Write one upgrade plan from these findings, one entry per image: ${{ steps.scan.outputs.findings }}"
+      outputs:
+        - name: plan
+  permissions:
+    default: deny
+    tools:
+      scanner.image_refs:
+        allow: true
+      scanner.scan_image:
+        allow: true

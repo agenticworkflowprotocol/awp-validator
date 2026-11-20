@@ -15,7 +15,7 @@ spec:
   inputs:
     - name: repo
       type: string
-      required: true
+      default: example-org/web-shop
   budget:
     maxCostUsd: 1
     maxSteps: 10

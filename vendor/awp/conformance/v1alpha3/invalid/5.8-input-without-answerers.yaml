@@ -1,0 +1,80 @@
+# Conformance case 5.8-input-without-answerers
+# Spec section 5.8: answerers is REQUIRED; nobody else may answer.
+# Expected: invalid (schema.required at /spec/workflow/1/input)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      default: example-org/web-shop
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 1
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: analyze
+      agent: worker
+      task: Analyze ${{ inputs.repo }}.
+      outputs:
+        - name: report
+    - id: ask-targets
+      type: input
+      dependsOn:
+        - analyze
+      input:
+        message: Which targets should ${{ steps.analyze.outputs.report }} be applied to?
+        timeout: 4h
+    - id: apply
+      agent: worker
+      task: Apply ${{ steps.analyze.outputs.report }} to ${{ steps.ask-targets.outputs.answer }}.
+      dependsOn:
+        - ask-targets
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true
+  triggers:
+    - type: manual
+    - type: schedule
+      cron: 0 6 * * 1-5
+      timezone: Europe/Berlin
+    - type: event
+      source: git.example.com
+      eventType: pull_request.opened
+      filter:
+        repository: example-org/web-shop

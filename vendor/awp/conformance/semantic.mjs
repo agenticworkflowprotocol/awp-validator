@@ -1,11 +1,15 @@
-// Semantic validation rules of AWP v1alpha1 and v1alpha2 that JSON Schema cannot express.
+// Semantic validation rules of AWP v1alpha1, v1alpha2 and v1alpha3 that JSON Schema cannot express.
+// v1alpha2 adds step iteration (forEach). v1alpha3 also has forEach and differs otherwise only in
+// layout: governance fields live in spec instead of metadata, extension fields in `extensions`
+// objects instead of x- keys, and `status` is ignored.
 // Rule catalogue: schema/README.md. Every diagnostic has a stable `code`.
 // Runs on documents that already passed the structural schema of their apiVersion; fields that
 // only exist in v1alpha2 (forEach) cannot reach these rules in a v1alpha1 document.
 
 import { createHash } from 'node:crypto';
+import { checkInputStep } from './human-input.mjs';
 
-export const KNOWN_PROFILES = ['core', 'governance', 'audit', 'security', 'mcp', 'a2a'];
+export const KNOWN_PROFILES = ['core', 'governance', 'audit', 'security', 'mcp', 'a2a', 'interaction'];
 
 const EXPR_RE = /\$\{\{([\s\S]*?)\}\}/g;
 const SECRET_FIELD_NAMES = new Set(['token', 'password', 'apiKey', 'secret', 'privateKey']);
@@ -13,6 +17,16 @@ const SECRET_FIELD_NAMES = new Set(['token', 'password', 'apiKey', 'secret', 'pr
 const esc = s => String(s).replace(/~/g, '~0').replace(/\//g, '~1');
 const ptr = (...parts) => parts.map(p => '/' + esc(p)).join('');
 const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+
+const V1ALPHA3 = 'awp.agenticworkflowprotocol.org/v1alpha3';
+const INTEGRITY_FIELDS = ['integrity', 'signature', 'provenance'];
+
+/** Where the governance fields (version, owner, classification, risk, integrity, ...) live. */
+function governanceOf(doc) {
+  return doc.apiVersion === V1ALPHA3
+    ? { fields: doc.spec ?? {}, base: 'spec' }
+    : { fields: doc.metadata ?? {}, base: 'metadata' };
+}
 
 export function jcs(value) {
   // JSON Canonicalization Scheme (RFC 8785) for the JSON subset used by manifests.
@@ -22,13 +36,22 @@ export function jcs(value) {
   return '{' + keys.map(k => JSON.stringify(k) + ':' + jcs(value[k])).join(',') + '}';
 }
 
-export function manifestDigest(doc, algorithm = 'sha256') {
-  const copy = structuredClone(doc);
-  if (copy.metadata) {
-    delete copy.metadata.integrity;
-    delete copy.metadata.signature;
-    delete copy.metadata.provenance;
+/** The value the digest is computed over (spec 9.1). */
+function digestInput(doc) {
+  if (doc.apiVersion !== V1ALPHA3) {
+    const copy = structuredClone(doc);
+    if (copy.metadata) for (const f of INTEGRITY_FIELDS) delete copy.metadata[f];
+    return copy;
   }
+  // v1alpha3: identity and spec only. Labels, annotations, namespace, store-populated metadata and
+  // status are changed by deployment tools and object stores, so they are not covered.
+  const spec = structuredClone(doc.spec ?? {});
+  for (const f of INTEGRITY_FIELDS) delete spec[f];
+  return { apiVersion: doc.apiVersion, kind: doc.kind, metadata: { name: doc.metadata?.name }, spec };
+}
+
+export function manifestDigest(doc, algorithm = 'sha256') {
+  const copy = digestInput(doc);
   return `${algorithm}:${createHash(algorithm).update(jcs(copy), 'utf8').digest('hex')}`;
 }
 
@@ -45,7 +68,8 @@ function forEachNode(node, fn, path = []) {
   if (Array.isArray(node)) node.forEach((v, i) => forEachNode(v, fn, [...path, i]));
   else if (isObj(node)) {
     for (const [k, v] of Object.entries(node)) {
-      if (k.startsWith('x-')) continue; // extension subtrees are opaque (spec 3.3)
+      if (k.startsWith('x-') || (k === 'extensions' && isObj(v))) continue; // extension subtrees are opaque (spec 3.3)
+      if (path.length === 0 && k === 'status') continue; // runtime-owned (v1alpha3 spec 3.2)
       forEachNode(v, fn, [...path, k]);
     }
   }
@@ -69,8 +93,8 @@ export function semanticCheck(doc, opts = {}) {
   };
 
   const kind = doc.kind;
-  const meta = doc.metadata ?? {};
   const spec = doc.spec ?? {};
+  const { fields: gov, base } = governanceOf(doc);
 
   // 3.8 / 9.1: digest verification and algorithm support
   forEachNode(doc, (n, p) => {
@@ -81,14 +105,15 @@ export function semanticCheck(doc, opts = {}) {
       }
     }
   });
-  if (opts.verifyDigest && meta.integrity?.digest) {
-    const alg = meta.integrity.digest.split(':')[0];
+  if (opts.verifyDigest && gov.integrity?.digest) {
+    const alg = gov.integrity.digest.split(':')[0];
+    const path = `/${base}/integrity/digest`;
     if (!['sha256', 'sha384', 'sha512'].includes(alg)) {
-      err('digest.unsupported-algorithm', '9.1', '/metadata/integrity/digest', `cannot verify digest algorithm "${alg}"`);
+      err('digest.unsupported-algorithm', '9.1', path, `cannot verify digest algorithm "${alg}"`);
     } else {
       const expected = manifestDigest(doc, alg);
-      if (expected !== meta.integrity.digest) {
-        err('digest.mismatch', '9.1', '/metadata/integrity/digest', `metadata.integrity.digest does not match the manifest (computed ${expected})`);
+      if (expected !== gov.integrity.digest) {
+        err('digest.mismatch', '9.1', path, `${base}.integrity.digest does not match the manifest (computed ${expected})`);
       }
     }
   }
@@ -109,15 +134,15 @@ export function semanticCheck(doc, opts = {}) {
   };
 
   // 3.3: profile-bound fields
-  if (meta.risk && ['high', 'critical'].includes(meta.risk.level)) {
-    needProfile('governance', `metadata.risk.level: ${meta.risk.level}`, '/metadata/risk/level', '3.3');
+  if (gov.risk && ['high', 'critical'].includes(gov.risk.level)) {
+    needProfile('governance', `${base}.risk.level: ${gov.risk.level}`, `/${base}/risk/level`, '3.3');
   }
-  if (meta.signature) needProfile('security', 'metadata.signature', '/metadata/signature', '3.3');
+  if (gov.signature) needProfile('security', `${base}.signature`, `/${base}/signature`, '3.3');
   if (kind === 'Policy') needProfile('governance', 'kind: Policy', '/kind', '3.3');
 
   // 7.1: governance profile requirements
-  if (profiles.has('governance') && (kind === 'Workflow' || kind === 'Agent') && meta.classification === undefined) {
-    err('governance.classification-required', '7.1', '/metadata', 'metadata.classification is REQUIRED for Workflow and Agent under the governance profile');
+  if (profiles.has('governance') && (kind === 'Workflow' || kind === 'Agent') && gov.classification === undefined) {
+    err('governance.classification-required', '7.1', `/${base}`, `${base}.classification is REQUIRED for Workflow and Agent under the governance profile`);
   }
 
   const secretsDecl = new Map((spec.secrets ?? []).map(s => [s.name, s]));
@@ -178,6 +203,7 @@ export function semanticCheck(doc, opts = {}) {
     checkToolSources(spec.tools, ['spec', 'tools']);
     checkPermissions(spec.permissions, ['spec', 'permissions']);
     checkDate(spec.model?.approval?.expires, '/spec/model/approval/expires');
+    if (spec.humanInput) needProfile('interaction', 'spec.humanInput', '/spec/humanInput', '3.3');
   }
 
   if (kind === 'Policy') {
@@ -205,6 +231,7 @@ export function semanticCheck(doc, opts = {}) {
       }
       if (!a.ref && !a.protocol) checkToolSources(a.tools, ['spec', 'agents', i, 'tools']);
       if (!a.ref && !a.protocol) checkDate(a.model?.approval?.expires, ptr('spec', 'agents', i, 'model', 'approval', 'expires'));
+      if (a.humanInput) needProfile('interaction', 'agents with humanInput', ptr('spec', 'agents', i, 'humanInput'), '3.3');
       checkPermissions(a.permissions, ['spec', 'agents', i, 'permissions']);
     });
     checkPermissions(spec.permissions, ['spec', 'permissions']);
@@ -229,6 +256,14 @@ export function semanticCheck(doc, opts = {}) {
         err('step.unknown-agent', '5.6.3', ptr('spec', 'workflow', i, 'agent'), `step names non-existent agent "${s.agent}"`);
       }
       if (s.type === 'approval') needProfile('governance', 'step with type: approval', ptr('spec', 'workflow', i), '3.3');
+      if (s.type === 'input') {
+        needProfile('interaction', 'step with type: input', ptr('spec', 'workflow', i), '3.3');
+        checkInputStep(s.input, ['spec', 'workflow', i, 'input'], err, ptr);
+      }
+      // 5.6.4 (v1alpha3 only): the runtime owns AWP_* variables of command steps
+      for (const k of doc.apiVersion === V1ALPHA3 ? Object.keys(s.env ?? {}) : []) {
+        if (k.startsWith('AWP_')) err('step.reserved-env', '5.6.4', ptr('spec', 'workflow', i, 'env', k), `environment variable "${k}" is reserved for the runtime (AWP_ prefix)`);
+      }
       if (profiles.has('security') && s.type === 'command' && typeof s.image === 'string' && !/@(sha256:[0-9a-f]{64}|sha384:[0-9a-f]{96}|sha512:[0-9a-f]{128})$/.test(s.image)) {
         err('security.image-not-pinned', '9.4', ptr('spec', 'workflow', i, 'image'), 'command step image MUST be pinned by digest under the security profile');
       }
@@ -262,7 +297,8 @@ export function semanticCheck(doc, opts = {}) {
 
     // 3.9 / 5.6.3: expression references
     const inputNames = new Set((spec.inputs ?? []).map(i => i.name));
-    const outputsOf = new Map(steps.map(s => [s.id, new Set((s.outputs ?? []).map(o => o.name))]));
+    // an input step always provides the output `answer` (5.8)
+    const outputsOf = new Map(steps.map(s => [s.id, new Set([...(s.outputs ?? []).map(o => o.name), ...(s.type === 'input' ? ['answer'] : [])])]));
     // `iterating`: the field belongs to a step with forEach, so forEach.* references are allowed (3.9).
     const checkExpr = (str, path, stepId, iterating = false) => {
       if (typeof str !== 'string') return;
@@ -285,18 +321,19 @@ export function semanticCheck(doc, opts = {}) {
     // 5.6.4: iteration (v1alpha2)
     const inputTypes = new Map((spec.inputs ?? []).map(i => [i.name, i.type]));
     const agentsById = new Map((spec.agents ?? []).map(a => [a.id, a]));
+    const iterationSection = doc.apiVersion === V1ALPHA3 ? '5.6.5' : '5.6.4';
     const checkForEach = (s, base) => {
       const f = s.forEach;
       checkExpr(f.items, ptr(...base, 'forEach', 'items'), s.id);
       const input = /^\$\{\{ *inputs\.([^ }]+) *\}\}$/.exec(f.items ?? '');
       if (input && inputTypes.has(input[1]) && inputTypes.get(input[1]) !== 'array') {
-        err('forEach.input-not-array', '5.6.4', ptr(...base, 'forEach', 'items'), `forEach.items references input "${input[1]}" of type ${inputTypes.get(input[1])}; it MUST have type array`);
+        err('forEach.input-not-array', iterationSection, ptr(...base, 'forEach', 'items'), `forEach.items references input "${input[1]}" of type ${inputTypes.get(input[1])}; it MUST have type array`);
       }
       // Each item run counts as a running step: maxConcurrency of workflow (default 1), agent and step.
       const limits = [spec.budget?.resources?.maxConcurrency ?? 1, agentsById.get(s.agent)?.budget?.resources?.maxConcurrency, s.budget?.resources?.maxConcurrency];
       const effective = Math.min(...limits.filter(v => v !== undefined));
       if ((f.concurrency ?? 1) > effective) {
-        err('forEach.concurrency-exceeds-budget', '5.6.4', ptr(...base, 'forEach', 'concurrency'), `forEach.concurrency (${f.concurrency}) exceeds the effective budget.resources.maxConcurrency (${effective})`);
+        err('forEach.concurrency-exceeds-budget', iterationSection, ptr(...base, 'forEach', 'concurrency'), `forEach.concurrency (${f.concurrency}) exceeds the effective budget.resources.maxConcurrency (${effective})`);
       }
     };
     steps.forEach((s, i) => {
@@ -306,6 +343,7 @@ export function semanticCheck(doc, opts = {}) {
       checkExpr(s.task, ptr(...base, 'task'), s.id, iterating);
       for (const [k, v] of Object.entries(s.env ?? {})) checkExpr(v, ptr(...base, 'env', k), s.id, iterating);
       checkExpr(s.approval?.message, ptr(...base, 'approval', 'message'), s.id);
+      checkExpr(s.input?.message, ptr(...base, 'input', 'message'), s.id);
       if (typeof s.command === 'string' && s.command.includes('${{')) {
         warn('lint.command-expression', '5.6.2', ptr(...base, 'command'), 'command is not expression-enabled; ${{ }} is passed literally. Use env.');
       }
@@ -330,6 +368,14 @@ export function semanticCheck(doc, opts = {}) {
     if (spec.environments && spec.environment && !Object.hasOwn(spec.environments, spec.environment.name)) {
       warn('lint.environment-not-listed', '7.10', '/spec/environment/name', `default environment "${spec.environment.name}" is not listed in spec.environments; executions would not start`);
     }
+
+    // 5.2/5.3: a schedule trigger supplies no inputs, so required inputs block it (runtime rule; lint only)
+    const requiredInputs = (spec.inputs ?? []).filter(inp => inp.required === true).map(inp => inp.name);
+    (spec.triggers ?? []).forEach((t, i) => {
+      if (t.type === 'schedule' && requiredInputs.length) {
+        warn('lint.schedule-required-input', '5.2', ptr('spec', 'triggers', i), `schedule trigger supplies no inputs, but ${requiredInputs.join(', ')} ${requiredInputs.length === 1 ? 'is' : 'are'} required; scheduled executions would not start`);
+      }
+    });
 
     // 7.5.3: absent permissions
     if (spec.permissions === undefined && profiles.has('security')) {

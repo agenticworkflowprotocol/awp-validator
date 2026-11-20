@@ -1,0 +1,12 @@
+# Conformance case 10.8-workflow-run-without-workflow-ref
+# Spec section 10.8: spec.workflowRef is REQUIRED.
+# Expected: invalid (schema.required at /spec)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: WorkflowRun
+metadata:
+  name: conformance-base-20261119
+  namespace: conformance
+spec:
+  inputs:
+    repo: example-org/web-shop
+  environment: staging

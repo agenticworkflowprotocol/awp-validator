@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import * as node from '../src/index.js';
 import { verifyVendor } from '../scripts/verify-vendor.mjs';
-import { index, runSuite, unindexedFiles } from './suite.js';
+import { cases, runSuite, unindexedFiles } from './suite.js';
 
 const bundlePath = fileURLToPath(new URL('../dist/browser/awp-validator.mjs', import.meta.url));
 
@@ -19,7 +19,7 @@ test('every conformance case is indexed', () => {
 test('Node.js validator passes the conformance suite and validates the spec examples', () => {
   const results = runSuite(node.validateText);
   const failed = results.filter((r) => !r.ok);
-  assert.ok(results.length > index.tests.length, 'examples are included');
+  assert.ok(results.length > cases.length, 'examples are included');
   assert.deepEqual(failed, []);
 });
 
@@ -27,9 +27,9 @@ test('browser bundle passes the same suite with identical diagnostics', { skip: 
   const browser = await import(bundlePath);
   assert.deepEqual(runSuite(browser.validateText).filter((r) => !r.ok), []);
   // Same codes, paths and positions as the Node.js build for every case.
-  for (const t of index.tests) {
+  for (const t of cases) {
     const opts = { file: t.file, profiles: t.profiles, verifyDigest: t.verifyDigest };
-    const text = (await import('node:fs')).readFileSync(new URL(`../vendor/awp/conformance/${t.file}`, import.meta.url), 'utf8');
+    const text = (await import('node:fs')).readFileSync(`${t.dir}${t.file}`, 'utf8');
     assert.deepEqual(browser.validateText(text, opts), node.validateText(text, opts), t.id);
   }
 });

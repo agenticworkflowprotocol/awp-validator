@@ -1,16 +1,22 @@
-// AWP API versions this validator supports. Each has a schema (vendor/awp/schema/awp.<v>.json)
-// and examples (vendor/awp/spec/<v>/examples); semantic rules and conformance suite are shared.
+// AWP API versions this validator supports. Each has a schema (vendor/awp/schema/awp.<v>.json),
+// examples (vendor/awp/spec/<v>/examples) and a conformance suite (vendor/awp/conformance/ for
+// v1alpha1, vendor/awp/conformance/<v>/ for later versions); the semantic rules are shared.
 
 /** Supported API versions, oldest first. */
-export const API_VERSIONS = ['v1alpha1', 'v1alpha2'];
-/** The latest supported API version. */
-export const API_VERSION = API_VERSIONS.at(-1);
+export const API_VERSIONS = ['v1alpha1', 'v1alpha2', 'v1alpha3'];
+
+/**
+ * The current draft. v1alpha3 is a proposed draft built from AEPs that are not accepted
+ * (decision D20 of the specification), so the default schema export and the examples of the
+ * website stay on v1alpha2.
+ */
+export const API_VERSION = 'v1alpha2';
 
 const API_GROUP = 'awp.agenticworkflowprotocol.org/';
 
 /**
  * The API version a document is validated as: its own `apiVersion` when supported, otherwise the
- * latest, whose schema then rejects the document at `/apiVersion` (spec 3.2).
+ * current draft, whose schema then rejects the document at `/apiVersion` (spec 3.2).
  * @param {unknown} value parsed manifest
  * @returns {string} for example `v1alpha2`
  */

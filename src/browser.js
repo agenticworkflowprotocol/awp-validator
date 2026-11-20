@@ -5,12 +5,14 @@
 import * as schemaValidators from '../build/schema-validator.mjs';
 import v1alpha1 from '../vendor/awp/schema/awp.v1alpha1.json';
 import v1alpha2 from '../vendor/awp/schema/awp.v1alpha2.json';
+import v1alpha3 from '../vendor/awp/schema/awp.v1alpha3.json';
 import provenanceJson from '../vendor/awp/PROVENANCE.json';
 import { createValidator } from './validator.js';
 export { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, resolveProfiles, summarize } from './validator.js';
 export { jcs, manifestDigest } from '../vendor/awp/conformance/semantic.mjs';
+export { migrateToV1alpha3 } from '../vendor/awp/conformance/migrate.mjs';
 export { formatDiagnostic, formatJson, formatText, isOk } from './format.js';
-export const schemas = { v1alpha1, v1alpha2 };
-export const schema = v1alpha2;
+export const schemas = { v1alpha1, v1alpha2, v1alpha3 };
+export const schema = v1alpha2; // the current draft (API_VERSION)
 export const provenance = provenanceJson;
 export const { validateManifest, validateText } = createValidator({ schemaValidators });

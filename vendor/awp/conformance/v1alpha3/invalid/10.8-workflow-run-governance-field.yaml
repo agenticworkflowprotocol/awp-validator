@@ -1,0 +1,17 @@
+# Conformance case 10.8-workflow-run-governance-field
+# Spec section 10.8: A WorkflowRun has no governance fields; they belong to the workflow.
+# Expected: invalid (schema.additionalProperties at /spec)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: WorkflowRun
+metadata:
+  name: conformance-base-20261119
+  namespace: conformance
+spec:
+  workflowRef:
+    name: conformance-base
+    version: 1.0.0
+  inputs:
+    repo: example-org/web-shop
+  environment: staging
+  owner:
+    team: conformance-team

@@ -3,8 +3,9 @@
 [![npm](https://img.shields.io/npm/v/@agenticworkflowprotocol/validator?label=npm)](https://www.npmjs.com/package/@agenticworkflowprotocol/validator) [![ci](https://github.com/agenticworkflowprotocol/awp-validator/actions/workflows/ci.yml/badge.svg)](https://github.com/agenticworkflowprotocol/awp-validator/actions/workflows/ci.yml) [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 Reference validator for [Agentic Workflow Protocol (AWP)](https://agenticworkflowprotocol.org)
-manifests: the YAML restrictions, the JSON Schema and the semantic rules of AWP `v1alpha1` and
-`v1alpha2` (each document is checked against the schema of its own `apiVersion`), per
+manifests: the YAML restrictions, the JSON Schema and the semantic rules of AWP `v1alpha1`,
+`v1alpha2` and the proposed `v1alpha3` (each document is checked against the schema of its own
+`apiVersion`), per
 conformance profile, with digest verification and machine-readable diagnostics.
 
 - **Web:** [validator.agenticworkflowprotocol.org](https://validator.agenticworkflowprotocol.org) – runs
@@ -81,11 +82,11 @@ Diagnostics follow [section 3 of the CLI output formats](https://github.com/agen
 `severity`, `code` (stable), `message`, `path` (JSON Pointer), `section`, `document`, `source`.
 
 Further exports: `formatText`, `formatJson` (the `awp validate` formats), `manifestDigest`, `jcs`,
-`schemas` (by API version), `schema` (latest), `provenance`, `KNOWN_PROFILES`, `API_VERSIONS`. Each
+`migrateToV1alpha3`, `schemas` (by API version), `schema` (current draft `v1alpha2`), `provenance`, `KNOWN_PROFILES`, `API_VERSIONS`. Each
 document result carries `awp`, the API version it was validated as. Types are included
 (`types/index.d.ts`). The schema files are also available as
-`@agenticworkflowprotocol/validator/schema/v1alpha1.json`, `.../schema/v1alpha2.json` and
-`.../schema.json` (latest).
+`@agenticworkflowprotocol/validator/schema/v1alpha1.json`, `.../schema/v1alpha2.json`, `.../schema/v1alpha3.json` and
+`.../schema.json` (current draft).
 
 ### Embedding in a runtime
 

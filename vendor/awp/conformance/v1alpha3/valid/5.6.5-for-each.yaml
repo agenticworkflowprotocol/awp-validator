@@ -1,0 +1,82 @@
+# Conformance case 5.6.5-for-each
+# Spec section 5.6.5: An agent or command step MAY iterate over an array input or a step output with forEach.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      required: true
+    - name: images
+      type: array
+      required: true
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 2
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: list
+      agent: worker
+      task: List the files of ${{ inputs.repo }}.
+      outputs:
+        - name: files
+    - id: review
+      agent: worker
+      task: Review file ${{ forEach.index }} of the list, ${{ forEach.item }}.
+      dependsOn:
+        - list
+      forEach:
+        items: ${{ steps.list.outputs.files }}
+        maxItems: 20
+        concurrency: 2
+      retries: 1
+      timeout: 5m
+      outputs:
+        - name: finding
+    - id: scan
+      type: command
+      command: ./scan.sh "$IMAGE"
+      env:
+        IMAGE: ${{ forEach.item.name }}:${{ forEach.item.tag }}
+      forEach:
+        items: ${{ inputs.images }}
+        maxItems: 5
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true

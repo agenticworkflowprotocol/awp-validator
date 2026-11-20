@@ -1,0 +1,20 @@
+# Conformance case 6-agent-prompt-ref
+# Spec section 6: An Agent may use promptRef instead of instructions.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Agent
+metadata:
+  name: conformance-agent
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  model:
+    provider: ollama
+    name: qwen3
+  permissions:
+    default: deny
+  promptRef:
+    name: extract
+    version: "2"

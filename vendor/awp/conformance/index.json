@@ -1,11 +1,8 @@
 {
-  "$comment": "Machine-readable index of the AWP conformance suite (v1alpha1 and v1alpha2; each manifest names its apiVersion). Each invalid case violates exactly one rule; `code` and `path` identify the expected diagnostic (see schema/README.md).",
+  "$comment": "Machine-readable index of the AWP v1alpha1 conformance suite. Each invalid case violates exactly one rule; `code` and `path` identify the expected diagnostic (see schema/README.md).",
   "suite": "awp-conformance",
   "version": "0.2.0",
-  "awp": [
-    "v1alpha1",
-    "v1alpha2"
-  ],
+  "awp": "v1alpha1",
   "defaults": {
     "profiles": [
       "core",
@@ -108,7 +105,7 @@
       "id": "3.2-unsupported-api-version",
       "file": "invalid/3.2-unsupported-api-version.yaml",
       "section": "3.2",
-      "rule": "Implementations MUST reject an apiVersion they do not support.",
+      "rule": "apiVersion MUST name a supported version.",
       "expect": "invalid",
       "code": "schema.const",
       "path": "/apiVersion"
@@ -421,15 +418,6 @@
       "expect": "invalid",
       "code": "schema.pattern",
       "path": "/spec/workflow/0/task"
-    },
-    {
-      "id": "3.9-iteration-reference-outside-for-each",
-      "file": "invalid/3.9-iteration-reference-outside-for-each.yaml",
-      "section": "3.9",
-      "rule": "forEach.* references MUST only be used in task and env of a step that declares forEach.",
-      "expect": "invalid",
-      "code": "expr.iteration-outside-forEach",
-      "path": "/spec/workflow/1/task"
     },
     {
       "id": "3.9-step-reference-in-permissions",
@@ -810,6 +798,24 @@
       "path": "/spec/workflow/2"
     },
     {
+      "id": "5.6.1-approval-step-required-for",
+      "file": "invalid/5.6.1-approval-step-required-for.yaml",
+      "section": "5.6.1",
+      "rule": "An approval step has no requiredFor; it applies only at workflow level.",
+      "expect": "invalid",
+      "code": "schema.additionalProperties",
+      "path": "/spec/workflow/2/approval/requiredFor"
+    },
+    {
+      "id": "5.6.1-approval-step-separation-of-duties",
+      "file": "invalid/5.6.1-approval-step-separation-of-duties.yaml",
+      "section": "5.6.1",
+      "rule": "An approval step has no separationOfDuties; it applies only at workflow level.",
+      "expect": "invalid",
+      "code": "schema.additionalProperties",
+      "path": "/spec/workflow/2/approval/separationOfDuties"
+    },
+    {
       "id": "5.6.1-command-step-with-agent",
       "file": "invalid/5.6.1-command-step-with-agent.yaml",
       "section": "5.6.1",
@@ -916,60 +922,6 @@
       "expect": "invalid",
       "code": "step.unknown-agent",
       "path": "/spec/workflow/0/agent"
-    },
-    {
-      "id": "5.6.4-for-each-concurrency-exceeds-budget",
-      "file": "invalid/5.6.4-for-each-concurrency-exceeds-budget.yaml",
-      "section": "5.6.4",
-      "rule": "forEach.concurrency MUST NOT exceed the effective budget.resources.maxConcurrency.",
-      "expect": "invalid",
-      "code": "forEach.concurrency-exceeds-budget",
-      "path": "/spec/workflow/1/forEach/concurrency"
-    },
-    {
-      "id": "5.6.4-for-each-input-not-array",
-      "file": "invalid/5.6.4-for-each-input-not-array.yaml",
-      "section": "5.6.4",
-      "rule": "An input referenced by forEach.items MUST have type array.",
-      "expect": "invalid",
-      "code": "forEach.input-not-array",
-      "path": "/spec/workflow/1/forEach/items"
-    },
-    {
-      "id": "5.6.4-for-each-items-not-a-dependency",
-      "file": "invalid/5.6.4-for-each-items-not-a-dependency.yaml",
-      "section": "3.9",
-      "rule": "forEach.items MUST only reference a step this step depends on.",
-      "expect": "invalid",
-      "code": "expr.not-a-dependency",
-      "path": "/spec/workflow/1/forEach/items"
-    },
-    {
-      "id": "5.6.4-for-each-items-not-a-reference",
-      "file": "invalid/5.6.4-for-each-items-not-a-reference.yaml",
-      "section": "5.6.4",
-      "rule": "forEach.items is exactly one reference to an input or a step output.",
-      "expect": "invalid",
-      "code": "schema.pattern",
-      "path": "/spec/workflow/1/forEach/items"
-    },
-    {
-      "id": "5.6.4-for-each-missing-max-items",
-      "file": "invalid/5.6.4-for-each-missing-max-items.yaml",
-      "section": "5.6.4",
-      "rule": "forEach.maxItems is REQUIRED.",
-      "expect": "invalid",
-      "code": "schema.required",
-      "path": "/spec/workflow/1/forEach"
-    },
-    {
-      "id": "5.6.4-for-each-on-approval-step",
-      "file": "invalid/5.6.4-for-each-on-approval-step.yaml",
-      "section": "5.6.1",
-      "rule": "forEach is not allowed on approval steps.",
-      "expect": "invalid",
-      "code": "schema.not",
-      "path": "/spec/workflow/1"
     },
     {
       "id": "5.7-negative-cost",
@@ -1515,13 +1467,6 @@
       "file": "valid/5.6.3-transitive-step-reference.yaml",
       "section": "5.6.3",
       "rule": "A step may reference outputs of steps it depends on transitively.",
-      "expect": "valid"
-    },
-    {
-      "id": "5.6.4-for-each",
-      "file": "valid/5.6.4-for-each.yaml",
-      "section": "5.6.4",
-      "rule": "An agent or command step MAY iterate over an array input or a step output with forEach.",
       "expect": "valid"
     },
     {

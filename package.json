@@ -38,6 +38,7 @@
     "./schema.json": "./vendor/awp/schema/awp.v1alpha2.json",
     "./schema/v1alpha1.json": "./vendor/awp/schema/awp.v1alpha1.json",
     "./schema/v1alpha2.json": "./vendor/awp/schema/awp.v1alpha2.json",
+    "./schema/v1alpha3.json": "./vendor/awp/schema/awp.v1alpha3.json",
     "./provenance.json": "./vendor/awp/PROVENANCE.json",
     "./package.json": "./package.json"
   },

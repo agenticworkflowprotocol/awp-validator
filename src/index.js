@@ -6,13 +6,14 @@ import { API_VERSION, API_VERSIONS } from './versions.js';
 
 export { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, resolveProfiles, summarize } from './validator.js';
 export { jcs, manifestDigest } from '../vendor/awp/conformance/semantic.mjs';
+export { migrateToV1alpha3 } from '../vendor/awp/conformance/migrate.mjs';
 export { formatDiagnostic, formatJson, formatText, isOk } from './format.js';
 
 const vendor = new URL('../vendor/awp/', import.meta.url);
 
 /** The AWP JSON Schemas (draft 2020-12) this validator uses, by API version. */
 export const schemas = Object.fromEntries(API_VERSIONS.map((v) => [v, JSON.parse(readFileSync(new URL(`schema/awp.${v}.json`, vendor), 'utf8'))]));
-/** The JSON Schema of the latest supported API version. */
+/** The JSON Schema of the current draft (API_VERSION). */
 export const schema = schemas[API_VERSION];
 /** Commit and file hashes of the vendored specification artefacts. */
 export const provenance = JSON.parse(readFileSync(new URL('PROVENANCE.json', vendor), 'utf8'));

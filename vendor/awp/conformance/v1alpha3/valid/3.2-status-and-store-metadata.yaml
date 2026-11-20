@@ -1,0 +1,40 @@
+# Conformance case 3.2-status-and-store-metadata
+# Spec section 3.2: status and metadata fields populated by an object store are accepted and ignored.
+# Expected: valid
+# Profiles supported by the validator for this case: core
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: hello
+  namespace: team-a
+  labels:
+    app.kubernetes.io/instance: agents
+  annotations:
+    example.com/last-applied: "{}"
+  uid: 2f1c7a52-6a0e-4d55-9b1e-0c2f4b9a7d11
+  resourceVersion: "4711"
+  generation: 3
+  creationTimestamp: 2026-11-18T10:00:00Z
+  finalizers:
+    - example.com/cleanup
+  managedFields:
+    - manager: example-controller
+      operation: Apply
+spec:
+  version: 0.1.0
+  owner:
+    team: platform-team
+  agents:
+    - id: assistant
+      model:
+        provider: ollama
+        name: qwen3
+  workflow:
+    - id: greet
+      agent: assistant
+      task: Say hello.
+status:
+  observedGeneration: 3
+  conditions:
+    - type: Ready
+      status: "True"

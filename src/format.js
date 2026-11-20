@@ -4,7 +4,7 @@ import { API_VERSION, summarize } from './validator.js';
 
 /**
  * The API version(s) the documents were processed as: one string when all agree, a list when a
- * run mixes versions, the latest version when no document got that far (for example YAML errors).
+ * run mixes versions, the current draft when no document got that far (for example YAML errors).
  */
 function processedAs(files) {
   const versions = [...new Set(files.flatMap((f) => f.documents.map((d) => d.awp)).filter(Boolean))];

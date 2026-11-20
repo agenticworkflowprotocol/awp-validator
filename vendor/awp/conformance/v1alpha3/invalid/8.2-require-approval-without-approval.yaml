@@ -1,0 +1,17 @@
+# Conformance case 8.2-require-approval-without-approval
+# Spec section 8.2: approval is REQUIRED for requireApproval.
+# Expected: invalid (schema.required at /spec/rules/0)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Policy
+metadata:
+  name: conformance-policy
+spec:
+  version: 1.0.0
+  owner:
+    team: governance-team
+  rules:
+    - id: deploy-needs-approval
+      when:
+        action:
+          equals: production.deploy
+      effect: requireApproval

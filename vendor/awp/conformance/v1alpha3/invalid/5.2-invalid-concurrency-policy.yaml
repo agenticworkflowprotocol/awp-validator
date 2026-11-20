@@ -1,0 +1,74 @@
+# Conformance case 5.2-invalid-concurrency-policy
+# Spec section 5.2: concurrencyPolicy is allow, forbid or replace.
+# Expected: invalid (schema.enum at /spec/triggers/1/concurrencyPolicy)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      default: example-org/web-shop
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 1
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: analyze
+      agent: worker
+      task: Analyze ${{ inputs.repo }}.
+      outputs:
+        - name: report
+    - id: apply
+      agent: worker
+      task: Apply ${{ steps.analyze.outputs.report }}.
+      dependsOn:
+        - analyze
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true
+  triggers:
+    - type: manual
+    - type: schedule
+      cron: 0 6 * * 1-5
+      timezone: Europe/Berlin
+      concurrencyPolicy: queue
+    - type: event
+      source: git.example.com
+      eventType: pull_request.opened
+      filter:
+        repository: example-org/web-shop

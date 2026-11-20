@@ -4,25 +4,34 @@ All notable changes are documented in this file. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2026-11-19
+## [0.2.0] - 2026-11-20
 
 ### Added
 
-- AWP `v1alpha2` (draft: `v1alpha1` plus step iteration, `forEach`) next to `v1alpha1`. Each
-  document is validated against the schema of its own `apiVersion`; an unsupported version is
-  checked against the latest schema and rejected at `/apiVersion`.
-- `API_VERSIONS`, `schemas` (by version) and the exports `./schema/v1alpha1.json` and
-  `./schema/v1alpha2.json`. Document results carry `awp`, the version they were validated as.
+- AWP `v1alpha2` (draft: `v1alpha1` plus step iteration, `forEach`) and the proposed draft
+  `v1alpha3` (`v1alpha2` aligned with the Kubernetes resource model: governance fields in `spec`,
+  extension fields in `extensions`, `status`, kind `WorkflowRun`, step outputs, human input with
+  the profile `interaction`). Each document is validated against the schema of its own
+  `apiVersion`; an unsupported version is checked against the current draft and rejected at
+  `/apiVersion`.
+- `API_VERSIONS`, `schemas` (by version), the exports `./schema/v1alpha1.json`,
+  `./schema/v1alpha2.json` and `./schema/v1alpha3.json`, and `migrateToV1alpha3` (mechanical
+  migration of `v1alpha1` and `v1alpha2` manifests). Document results carry `awp`, the version
+  they were validated as.
+- Tests run the conformance suites of all three versions against the Node.js build and the browser
+  bundle.
 
 ### Changed
 
-- Vendored specification moved from `vendor/awp-v1alpha1/` to `vendor/awp/` (schemas and examples
-  of every version, shared semantic rules and conformance suite) at specification commit
-  `46f9e6a`; `PROVENANCE.json` lists `awpVersions` instead of `awpVersion`.
-- `API_VERSION` and `schema` (and `./schema.json`) are now the latest version, `v1alpha2`.
+- Vendored specification moved from `vendor/awp-v1alpha1/` to `vendor/awp/` (schemas, examples and
+  conformance suites of every version, shared semantic rules) at specification commit `dc6fb3d`;
+  `PROVENANCE.json` lists `awpVersions` instead of `awpVersion`.
+- `API_VERSION` and `schema` (and `./schema.json`) are now the current draft, `v1alpha2`.
 - JSON output: `awp` is the version the documents were processed as, a list when they differ.
-- `--version` lists all supported versions. The website picks examples of the latest version and
+- `--version` lists all supported versions. The website picks examples of the current draft and
   links diagnostics to the specification of the document's version.
+- Schemas `v1alpha1` and `v1alpha2`: approval steps no longer accept `requiredFor` and
+  `separationOfDuties` (specification erratum).
 
 ## [0.1.0] - 2026-11-19
 

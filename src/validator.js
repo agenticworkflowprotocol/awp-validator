@@ -72,7 +72,7 @@ const countBy = (diagnostics, severity) => diagnostics.filter((d) => d.severity 
 export function createValidator({ schemaValidators }) {
   /**
    * Validate an already parsed manifest (no positions). The schema is chosen by `apiVersion`
-   * (`awp` in the result); an unsupported version is checked against the latest schema.
+   * (`awp` in the result); an unsupported version is checked against the current draft.
    * @param {unknown} value
    * @param {{ profiles?: string[] | string, verifyDigest?: boolean }} [options]
    */

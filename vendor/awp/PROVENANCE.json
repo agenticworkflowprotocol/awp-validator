@@ -3,12 +3,13 @@
   "description": "Unchanged copy of the AWP schema, semantic rules, conformance suite and examples. Never edit by hand; run scripts/sync-spec.mjs and review the diff.",
   "awpVersions": [
     "v1alpha1",
-    "v1alpha2"
+    "v1alpha2",
+    "v1alpha3"
   ],
   "source": {
     "repository": "https://github.com/agenticworkflowprotocol/agenticworkflowprotocol.org",
-    "commit": "46f9e6a27035c9c0478f04bac63f333d930726e5",
-    "commitDate": "2026-11-19T07:10:26+01:00"
+    "commit": "dc6fb3d2dd503d231b14bacd66e6f2641e7b870c",
+    "commitDate": "2026-11-20T07:13:39+01:00"
   },
   "licenses": {
     "Apache-2.0": "code, JSON schema, conformance manifests and examples (LICENSE)",
@@ -25,19 +26,31 @@
     },
     {
       "path": "schema/awp.v1alpha1.json",
-      "sha256": "834fa4256f471a81b273254cfeaebc379c62aa435d558b214fca07b67070ff56"
+      "sha256": "1679716573ca37d853fba1d560f54a9bd0a2c5140752217cdf7ad57927928f8e"
     },
     {
       "path": "schema/awp.v1alpha2.json",
-      "sha256": "dd7a5b289e0fdd2a7aba0c89e06bad583a956c2d4709596f10a6a0f8873c3c6c"
+      "sha256": "a0c5bac802411494a8e4408aae3d5bc217b65a562da8acdb221d64dc2833df6c"
+    },
+    {
+      "path": "schema/awp.v1alpha3.json",
+      "sha256": "d90e116b461ff036147d5328d363e6a186d01145e03bae8d6b14572891838a5a"
     },
     {
       "path": "conformance/semantic.mjs",
-      "sha256": "5732300ebb37f7ef802cd498396d348559a3f6edbdcfc7bff4941467a29ca836"
+      "sha256": "be480b77214c84e9fb50f97f07c43b39bb604f790fe7270a5f6ade88a2776ce5"
+    },
+    {
+      "path": "conformance/human-input.mjs",
+      "sha256": "1f73ba336cc0ce2bf24a1a5eea1bc7c195b26371c21ccb2fcf8f9eaf7e47cac2"
+    },
+    {
+      "path": "conformance/migrate.mjs",
+      "sha256": "48f262401a74063b0ed8ee1d7351c4631a8fa00725fe0e3e998f882317201638"
     },
     {
       "path": "conformance/index.json",
-      "sha256": "a7c13f6ee2e529e3bbacfc9cb3c448a3f088bbdf1c601116fdfb43fb322a9ffd"
+      "sha256": "c421a190012e9da44f28f10aa861416a08d00b7f59db464cecef30a5f618d234"
     },
     {
       "path": "conformance/valid/10.2-audit-configuration.yaml",
@@ -77,7 +90,7 @@
     },
     {
       "path": "conformance/valid/5.2-triggers.yaml",
-      "sha256": "3fa7e8c0e82923b1c07420e4d7151c783d4de9e17a13139a23e43fdec3eb967f"
+      "sha256": "ec7c6ce9fce72165835cf1d367fd4bed2ff79a668c3d7e7dc07ee763f42d98cc"
     },
     {
       "path": "conformance/valid/5.3-inputs.yaml",
@@ -102,10 +115,6 @@
     {
       "path": "conformance/valid/5.6.3-transitive-step-reference.yaml",
       "sha256": "8f8191c33e6acf280d884fe4309f79485223a7b79e8c91963dbedc0a46867e0e"
-    },
-    {
-      "path": "conformance/valid/5.6.4-for-each.yaml",
-      "sha256": "e53dd2c857592462fb6520f162815be4bb784ec8234567e87590ac27080d2a0f"
     },
     {
       "path": "conformance/valid/5.7-nested-budgets.yaml",
@@ -193,7 +202,7 @@
     },
     {
       "path": "conformance/invalid/3.2-unsupported-api-version.yaml",
-      "sha256": "30c64b5ec1441a4368f79356c4a6b133671fb2096e4c0265054036965a51bcae"
+      "sha256": "7b7c84a650107929301748276626cfeab6a41e7018b4b5c27d2ba9a355140c48"
     },
     {
       "path": "conformance/invalid/3.2-unsupported-kind.yaml",
@@ -318,10 +327,6 @@
     {
       "path": "conformance/invalid/3.9-expression-unterminated.yaml",
       "sha256": "685c6a0565a1f7e31b0bb52bf643bc5959a2c05356b56cbec1e9d930dbfc7e25"
-    },
-    {
-      "path": "conformance/invalid/3.9-iteration-reference-outside-for-each.yaml",
-      "sha256": "74d96e5e8c7c88b9d376ae3923ceda21d42860444e5b485a35ac79a149b577c5"
     },
     {
       "path": "conformance/invalid/3.9-step-reference-in-permissions.yaml",
@@ -488,6 +493,14 @@
       "sha256": "508a90bb85d5791c889dd58f484a69d61af646b40424beb47d993d37a6938cee"
     },
     {
+      "path": "conformance/invalid/5.6.1-approval-step-required-for.yaml",
+      "sha256": "5eccac033681568f6e376e0a80dccbba47886660f85a7f4169c92e2f75213f99"
+    },
+    {
+      "path": "conformance/invalid/5.6.1-approval-step-separation-of-duties.yaml",
+      "sha256": "b43183ed93ffa993f353acd4066e74048f486fb37201b139e40a4e37c5bac92d"
+    },
+    {
       "path": "conformance/invalid/5.6.1-approval-step-without-approval.yaml",
       "sha256": "1510ac554ce872c1692f36482cc144dffeefb2641688959146121276ae05668f"
     },
@@ -538,30 +551,6 @@
     {
       "path": "conformance/invalid/5.6.3-unknown-agent.yaml",
       "sha256": "e8ef35d7821dc78446b626f8abca9a1cdee083f189545e0691b05ae81cde4b07"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-concurrency-exceeds-budget.yaml",
-      "sha256": "ab364fc7ae217dd4140e885d84e7fafcaa71c1a9856b7cab25f9983b1b958f2b"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-input-not-array.yaml",
-      "sha256": "23684c963ca100e4ac02cab433a21c570ee3bf95db41fb1d34abfd1ed976895a"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-items-not-a-dependency.yaml",
-      "sha256": "6d32fa0ae550df530e5b94169444c8eba213716c38ea5d1bde363b2b54d4ee3a"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-items-not-a-reference.yaml",
-      "sha256": "6033576421d66723ad7fe3b3d4cd0dec2addf55b802224da6281117a262f464d"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-missing-max-items.yaml",
-      "sha256": "217e0d62e088da7111957ba8dedf25c3a23c600f4165b826725f4abdf9eeff3a"
-    },
-    {
-      "path": "conformance/invalid/5.6.4-for-each-on-approval-step.yaml",
-      "sha256": "256883a3635d17c363a200e11cbc069bca6d59016746dc676bb1b13a0d43fd79"
     },
     {
       "path": "conformance/invalid/5.7-negative-cost.yaml",
@@ -752,6 +741,1586 @@
       "sha256": "538f119cffac7447379a231b1ce8561833c72a2874fabe39f8757a6e95ecb33b"
     },
     {
+      "path": "conformance/v1alpha2/index.json",
+      "sha256": "701054633eb50548d8cf68b84beb6a2206b262dba0e7226d27b4805190687782"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/10.2-invalid-integrity-mode.yaml",
+      "sha256": "633e4ad5bb42123bf9446ea2289145e2dade109002541c50f924cfc9a0d03c9e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/10.2-invalid-payload.yaml",
+      "sha256": "57912b50ebfa116d074f905bb093be24f103e995a412f1940d86a4eb3d8a9e76"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/10.2-invalid-retention.yaml",
+      "sha256": "421f0da6a7bb2123cc391d4913c00088ef682c988f16b14ba4058cfba4562536"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.1-custom-tag.yaml",
+      "sha256": "9adce67273c364008ace6f5601707cfeb69aa17c92a71b0f962d0275ccd882c4"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.1-non-string-key.yaml",
+      "sha256": "5cb18aaf05f01de4527ba822ab2a34cd4a6923bfb0364eb278c7dcc6fc0fc559"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.1-syntax-error.yaml",
+      "sha256": "3dd4d076eb9f7e1e8df35fad430f544be001ec32f232e777d3e89aa0f5a4b148"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.2-missing-api-version.yaml",
+      "sha256": "552418d23c19d2f572231f6811d650c49c513837c22e48a57bc232dbb41a6c88"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.2-missing-metadata.yaml",
+      "sha256": "5e1ec5c803681993c8f324874c3af9601da0bb4737b5a8f25778efae9d99e422"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.2-missing-spec.yaml",
+      "sha256": "44fc44e4776c37f93b0b7392a8fe78f904fb8b7f09785b78ea32b8d838e412a8"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.2-unsupported-api-version.yaml",
+      "sha256": "7b7c84a650107929301748276626cfeab6a41e7018b4b5c27d2ba9a355140c48"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.2-unsupported-kind.yaml",
+      "sha256": "33fc51d4d6e04951b770bbd6141265d5ce4199123e2754d8dd4c7a9e49976c45"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-a2a-agent.yaml",
+      "sha256": "b3f2361a5baf495c999c03cf7a8650c78ea1b3d9a64a06085b06935e45b0a898"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-approval-step.yaml",
+      "sha256": "dfb4e57bae72cd7560466f14fc39147f797db1df1e43d155cf28bd4f65e87900"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-audit-field.yaml",
+      "sha256": "e1bc5f28367668b9d9f0656e2dd55f6298b29b7e189b6de1bb591500c0288b9e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-governance-field.yaml",
+      "sha256": "c397657e5ad3ba465e91a7fb5dab6b64e726d709ac56e28894eb5c4fa4c54ded"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-high-risk.yaml",
+      "sha256": "5469552872f4761acc5c7ec93eb3a485644296ea2b4905af4fcfe8e8711db7f2"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-mcp-field.yaml",
+      "sha256": "25734826bdc5b2bdde682a15c67caafd24de3921cc6ffd6bf3583ce9e12939c9"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-policy-kind.yaml",
+      "sha256": "82b937753a40b0679876a6c7d99c7ba06ed90c86c96ecad4ee3899fc7bcc7ad3"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-profile-security-field.yaml",
+      "sha256": "795501a2ba5bbdc11f712beb8d05eecdb9187d721ee586e5a7ec2d9c0c2b6a42"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-unknown-field-near-extension.yaml",
+      "sha256": "7971f5e9ec5726de7ade3b29c763fc67df27398010edd70ca191083c60d8a06b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-unknown-metadata-field.yaml",
+      "sha256": "cfa255a398f461b92e2aeecad1bb50f0d0839e89b5c0554306304efc8ca7f079"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-unknown-step-field.yaml",
+      "sha256": "5e3a774535a2be495a9f0569fdf60469f2070d04d9a9d1c51dbe4bc61028ce10"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.3-unknown-top-level-field.yaml",
+      "sha256": "8d25a1c0a62b55d7af5491d22111ad4600976a1fac05e78fdecce2d71ba49d83"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.4-duplicate-agent-id.yaml",
+      "sha256": "eca04e9df532640c0969519398170f740d69f205383484bd7f92d4e51678df73"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.4-duplicate-rule-id.yaml",
+      "sha256": "c5f2554119c6f1cd0ff55b1a22227b6f34bc53312ac3b8fd408e8ff7794fa8be"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.4-invalid-metadata-name.yaml",
+      "sha256": "5510841aba0addadfa576cf8c2aab251cfd1caa3ab128b09e1d3a7d84c0c3bfd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.4-uppercase-agent-id.yaml",
+      "sha256": "dad41eca1573df3ed03f0a903e3ce06ad2de29fc5967e9409779f6a3a046bab2"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.5-version-leading-zero.yaml",
+      "sha256": "e2960e7ae917d16d9dfc02ccd5c1535efd1ce78bd8393e334c84ad39f0e404a5"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.5-version-not-semver.yaml",
+      "sha256": "023d04c9ca312182d5f153526025aff75ef703c6ae50a0b463635cb6027c678b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.6-duration-unknown-unit.yaml",
+      "sha256": "6309757fbf6680b7bb8484373d5d1a30e024120ea7f525078830fdf9ffb8899b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.6-duration-zero.yaml",
+      "sha256": "2e4d0a23f7e690bc373535f1c8eb1c723da99a7a99744baf25301ecc1b3d3069"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.7-date-not-calendar-valid.yaml",
+      "sha256": "c34d093465f4cd8217e500e3ac68015d5b268a57354ad45f71a68b8a127fd244"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.7-date-wrong-format.yaml",
+      "sha256": "eaa26d4db6cb7f59c552b4a4fdeacf7c367117207885dfb8f195e0628cf0d530"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.8-digest-uppercase-hex.yaml",
+      "sha256": "35a47e23861c21d4736f628ee29638135aa5053c9ffab8641f996e7826c484a7"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.8-digest-wrong-length.yaml",
+      "sha256": "d13b36a13c03110cf0a92aefc6d9f886add35abb4eb586eda80f2f61f71a633b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-expression-function.yaml",
+      "sha256": "afac430998547c882400b43a4967c387793038c466eb2233e943b3887a4be289"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-expression-in-env-key-ref-bad.yaml",
+      "sha256": "0d7e1774edd9956e4f14e6d5557be2fa107ce699aff67aa330fb44c5a629f1e2"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-expression-operator.yaml",
+      "sha256": "0d7dc1e15cb4bdee08b2c9d98a108a882d968ee30de2a6bc327418531970f6be"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-expression-unknown-root.yaml",
+      "sha256": "5094917d161aced9be595ac4dd2fa8c4973c91a68d33c917069d1b389e38cf78"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-expression-unterminated.yaml",
+      "sha256": "22b0d280ec31ce8eea446e1dfcced1a21fa4794b1f3e045fdcd3429b00b21f40"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-iteration-reference-outside-for-each.yaml",
+      "sha256": "74d96e5e8c7c88b9d376ae3923ceda21d42860444e5b485a35ac79a149b577c5"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-step-reference-in-permissions.yaml",
+      "sha256": "aa72310bd717e04944d62eaa25106e12a23ca079a71738de948909bb72d60532"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-step-reference-unknown-step.yaml",
+      "sha256": "116f024646fb367f07b4571193076c924ac8afe9e05b5c232101dbe2fa821180"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/3.9-step-reference-without-dependency.yaml",
+      "sha256": "6613db702eb53e86d498322cea10c992c496acc50f4e27d96e7a91d9c5a879df"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-invalid-label-key.yaml",
+      "sha256": "8356096a2818e64e72f1c86a6c7584b3232dad8504f9e7b86f875c33491a4200"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-invalid-risk-level.yaml",
+      "sha256": "16f4f48c4c5f0d8a39b18cea3336ba0f00060029d9329fe6bdf83278d411a1ff"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-label-value-not-string.yaml",
+      "sha256": "41fa5492a75587b12b08dfb730edf2e39009be21877fc3cfad8243a291d3d011"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-missing-owner.yaml",
+      "sha256": "f92e278425b8da5c13a5b418dc846e09a4b2d565bebb19e59f6740aad1dd880e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-missing-version.yaml",
+      "sha256": "33768ee0514738d22249437922122fc943cb14b2d04068f37987e7340f26e137"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/4-owner-without-team.yaml",
+      "sha256": "53730a2c28038f54cf0c02ba99fd8e3247c2f4094af6e98a8b9018fcdaf0745a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.2-cron-not-five-fields.yaml",
+      "sha256": "b047feed7092244c40eb49c7e1409ff6b339d0bc4a83962a8c6d04aa38153fdc"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.2-event-without-event-type.yaml",
+      "sha256": "49b674efeda5de65f151b61449c034bcb50baa5cfcb2c4650bec7e890e283462"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.2-schedule-without-cron.yaml",
+      "sha256": "2a1a4ab061abced6465b38f859b3fa24eb4a99e8360debf64c41087543bd7290"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.2-unknown-trigger-type.yaml",
+      "sha256": "ae29d1a37c4e8340b97d992bfc98ea6755238f9f1153eb02855759b895e46268"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.3-default-wrong-type.yaml",
+      "sha256": "3ed8e3f8ba690a43afcda6e2f212703a4cc87d220cbb6e7e2de635641a8186bc"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.3-invalid-pattern.yaml",
+      "sha256": "1cdea229310cfea9ffa8025c4e51252cc249d36e041eb83caf0971d859dd7db3"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.3-required-input-with-default.yaml",
+      "sha256": "11607b72b7441a0d89dce11b4912f81fcd44edbc6ed2d64889e32ab627a68f67"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.3-unknown-input-type.yaml",
+      "sha256": "e62163326b5181d29c26bcf76269f9eb3bfcfa00809482d8ce2eee12467b1261"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.1-inline-agent-without-model.yaml",
+      "sha256": "26e226d1133088b4ef34262b6dc3607afc0e031196240ae627e84794bfc263b9"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.1-instructions-and-prompt-ref.yaml",
+      "sha256": "5a660cbe7d7602aee81f0799fe6120af197b0e036590bcde559d6badf2c4a573"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.2-reference-version-range.yaml",
+      "sha256": "4a41ff50a0f2e0dd50a2cd5fb6e129bc9230f2da535e9b4b8b68247435af8539"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.2-reference-with-instructions.yaml",
+      "sha256": "868e54951833348ed37712c05e1e5100d091ea35bab6cb6e20a8cebdd744f40e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.2-reference-with-model.yaml",
+      "sha256": "bf4a51f10a4484f4a7d4a065ede38b29dfebdcfcad83b9232b7c4fd5bbacc4b3"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.2-reference-without-version.yaml",
+      "sha256": "bdb1c5e48b7506fc35c9f69f14c4e872ca4dcccc452be50283c9abb1eb3cc879"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.3-invalid-model-approval-status.yaml",
+      "sha256": "a146838653020e23f5f2e40fefeaa23503aa8e1b89caf6cbd8f837acd325c298"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.3-model-without-name.yaml",
+      "sha256": "363365380c2b60e81fd890048c9887a0a9b35879e3e0bf3f1216262f4c50c5ad"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.4-remote-agent-http-endpoint.yaml",
+      "sha256": "60bc7d2268a57ab604e61ad36d168613c5a305a8b899dae27c89b5569871c30c"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.4-remote-agent-with-model.yaml",
+      "sha256": "3ad9ab72cb348e888e1f54f1eca8f62b77b09ceb9dd75c3c56d2a6430de10366"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.4-remote-agent-without-endpoint.yaml",
+      "sha256": "3d4c86972dad40e5027ccd82181c2b71f7c9e43dcacd793e086250e4355c8ade"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.4.4-remote-agent-wrong-protocol.yaml",
+      "sha256": "32a70119df9bdd0a841a975f9b787d774832fbe54f08e6c79eec800c8fee5e71"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.1-duplicate-server-name.yaml",
+      "sha256": "c464b311cceb4b4f0e766908370dc6d20d8775271cf403b23e3bf63cd1c76501"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.1-mcp-url-not-https.yaml",
+      "sha256": "edfab0f8b576b9a0a6e482539416acd87e6ab2831b515055202a864cf044dc62"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.1-streamable-http-without-url.yaml",
+      "sha256": "4caac6e0a84df57b5db11419b50403bc8f740f2104aaa9756df296ba996bd8bf"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.1-unknown-transport.yaml",
+      "sha256": "1625789b68f170fc7506cad96e0cccb89e4056f7ae361710cb588a7c46d0631a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.2-builtin-tool-source-without-name.yaml",
+      "sha256": "c3caaeb395ba0b23c1ef04cae7fa7379e05a54ceee30ce86ffc68d64a15abf62"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.2-mcp-tool-source-without-server.yaml",
+      "sha256": "5e664bccc0f941b1b83513a403951756f7b4b63b09aba610ba2c60927aa0504f"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.3-invalid-action-identifier-in-permissions.yaml",
+      "sha256": "bfe9ff8c06067548aca3f7a002565c0da78c0497b92982f12a306ae06acd1f2c"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.3-wildcard-not-final-segment.yaml",
+      "sha256": "a66420545161c169f17e866562c8efe48fa4764e2f96c0b7d04ba46568ea2057"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.4-group-contains-group.yaml",
+      "sha256": "39dfb6a058819420cbf3bc600fcec23723e362e2f72353950424763dd8e302a6"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.5.4-invalid-group-identifier.yaml",
+      "sha256": "46499ee9dfb0dd6b7692eaefabd5df2f5a237a6f4f40aa3ae0816395fdadd26b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-agent-step-with-command.yaml",
+      "sha256": "5cea678b9a560dbeff5f281b3601b1c87cc122577d3ea776b58df33c12c1661a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-agent-step-without-agent.yaml",
+      "sha256": "300f83e6da6a64a7ad37c51d746b11e5c534514377034b988d7c6974d2f066dc"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-approval-step-required-for.yaml",
+      "sha256": "15c8b31e2be60e4ffe738f3185e0daac979096c07f0eaa467127079d53ae4850"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-approval-step-separation-of-duties.yaml",
+      "sha256": "9025ad34c2120dff8c507f582510242ccc117f627afd0e98578a10a305f3f789"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-approval-step-without-approval.yaml",
+      "sha256": "f56aadd91d2fc722868c74846f8b6d7f46bcda80c9a47ed1514d7cda6f090311"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-command-step-with-agent.yaml",
+      "sha256": "89f5fd11c4afc1a787a54124cee9d7e1a02f5448b2b500ef2461cf4564e6825d"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-command-step-without-command.yaml",
+      "sha256": "585af6f358e6e22a8b567d938c100e1cdee1db6e9023397afeea902cc0d82606"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-negative-retries.yaml",
+      "sha256": "e667d58db9890ab18880094da429a0f80a8459f70286c89ff271da9210921505"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-retries-exceed-max-retries.yaml",
+      "sha256": "8bcb334bf76042c99d9e60c747d750d5fd2c896297ab395811b0c488c793ecc3"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.1-unknown-step-type.yaml",
+      "sha256": "4596e4accd525c7278e343914ca6826566cd589936474dcef8e46903d6b25d47"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.2-env-key-invalid.yaml",
+      "sha256": "bb504acf43699c14bb117b3d02b96b5d92e7837dbe32e0643450543d08c953b6"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-dependency-cycle.yaml",
+      "sha256": "a7f1089ea8e41b14b1984ba40db7e83eee3110fe56d285234908b3b9890cc6ec"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-depends-on-unknown-step.yaml",
+      "sha256": "ea73924d3082e578244888966071c196dab23d5945b62326a35a82c55da60cd3"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-duplicate-step-id.yaml",
+      "sha256": "35c8bef1d6776a45b094e8a66cfc70f5383b18e3b540d95fccbb437fa09579e7"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-self-dependency.yaml",
+      "sha256": "872f9d0900dd3d55ff91fa413c394ed9aba8aded2a6e86fb62d5066589143dad"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-undeclared-step-output.yaml",
+      "sha256": "0e16dd066e90053b08f4b490045f3248b2a933bf67b2bd628479b8b9cde54d2f"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.3-unknown-agent.yaml",
+      "sha256": "a59925bcbd61788d3b98fb1c620dd253776d054f355f18d0229d9b98814b4903"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-concurrency-exceeds-budget.yaml",
+      "sha256": "ab364fc7ae217dd4140e885d84e7fafcaa71c1a9856b7cab25f9983b1b958f2b"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-input-not-array.yaml",
+      "sha256": "23684c963ca100e4ac02cab433a21c570ee3bf95db41fb1d34abfd1ed976895a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-items-not-a-dependency.yaml",
+      "sha256": "6d32fa0ae550df530e5b94169444c8eba213716c38ea5d1bde363b2b54d4ee3a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-items-not-a-reference.yaml",
+      "sha256": "6033576421d66723ad7fe3b3d4cd0dec2addf55b802224da6281117a262f464d"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-missing-max-items.yaml",
+      "sha256": "217e0d62e088da7111957ba8dedf25c3a23c600f4165b826725f4abdf9eeff3a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.6.4-for-each-on-approval-step.yaml",
+      "sha256": "256883a3635d17c363a200e11cbc069bca6d59016746dc676bb1b13a0d43fd79"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.7-negative-cost.yaml",
+      "sha256": "24d6eacb469ece30f985dc70a7e1a05c53227769f2062840b1cc904b0e3dd06d"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.7-unknown-budget-field.yaml",
+      "sha256": "d18440ab8c87f4a5058da22eebafd12d0f160580851c3fe0168beb096cdd588e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.7-zero-concurrency.yaml",
+      "sha256": "c385b96b9cb1907e7af7141629cfdc2c5a737131c614cdf8b499f272e6978a97"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/5.7-zero-max-steps.yaml",
+      "sha256": "71abba3f7c74c5159322f5e4a5b84ab2161e455839a11ba793429f13cf725e2c"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/6-agent-instructions-and-prompt-ref.yaml",
+      "sha256": "4b0ad43fa85218c75b3ccf0b1ed4ab313c563469f47641cad8afe8bc4c5de62e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/6-agent-kind-with-workflow-spec.yaml",
+      "sha256": "1441ebe7f8abd6c4ec12cb07a3b433397686efbfac36ebd81eac13131777ab8d"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/6-agent-with-workflow-field.yaml",
+      "sha256": "8371948721bb136edd3132846734c01a45503f01a9bb1fa4480364eef14bc16e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/6-agent-without-model.yaml",
+      "sha256": "8da64f524af2232e027b368e470a75094d2dcfd1e764aa15c2013380d295a8dd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.1-governance-requires-classification.yaml",
+      "sha256": "c6986e3a1055443142a0a40988e0380859b4824c38242259d24f2c6cd55aed14"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.10-environment-without-autonomy.yaml",
+      "sha256": "a45d2dcb83504df9fc39344238e8325e9a00f7684163046688c91f97a80671ca"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.10-invalid-autonomy.yaml",
+      "sha256": "f0ff9fe8aabbcfafdff50ec007e3be35ab69bae23824c4e33888bb261c7f4c17"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.2-invalid-classification.yaml",
+      "sha256": "8c1e52f46245dc9e62bf1354f7b8915cc23d73bd910f88d0be2fb157d51fa80d"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.2-invalid-external-transfer.yaml",
+      "sha256": "16351116a4fe97e4b04b6f51813a9d78184e92c001a257c9d43fc5e9a5952b28"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.4-invalid-model-policy-status.yaml",
+      "sha256": "cf710698389888a6a6dcbbc188049d2c61936130bfd712088bb74b60162f464a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.5-allow-not-boolean.yaml",
+      "sha256": "0ad21e68fa03bee3eccdf7a61d57b92e10a07aca03cd846f6041719083870622"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.5-invalid-default.yaml",
+      "sha256": "4aedfbc2399be3008d81fdc48ba0f5205c08ff2e44dd5e6c0fc5aa4acfc76f3e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.5-invalid-egress.yaml",
+      "sha256": "8f83e43d3addd45b8918d366dd7673a41496a5380316ac64b657b2ee1d7b02c8"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.5-tool-without-allow.yaml",
+      "sha256": "132a2c11b8f9535cd73b05d85266c9ee13911ea454494554805f42c362fd8f1e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.6-approver-empty.yaml",
+      "sha256": "d581ebc79d676caa0b138724cbfcedac7fb4dd8fd74f37ae5a5c1a059253a9b1"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.6-approver-role-and-user.yaml",
+      "sha256": "3d1f8a0f2fec30c23cc9504cd5ae046f0d64472df78c37241222d14978302449"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.6-invalid-on-timeout.yaml",
+      "sha256": "2e850e4c727d34bac6b61635f14f5967d86d9db7388d58d515188f4f26461068"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.6-min-approvals-zero.yaml",
+      "sha256": "594f86389a84cb1f69e15b82a2aa254e14fd40cad43c03a9bae788754a6daccd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.6-required-for-invalid-key.yaml",
+      "sha256": "3d10d94405780b8f35455776ab762a3982ef8b05b091ae97cb40bec21a7114bd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.8-unknown-separation-rule.yaml",
+      "sha256": "feaec60ccd9e9033fd8a31efcb68873e7dc669d8e47e7714ff1a3b60ab352e1e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-literal-password-in-free-form-value.yaml",
+      "sha256": "716d0667db0fb2a84eeff85f421279042f813e8fd68ef9c18f87e6ff2779e8ec"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-literal-token-field.yaml",
+      "sha256": "ab46f06a810fda1c96c96cc56e326d695a2114fa5a6034466474772301000afb"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-remote-agent-secret-ref-out-of-scope.yaml",
+      "sha256": "0bd544872186e784cc8d5baf564dc1228cc4b9cdb35888e3c659b3733b30ed97"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-secret-ref-empty-scope.yaml",
+      "sha256": "b3e2dbdbbc4faf7e56a3298b1cac00c77a79d8f816a69ed24ec7c2dd858bdcfd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-secret-ref-out-of-scope.yaml",
+      "sha256": "af6eb40b67b2ac962d6ebd3de9695cef837d5a98c1b1c862f8bb2297b3897213"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-secret-ref-undeclared.yaml",
+      "sha256": "1babe1309fa625abdf9e5dc0187ec0754e8d0d2536a8b9a33a478ec7b377c8bd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/7.9-secret-without-source.yaml",
+      "sha256": "aef22719766d94f8c1a5b67c22489b069aec176e5492135e50880d4fc40960ef"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.1-include-without-version.yaml",
+      "sha256": "4227ccf781088e02b2c23417ba183c3a4883cd8989593fa9897baeb38374c9cd"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.1-shorthand-not-boolean.yaml",
+      "sha256": "af03c67848dc29248a14bcd1bd586b5bb2356409d3bdbb406458b46c9ebe307c"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.1-unknown-shorthand.yaml",
+      "sha256": "655cebb0def05167996dff903493a11b707b508aac16c0a827bd1a15fad3c2bb"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.2-no-allow-effect.yaml",
+      "sha256": "dfadf2b56795e575203a0d6c2f330c0f51608be2de1c9370d5464295d087ca19"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.2-policy-without-rules.yaml",
+      "sha256": "c5b0efd7076469ecde9c728128abdd68fe621114a69b24b4bc80801cc5b5319a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.2-require-approval-without-approval.yaml",
+      "sha256": "3bbad7fd8cf7056802d4b9bc6eb5263f91eea5523a81bc4a758f77ed042904cb"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.2-rule-without-when.yaml",
+      "sha256": "e498074f80ae34b991c8ea685a0fb1fccaccfdf44402f60d4a4f29fcc032f4b4"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-empty-when.yaml",
+      "sha256": "85332b752534c52556338fb7b2d154b915ca50e3e4f107306da1494266b46a4e"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-in-not-a-list.yaml",
+      "sha256": "b70d134794ad1b380458a11f25191df54950fe7717ddfe79e1aa33026f886c97"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-invalid-actor-type.yaml",
+      "sha256": "f6d8d7527777de20f41246d723cf30d84654d69ea46afacc66c1f09066716539"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-invalid-classification-value.yaml",
+      "sha256": "6ff95be0e69902e00740d6e904b3c98151c867d9023690f6978d5d42831131df"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-ordering-operator-on-unordered-attribute.yaml",
+      "sha256": "d1e1d9190c81b9fd6625e632f6a95c961e4cdf92e8b21b0a7c3992a8792e2ffa"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/8.3-unknown-attribute.yaml",
+      "sha256": "b92f941dd3cfa95af5a39b98606cec05a6d09e91e1cdb547aed105e43e256d25"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/9.1-digest-mismatch.yaml",
+      "sha256": "a17ce7a5d989a8d6ac8b63d02881922630ee83941a9269d2ac1c5749eecabf0a"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/9.4-unpinned-command-image-security-profile.yaml",
+      "sha256": "ab8f2e1d9f88a8b79fee11a4fd825c096579fa8cc59079a52e2694ca68baf4f8"
+    },
+    {
+      "path": "conformance/v1alpha2/invalid/9.4-unpinned-mcp-image-security-profile.yaml",
+      "sha256": "0149e786026107d3563afe98ec5c4f02a4c9e1e652a8fd65881a4c7f0139d571"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/10.2-audit-configuration.yaml",
+      "sha256": "fb4723a3448257ad6fff16211744eeb1ab6b259d19c2148fb954a40251c70c89"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.1-json-serialization.json",
+      "sha256": "8afdccbf155e63c2d1c973f338d4baffd3e388aff476d9987866cb9e11338725"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.1-multi-document.yaml",
+      "sha256": "89377ef50eec32b2ed489b1bb703e6e5e930bb8557a91285b146827478009b41"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.2-minimal-workflow.yaml",
+      "sha256": "a5540dc644fd74988b56cbbff41a2732b8a57c09dd4ad3ba01e6da2ab9cf7b52"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.3-core-profile-only.yaml",
+      "sha256": "0ef47ca98d18ae48f763ba4e020ed607e675066904a83c6c520a0ea10bd511a8"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.3-extension-fields.yaml",
+      "sha256": "dbcf8a5c17179922f388f578becb53fe443147f0027e2725d3035ccc0bc7b409"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.6-durations.yaml",
+      "sha256": "5f0d2b9296c6f95c3309592d25cb533304f1efcae700cf08ff3a55039d02c8a4"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/3.9-expression-references.yaml",
+      "sha256": "8695df5a293bf6437562560d1c62ae4c17fa20abe14ccacf6f4a68608c421cf9"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/4-owner-string-shorthand.yaml",
+      "sha256": "d1b88919d49ec3c73f9b6fdf93936b55cca1069da2c31d7672dc283c222c384d"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.2-triggers.yaml",
+      "sha256": "3accd4e0fce0f468d5933b8b3b3c57ba13a4dd146f1f6b67e8649ee697487098"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.3-inputs.yaml",
+      "sha256": "5cb65c6e7ed92c21c3fc9e6fcfa9898351f103020db499c536d3c582d415b6bf"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.4.2-agent-reference.yaml",
+      "sha256": "1c0ce87f9eecd88f559fd9bedeba7ff5fdb230168fa10dec8a5afec3b98786d8"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.4.4-remote-agent.yaml",
+      "sha256": "507574dcf5cbdf3cf168fc549e650bbc34d8514554eeb93d0a87233e40d4243f"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.5.4-action-groups.yaml",
+      "sha256": "76ac6fa77da1e984bd12b5a02737fdb645c575b39adda1b8a96da254bde1670e"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.6.2-command-step-env.yaml",
+      "sha256": "22072717180d6d6fbfcc565d2e2b66a27f05fedce7053b037967f6366e6c57d5"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.6.3-transitive-step-reference.yaml",
+      "sha256": "1def1bb3bf8d6d03468c58f1dafc31f8292b6d87c533dd584184ce7236d5336e"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.6.4-for-each.yaml",
+      "sha256": "e53dd2c857592462fb6520f162815be4bb784ec8234567e87590ac27080d2a0f"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/5.7-nested-budgets.yaml",
+      "sha256": "164473f840fe24ff8f2284fb067566817035548f583fe6c35c24044d21e3f150"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/6-agent-manifest.yaml",
+      "sha256": "5576b98500b48c29bf5d48116cc6b630b8c1ac59a36e0e493200c2727278e698"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/6-agent-prompt-ref.yaml",
+      "sha256": "b7f588f1f067c0af672b8bbcb15ea04ac780ba95a12ccde9fd83e1eb04baeaa0"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/7.10-environments.yaml",
+      "sha256": "634567c43b57dedc538a1082d2064689d06ceb8297406cb64d51b3ec10c800d3"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/7.2-data-and-model-policy.yaml",
+      "sha256": "7abf2e1400d1d9d6b5872bc5f52dd14c274a0d3bf2ac496235b66b82219cf06f"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/7.5-permissions.yaml",
+      "sha256": "e79ea94da6e48c59d2888e63b49560221a1e0681825c497163279cad92a0fa85"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/7.6-approval-and-separation-of-duties.yaml",
+      "sha256": "86ebca522ca5cf18d530cf20fec6b95c371044ad7cb219677c02c66b24f9a6af"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/8.1-policy-shorthands.yaml",
+      "sha256": "d9e50a2ae7070808b2b99011db3f521aadaa227ce19ba59853e5edf2da7a6515"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/8.2-policy-manifest.yaml",
+      "sha256": "2b0f6d25d613adf4924d6292bc484b9771e52dc562ea30c0a4fd6b986ffc086c"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/8.3-conditions.yaml",
+      "sha256": "2d43464642b961a84f30ed81fa2ff775b27ea359fcbfed921086698d42ef7734"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/9.1-digest-verified.yaml",
+      "sha256": "a90324a15f3d64b485080ca062a5110172b2163ff9795f727908ccd851f79953"
+    },
+    {
+      "path": "conformance/v1alpha2/valid/9.4-pinned-images-security-profile.yaml",
+      "sha256": "0cb1d712b56be91929d89bfdd92ddeb4a91238b6881848629116c4df2740de62"
+    },
+    {
+      "path": "conformance/v1alpha3/index.json",
+      "sha256": "019de36bb3ab2b107e61058b2d428e31a7d924967ab8ca90fa0c4f7d4650f7c4"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.2-invalid-integrity-mode.yaml",
+      "sha256": "3ccc5a2d1f3abbe906a2c1033ae1c698dbeec9173b98cbc9a6063362efce9708"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.2-invalid-payload.yaml",
+      "sha256": "46758fa3044052bb16080552d3feb82666cdec15dc1f4fbd21ffb8b0ff8b3137"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.2-invalid-retention.yaml",
+      "sha256": "010decd8faa4ad53cab926ce538d4ba61c61b115d0e722488f84e3d77a0702ee"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.8-workflow-ref-version-not-semver.yaml",
+      "sha256": "e8cf3f2418aefb85632c99507c03f7461710fc0d4fc0adb40359de510b1a300d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.8-workflow-run-governance-field.yaml",
+      "sha256": "75a63292e8f7496a115926d78f36413dbee40c3c960ea455146072d1f6563402"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.8-workflow-run-without-name.yaml",
+      "sha256": "ea8915aaf562df107b7c862488c20bc7fcb441792de142d8698ed40e0bf0a0b0"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/10.8-workflow-run-without-workflow-ref.yaml",
+      "sha256": "aac3a9b61b50a6b75850987f3ebfdd479fe81f8c19711a41e46ff131924add64"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.1-custom-tag.yaml",
+      "sha256": "8aea99e85d1e176ca4ebfb1576f2e6d089dc14990259f428360ac3ac32b0c61c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.1-non-string-key.yaml",
+      "sha256": "2177756603bd779f7d7641e408e57184398d8bf5c8649d9246b116a258b367d3"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.1-syntax-error.yaml",
+      "sha256": "debf3fefa96c759a375a274e59fdfa48caa4860566ca848351656a938a7acc65"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.2-missing-api-version.yaml",
+      "sha256": "83ec579c25753ad2e438a473d79bdcde1ad279dd08a9538e2bd0d8172d441355"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.2-missing-metadata.yaml",
+      "sha256": "23a19741a553cc39782dac104040b51caa608d591396b51f913d47d5660f1fc9"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.2-missing-spec.yaml",
+      "sha256": "2b20a22aa9e49b76fa4b5be2084de6ded1d44c104060900706c14275a0cfed7f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.2-unsupported-api-version.yaml",
+      "sha256": "7b7c84a650107929301748276626cfeab6a41e7018b4b5c27d2ba9a355140c48"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.2-unsupported-kind.yaml",
+      "sha256": "16b8ee963f9ebd364c525c9a0bae3df63c073d5c7e8d58c5abf61a45a81ee4cc"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-extension-field-outside-extensions.yaml",
+      "sha256": "fa7ae70a522ed06e21cb3ff0b3aca672b017d045595706a81f22a99b8938b84d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-extension-key-without-prefix.yaml",
+      "sha256": "36ea0128c6deceda757daa592949a794e91e5d8f86a5e6b95e34b88499c32436"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-a2a-agent.yaml",
+      "sha256": "7e7f631af1a4de685cc669d2ddf94a1b1685df0f16360f37d7fad92220175460"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-approval-step.yaml",
+      "sha256": "58e06a8b0e6585b2367908aa4c52e2c74a9999b3e3ffdea23727893cf79f2d23"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-audit-field.yaml",
+      "sha256": "118c3aeedbaf9ad63ab5d1869549a9e41343957adddb73d2f989623434a16c0c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-governance-field.yaml",
+      "sha256": "84770f756b07d0eea9e6c6f6f786ea995da9b471d3d084f5ec376bbace03678e"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-high-risk.yaml",
+      "sha256": "e1044b10bfacc7dfeae447d1ceed845322219e87f85c60d2f7a994c66058195e"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-interaction-step.yaml",
+      "sha256": "6fc70bed259046b30c8e7dc06db88e9ed822cd62d09d7f112ee2e8a36a1594fb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-mcp-field.yaml",
+      "sha256": "c180933bfd586efd441b15097e23caa23c6842c7abe2568f3bc673d483f4117d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-policy-kind.yaml",
+      "sha256": "c7d2a9e565d46bf36b512d245ccfb01f1ee613352ad9eae50ad7c53735fcd3c3"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-profile-security-field.yaml",
+      "sha256": "baf443557456ceb93c17e2836db605ca9a5f462f899a65b8deb087f00120536c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-unknown-field-near-extension.yaml",
+      "sha256": "6dd2c0c45d615a7bb6b3bd3d6c84e130be1a7d45eb584197511865cff2f84543"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-unknown-metadata-field.yaml",
+      "sha256": "7fcf33525f3785e761ddf9d0303e6b9d82cd4d0bd9f426a3f244642c7a5ebf2c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-unknown-step-field.yaml",
+      "sha256": "5882b53b7ad558de1aa2842c4664f9f75e8f63805923e60488904b51339eb784"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.3-unknown-top-level-field.yaml",
+      "sha256": "7e652fc13acb3a382ad181969022099bbec3918698e706266f2ce2345f7780ac"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.4-duplicate-agent-id.yaml",
+      "sha256": "3e908393119347cafb727b82b24a1340f25d3ecd9a0e8883c6a4e102355ccb52"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.4-duplicate-rule-id.yaml",
+      "sha256": "336f723a2a30715c44a1fc5c71b51e8d79291eced3c49d50a88cdfef7af8d1d9"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.4-invalid-metadata-name.yaml",
+      "sha256": "49dea6a4d66cf1297b29a901c3ff063563114321b88d4fff25379cbebfbfa51b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.4-uppercase-agent-id.yaml",
+      "sha256": "03c1355d3fe8bd91adbca26ed3d1e95e422767846de5b4e55a0bb5f0794192f4"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.4-uppercase-metadata-name.yaml",
+      "sha256": "d1a5b67fb16fa4ec3d767571f35e19f3d5463202dee590b89927a3bbfbb25f11"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.5-version-leading-zero.yaml",
+      "sha256": "0e57d33ddea6a331b2dd0e52386d4bf7a6cfbf06e9d18a7f722652d9df6607c7"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.5-version-not-semver.yaml",
+      "sha256": "18a8c0f93284337afe4a8602c4e0d40ed3a948a47e7d4521690164829cdf16a0"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.6-duration-unknown-unit.yaml",
+      "sha256": "5cb35c0c27ca465fab0eb1d95b357da3859c5223820e6af05663a7e850b9c310"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.6-duration-zero.yaml",
+      "sha256": "42a958a18cf811bcf8c2631e8751380473de0ccc6ce1312b84ec87e366c5e1b5"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.7-date-not-calendar-valid.yaml",
+      "sha256": "44ed4e8c1e21bfb75b0998d737d55827deb4c7064297f5b0491f3864c9f4568e"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.7-date-wrong-format.yaml",
+      "sha256": "9745bdb73e49768feb25d03ba1f73184c584611ae8d17ca35e3b7fe66cc89553"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.8-digest-uppercase-hex.yaml",
+      "sha256": "00c38cb4ce15e5b55dc99ace478ff8b9c6f77d4826622f2e4c67ca01a840a23c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.8-digest-wrong-length.yaml",
+      "sha256": "8200c62b1aedbff45651586d755cd0c1f27382aac03abcbcc13f4f1551093d9d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-expression-function.yaml",
+      "sha256": "450cd7f3c1816bd714630882caa5fa42e053ca5f65a04ab3251a7ddaa69c69ff"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-expression-in-env-key-ref-bad.yaml",
+      "sha256": "71f4e0330b3dedfc6aa8aa666c1cdda0d768a482b9d2db2e7c01f0cb757931f5"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-expression-operator.yaml",
+      "sha256": "f26b6b98b1317bcac1b7d32928d09c0dc8faa7192c072ea5aaffe786c28dcbfb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-expression-unknown-root.yaml",
+      "sha256": "d2fd61d599877807694b511ce6e15f6db970fa32b329e27979a7f05fc1daac5f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-expression-unterminated.yaml",
+      "sha256": "c479effd4efe10ef347d4746b7ca97b05a55dfe9effe4d458ff2b1a316449d08"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-iteration-reference-outside-for-each.yaml",
+      "sha256": "65d534f6428b0ac759d730473014644f6a02a5bec8c98b8cefa2229666ea3a98"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-step-reference-in-permissions.yaml",
+      "sha256": "5e7084d2953dae2aa845e95ff9561f5c50d255b830028eff324595669a403a7f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-step-reference-unknown-step.yaml",
+      "sha256": "c91328a333e3e6640b2045b2c0dce9a667e3baa811908886b56679d1703cee12"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/3.9-step-reference-without-dependency.yaml",
+      "sha256": "a21e9896e698d657c06101b4cb4d4b8c6279af6757884649c4d060db798f9678"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-governance-field-in-metadata.yaml",
+      "sha256": "aad41f11fd029d619c1cfdc6dccb36e2dfa9bac41b128ec55c35a96cf9fcc8cb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-invalid-label-key.yaml",
+      "sha256": "633457b316ca208cee49c95cefb6b363252c7dc0e2e6c9db459e64985c6bc57b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-invalid-risk-level.yaml",
+      "sha256": "c16b0d6cc6abea69d7ae68964c3be91b9ee60a49a234f3ba11a2bd95d3312abf"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-label-value-not-string.yaml",
+      "sha256": "0b00a5bad95f05f1ab178397c1c6ca85ddd80220c8d537b28282973f71c9d7cb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-label-value-too-long.yaml",
+      "sha256": "d272965084117e32a296838de61b6d5e7199af8cb3f2c286180bd91a01aaf7dd"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-missing-owner.yaml",
+      "sha256": "3d8585be13863a3924697c24440b6beb87cd11155eb028a3cbc830d07e74eb82"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-missing-version.yaml",
+      "sha256": "b11ec8f649bfa3fd155c20f12e898799bc3a889a801e1455ec806d52488a13ff"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-owner-string.yaml",
+      "sha256": "c1a3188fa3ca7995a1165726ab43d066ed98de783519282ca8ae427f148df2df"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/4-owner-without-team.yaml",
+      "sha256": "9c6816cdf55eefa24527ab1930509fcd6e5cd71b4978d8adda083e5228ef3ab7"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-concurrency-policy-on-event-trigger.yaml",
+      "sha256": "5618556b1065c69c837458af7f201b2874f024a2f46f8122fbef726832b37248"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-cron-not-five-fields.yaml",
+      "sha256": "c14bd7660f007ba9539d628c6e58bf37aba51ccbaf44733e0f160d147076616c"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-event-without-event-type.yaml",
+      "sha256": "ec1834d2bc0b87dc2856018ebe86dc3d885410e26ded08f149fd40d4d00a1a99"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-invalid-concurrency-policy.yaml",
+      "sha256": "2b72b0d4ad1766a5d0f91ccad2b2c838737c80a9ef1b54c6490b2fd91cf94435"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-schedule-without-cron.yaml",
+      "sha256": "7763a057765b652595373e71413f1907286dd30a155d559946999b4e034513f2"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-starting-deadline-not-duration.yaml",
+      "sha256": "cd2b58e6e3cc595d19ceaa0cc0bdc84addcd527911e72f39b0f01a32d0912ede"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.2-unknown-trigger-type.yaml",
+      "sha256": "69a719e9ee857108c24c3ec710a26f0eb993825eadd5f3161ad2aa2d5b94ddec"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.3-default-wrong-type.yaml",
+      "sha256": "13bc36cc7fb62ed1d41a0299f030786b953e061bc83c68020a3f854329023848"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.3-invalid-pattern.yaml",
+      "sha256": "6ddb87cf421480b669edd6abca373ec6c41f8df9f50e61581f28860d8248b710"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.3-required-input-with-default.yaml",
+      "sha256": "a8626174b4bd8bcc1c9ef8881fe050e26d31e352547d89150b6461c59042e60a"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.3-unknown-input-type.yaml",
+      "sha256": "eab2f4cb5b915392e5f9637c22d4e556e9a993947cf13b16c4a487680babd9de"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.1-inline-agent-without-model.yaml",
+      "sha256": "e2c914d9b9a6dc986bc2b2c85c6d097dfd322466e36dcd9ceaabb2a3d0fda2f3"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.1-instructions-and-prompt-ref.yaml",
+      "sha256": "feeeec4c3f3f61290b06cefe7d94496009c519cc5ba7d12033f4362e9a3eff18"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.2-reference-version-range.yaml",
+      "sha256": "b939d24d3f5755b1ac32702fe97e77ce1ead50a3658e6086a6d3154ccba4f4c1"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.2-reference-with-instructions.yaml",
+      "sha256": "771bfc5ac3eb79dca28457715a297fecf236c75c2a225ae6963ab8a7432a80eb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.2-reference-with-model.yaml",
+      "sha256": "c68e3e7fe30be7f64877651564368c04348a5020b1345ce25a7c620b25f29d2b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.2-reference-without-version.yaml",
+      "sha256": "52c2d8056776d9492247e803384149952a7c512ab7296f846c89a4febc0f2a81"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.3-invalid-model-approval-status.yaml",
+      "sha256": "2889c929ed848455a0b56a1a34f469857b56b8ee9d01026e11930e9ba0d7ccaa"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.3-model-without-name.yaml",
+      "sha256": "89a2ce0dc76c96fdf41f64f42581cc9c140897e7b6b566b93c7e4f974c009524"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.4-remote-agent-http-endpoint.yaml",
+      "sha256": "3a9bc97f51241ce090f4f3b75145102c0e3723fa03f908eb2e745a01a92c33af"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.4-remote-agent-with-model.yaml",
+      "sha256": "ec9e2ff470592a722cb16a980dbaca474002d011823b8dc9413976b2a3a8ab96"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.4-remote-agent-without-endpoint.yaml",
+      "sha256": "903e05f555f84ad83a33fc756deaeea56c1da39ec32a8c86af09676f0eb175c1"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.4.4-remote-agent-wrong-protocol.yaml",
+      "sha256": "bb03f38d0c40d3b9b7e8a563754219d56cf92de9bcb0d84daf8913dd8cdfb3bd"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.1-duplicate-server-name.yaml",
+      "sha256": "191bc3a46d9792e50d5d8b0090875bbd25b43832ad0c33a55e91a902c7db88c8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.1-mcp-url-not-https.yaml",
+      "sha256": "4b0274a1f8a2a73abfc584ee76df1847656af4adcd696f2c1489cd01c3b988d8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.1-streamable-http-without-url.yaml",
+      "sha256": "5f8a310669518c5341512acd57db0afe1256db765481df1eb5bd40eda88c3a56"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.1-unknown-transport.yaml",
+      "sha256": "73a65f8cf6ef15c5969e3cf8586a0fdb59b696c962c83d97f18e60ec942f91c8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.2-builtin-tool-source-without-name.yaml",
+      "sha256": "733c4927477a04b741afa8b98445841713097080cfc323e34efbf04d688107df"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.2-mcp-tool-source-without-server.yaml",
+      "sha256": "95c0afdbb657fba663f65feaf8485543e7364301eff7d533e2590e39d65e08a8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.3-invalid-action-identifier-in-permissions.yaml",
+      "sha256": "50eb3cdd56b7f9f97c8fed2ee80834021e6a113e14175c5386ead27e06863b40"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.3-wildcard-not-final-segment.yaml",
+      "sha256": "e510d0469436f2bf003476c9af65be8adfedbe15356d8561692456977b23070a"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.4-group-contains-group.yaml",
+      "sha256": "0b8c26fcd94bf4be74ced531362b7834ebea6b2bedd4ae74c13496f74ac1a0af"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.5.4-invalid-group-identifier.yaml",
+      "sha256": "a8101c9b7dad7b943443f9c172bbec3ab2a3b1388f175e6579900b5dfa8c0944"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-agent-step-with-command.yaml",
+      "sha256": "c207b5665b3ab5128be042e384a43c71661b808092e78efb7f809c18242d29d5"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-agent-step-without-agent.yaml",
+      "sha256": "b17fad8147283c19b17d491b25480af3e9ff819de914836408e2f44edd3702d0"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-approval-step-required-for.yaml",
+      "sha256": "f593ce4e9d525b79f9d683a9b18f6e6339a0c71a6c70425b48df89a0bfe24e52"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-approval-step-separation-of-duties.yaml",
+      "sha256": "aadb54a7f36aa832c51fc6bd561789b5f85ba33befd1ddbf87fe33f2df769b3d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-approval-step-without-approval.yaml",
+      "sha256": "49fab32a9bec628546f76cb1fb97695bc2f73a5071a55e23c026f0f1ed0a4c43"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-command-step-with-agent.yaml",
+      "sha256": "c216c50df6b84e0d7c2d6cc9ea3f327ec16b2341782a5f6ac725ec1f01634572"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-command-step-without-command.yaml",
+      "sha256": "28e2e23829aff20b9be2eb3a7b9e59d920d5888b5e409d509c86a73cddb3478b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-negative-retries.yaml",
+      "sha256": "68b579d75a1af380f8829c71da2dd5440920d307d6e9aa63875ba1150279cb3b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-output-name-with-dot.yaml",
+      "sha256": "51cbef3a237a0b5198d8469714d7d8c181974bf536e8e12f8670dab179db8ab8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-retries-exceed-max-retries.yaml",
+      "sha256": "b416377f01ca7cd06f788b47d1be4e95d795b741f12eb004d9bdb680c97e898d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.1-unknown-step-type.yaml",
+      "sha256": "c2e17ba825a80c8292676b4b0772b78d563e96d9cebb6cdeda98adaf76917704"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.2-env-key-invalid.yaml",
+      "sha256": "d40d45d8476694f5e7a7396fe2d886cc99cd1e854129505d1adab93d13a2d284"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-dependency-cycle.yaml",
+      "sha256": "8d724aa2c71e00ed4f7e135ee91108f4e941f4e6ddf03b3528d3af84a57447a4"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-depends-on-unknown-step.yaml",
+      "sha256": "168268e7537a2a631159317a4ff5369952d871c888d256ba3d539a1f97787826"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-duplicate-step-id.yaml",
+      "sha256": "d5371c13624cf30ada7492c310dfc5b62cbef0f0f298a256806fc0a02a27fd1b"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-self-dependency.yaml",
+      "sha256": "f16727fe004c7a5eaf1e41cc5b755898c30639aa4b5a6cec0ef43bac63b916b2"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-undeclared-step-output.yaml",
+      "sha256": "1db22194e090cbcd931f7e629c5d0a7207e23e5e355eef970ff13cc1a4568a94"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.3-unknown-agent.yaml",
+      "sha256": "6f2f9c848f7d7cdbe6519611b0f71ec1371ed5ab1370e08f1f8822087b418bce"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.4-reserved-env.yaml",
+      "sha256": "c766479b4cbc1251d4614a6aca95b9c3a9613f41067c55aff643a2f86ecc3c7a"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-concurrency-exceeds-budget.yaml",
+      "sha256": "e57cf1d9969a4688232d18c5d59c6a20d3de5e624e6efca2cae9fd85f8e4b1d1"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-input-not-array.yaml",
+      "sha256": "51fe094d5e16d5c57468d71d738d7f3b12af62ed201c22177d479d144b1dddeb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-items-not-a-dependency.yaml",
+      "sha256": "27d2f751f1c6df8d592c1157053e9b8b9a8211475d68b0fac872f41090b490ef"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-items-not-a-reference.yaml",
+      "sha256": "c81d95864ab3dfe2627a9214b5c0cb0a8b38bc2751b2aceafc1f03a9b54e011f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-missing-max-items.yaml",
+      "sha256": "5f8d087d71f1354d4d85cb744b37cbb8a5850c78feab331dcead7ba9fc6160a6"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.6.5-for-each-on-approval-step.yaml",
+      "sha256": "97707bcd124c40480bfb6d09f640f769d14ac6e474975576965da01edd09d1b0"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.7-negative-cost.yaml",
+      "sha256": "563082e08826e19e80a528c3b8ad939c505899367b956da9105c1ccaa0b0b2d4"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.7-unknown-budget-field.yaml",
+      "sha256": "855bda2ccb93b81ca65ae3fd4090ac4c0d990c4067cf0aac58c88bc73dbf8bef"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.7-zero-concurrency.yaml",
+      "sha256": "225b939a20c3661a99f12ab42e765ddf6879b64a5e424c50fe4b8bc5acc74dcd"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.7-zero-max-steps.yaml",
+      "sha256": "e7260c70da1d244631a9a8f1ed22f57194aed96091a030bc53c2fba54036e25f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-agent-invalid-on-timeout.yaml",
+      "sha256": "16611242e340c36d94e6539049f41809efefe7e0e6f1bc187c8d597c1f06add6"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-answer-field-nested-object.yaml",
+      "sha256": "941b21816a0da61ede4d14ce95097a282b3ef5d20e4a9d5f07ac725dfcc5a533"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-default-mismatch.yaml",
+      "sha256": "beba3d96af2f4efe955efa9910867a855c0047cab0ae19e987a4740db8c5175f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-input-step-with-agent.yaml",
+      "sha256": "3d870b0599baaceb4650026425c76750b38b8ddc8ab70f48dfd3551bf960d577"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-input-step-without-input.yaml",
+      "sha256": "92588e0c06690a3e44453193bf24623652243a6284d333734f6a10ad045991ca"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-input-without-answerers.yaml",
+      "sha256": "a1a7046a3f2beaf445072a549208a43831e5c90f9d0b62e87d8f7c9155779acc"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-required-unknown-field.yaml",
+      "sha256": "9c5c1b82bb200bc103f58e0eb95f582896a79e2252f0b742f69cd73d7161a873"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/5.8-use-default-without-default.yaml",
+      "sha256": "27f03d21b7ac2df3f8b8cabdc71e49d69b607225b312cd2bd45b243f67d4df08"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/6-agent-instructions-and-prompt-ref.yaml",
+      "sha256": "b57ee1fd68f371e0989b7d10d77727c2df3ce8a369728477a632103bbee84f62"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/6-agent-kind-with-workflow-spec.yaml",
+      "sha256": "d8051756f7cbf0ee8be53a47e5d06f729aea190cd2f63f33a8f9d2659f2b3a70"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/6-agent-with-workflow-field.yaml",
+      "sha256": "b8b9f04d0cebaed07cb61b1f9273ce91766a2711a4f9511f8a1a90228eb6c4b7"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/6-agent-without-model.yaml",
+      "sha256": "9d58956c233056efbe6a2eda70ca17dd988404759344ce476a5d4a421d74f0fa"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.1-governance-requires-classification.yaml",
+      "sha256": "51bb87458b15f4c24a76122b0facea1d48a052ce31a33e3acc091d1f891a0ff1"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.10-environment-without-autonomy.yaml",
+      "sha256": "2e74d01faa1089a248005657d5fa32386dad3dfb4c8d1b387873ac304f5a1e29"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.10-invalid-autonomy.yaml",
+      "sha256": "d0a64ef386832a3ef223f9181fedf45eb131812715f270717a11f79b27bda563"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.2-invalid-classification.yaml",
+      "sha256": "179159645eeeb1dd95d794c867cfbab6d8a464ad8492569611591a632480ee14"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.2-invalid-external-transfer.yaml",
+      "sha256": "607b15961735a7565a86ce8543600820b102e8333cef32dd360a4dbe90afe5ef"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.4-invalid-model-policy-status.yaml",
+      "sha256": "490625bb04ad0771f4d57bb498a058e01568114dbf83e5c2ba2a361974771bfb"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.5-allow-not-boolean.yaml",
+      "sha256": "3041551406b7af6de1dca0497006be8186417a17ca1bba731df537471a6dc46e"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.5-invalid-default.yaml",
+      "sha256": "2111c735213263c2d681c9f5c3ceb66b40ddc968d8026ff14ac88faf8a0f6a83"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.5-invalid-egress.yaml",
+      "sha256": "9fb9a3dd0501f696cc662313269d7fb9093ffced22468a5af27219c52a60209d"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.5-tool-without-allow.yaml",
+      "sha256": "8bd8835c21d3a084591678169fbbe0a7df99ad9bd3292bfb42aba131d1c07aea"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.6-approver-empty.yaml",
+      "sha256": "e1311116e6526a710baecb0567a06ae3aa50086532263c42e84596f632a1c682"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.6-approver-role-and-user.yaml",
+      "sha256": "03cdfb0b0417f7851d7d13ccd86f198bd38d4d99b493c8cc1ae534324212ac6a"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.6-invalid-on-timeout.yaml",
+      "sha256": "d901c653a05227c0b4b4377d4a67448ea127c4964e9d669480ab811b69bf0320"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.6-min-approvals-zero.yaml",
+      "sha256": "ddb15a79085de0e0709592f231f0c969fb354c838c4e6505cae9fdc5af9b969f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.6-required-for-invalid-key.yaml",
+      "sha256": "f927db4d4609c9e496bab48343e12cd05eef2c7e3a5e777cdb5ee192ea298293"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.8-unknown-separation-rule.yaml",
+      "sha256": "70dfe3d0a1771ba0989674704118b37c9200f1be3a4e9b904e1afebc4655dbae"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-literal-password-in-free-form-value.yaml",
+      "sha256": "002c50c25decf22d20dc4db3f6f43e85aab222a0f2bc582ec1c1373ca01f0aa0"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-literal-token-field.yaml",
+      "sha256": "6330615c5379a0ae5aea5bcbaa64b4b12ee404438906042922cd630131626740"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-remote-agent-secret-ref-out-of-scope.yaml",
+      "sha256": "febf5bf6a30fd03a39a986d3d327e1ca9893567436e2026179c882ad0eb0aa3a"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-secret-ref-empty-scope.yaml",
+      "sha256": "5f8e2f41422aee161cc882fc7e2f5b25297bd53c08d33323d0bac65e60961ee8"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-secret-ref-out-of-scope.yaml",
+      "sha256": "ed4e18875263c5e13e54b98f37c63ab209c904650df93ad518a01e38995e8316"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-secret-ref-undeclared.yaml",
+      "sha256": "051de6948743be71255bd5489911eb602ac5b52dd78da1411d72251866ddf057"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/7.9-secret-without-source.yaml",
+      "sha256": "540b1542745871b89184ae5cfbeafb480b6bb57bc5958ab1bc2d7c46a84eb416"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.1-include-without-version.yaml",
+      "sha256": "a4710e446b768befd6ca5d1f73af936aa861aaee3498bb36dc03bb6645b86d9e"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.1-shorthand-not-boolean.yaml",
+      "sha256": "ef01d2586f9b145c4b717b3fc984133f64cf4bdff136cad27f0e701a6fc23116"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.1-unknown-shorthand.yaml",
+      "sha256": "a258f0d9b5577be8a53015d0b930343423378620ee3251d3f42ec72b879dbf55"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.2-no-allow-effect.yaml",
+      "sha256": "49a220f4817fc9d098e7d328e6ade37ff36c45737aca982a29460d062dab7868"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.2-policy-without-rules.yaml",
+      "sha256": "b9bb0ea13a50dcee51eecb45bdfde6b8b8bb8e25c2427e99eeb6ea11375c92e3"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.2-require-approval-without-approval.yaml",
+      "sha256": "c42f88507982955c2ec6d10525b7742c107107630f3b84707016dc2438fde476"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.2-rule-without-when.yaml",
+      "sha256": "b5903048723da33847a47b37e89f6c99ae88d57b96638493752fd86e05083200"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-empty-when.yaml",
+      "sha256": "ba4e4bbb55f425096c6b0a0af7af848ef8a5a6f9b6ec9fd5a827f0314c5bf21f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-in-not-a-list.yaml",
+      "sha256": "dc04a7fb17e1f4a184cca879d818ba73928f9ebcde9ae5731553a537ce218881"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-invalid-actor-type.yaml",
+      "sha256": "120adb36f4e98f3eebd8b0b22e3e2f573007b3f23a1e0d47f2287b231d11c990"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-invalid-classification-value.yaml",
+      "sha256": "ba0efcdcf3a6e95425e2d1664aac54584deaf011b5fe096d49489fc891401526"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-ordering-operator-on-unordered-attribute.yaml",
+      "sha256": "f3fcc424894d0132dd1c74d35490a9bc45f795e58ba21b51b8462fd1393e5ce6"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-plain-condition-value.yaml",
+      "sha256": "954771e31be43aadb5a91b93e7a597e49b5b98e56c3d3b9af026bebf29ea9e3f"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/8.3-unknown-attribute.yaml",
+      "sha256": "4a0b862be895953a12a011a5a866449c21ae06fbca038ca78e4bfdc634e7a476"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/9.1-digest-mismatch.yaml",
+      "sha256": "a215d4a1a825348894fe2b29817670c3c4ae6bdb9fc885027fe6afb072aaddc4"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/9.4-unpinned-command-image-security-profile.yaml",
+      "sha256": "57557d75ae44c9b705ab789384110d26bbc8dee12536af212f432adc6b6d2bf2"
+    },
+    {
+      "path": "conformance/v1alpha3/invalid/9.4-unpinned-mcp-image-security-profile.yaml",
+      "sha256": "2688e4507eb7d7dfc3fe08b32bcb273c858a869e76d2524fc9b1f016c37fa505"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/10.2-audit-configuration.yaml",
+      "sha256": "661d99a16e94ff136cd2550f789205c4ce4a40f503e9e524534ef6c448431323"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/10.8-workflow-run-with-status.yaml",
+      "sha256": "1b837157296b6b2779886d11bd07d03607dc725e6959be309bb0433c6dec21e8"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/10.8-workflow-run.yaml",
+      "sha256": "4f26f52b6b11517a6e054f6321f71ad2cb089b1bce8dbef1664c14b9123919da"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.1-json-serialization.json",
+      "sha256": "5c0af4c5a343b3fac59f305363437eed7fe909fe5cc6a319bdc1d3f204576341"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.1-multi-document.yaml",
+      "sha256": "2e2a60b69ab9bdc1b19a6a545dc2ffe365e0d226ebeab1d98a350c5d5ae677ae"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.2-minimal-workflow.yaml",
+      "sha256": "a83859f3ea69930df8560ef3952ff43fe98915dc93d3caadae85877eb6c06c63"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.2-status-and-store-metadata.yaml",
+      "sha256": "ec8027997cb5fe94ef536fbb8697f024454ff66013c3a3c360a1133602af8d05"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.3-core-profile-only.yaml",
+      "sha256": "4e771a1a0a9161e526269096f19c9f4528f84d0c559b1db6c8c3b4f05d83e1f1"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.3-extension-fields.yaml",
+      "sha256": "35470ba2dc8d2765c9f96e39484e21d788de9356fadb9a3ca3227a522b2baaea"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.6-durations.yaml",
+      "sha256": "ef9756e0a3d0964b6a674769f26da730e291e5e292456f4d3f48a4fd2954dae8"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/3.9-expression-references.yaml",
+      "sha256": "d744bb2f02940aed2d04c6d3b33609cbbbef75f08d16d824d721b810704d20e4"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/4-labels-and-annotations.yaml",
+      "sha256": "92dd20dd31d2135e4aea8fa9441cb2a910aac3a8bd570811f609a9f423a993a8"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.2-schedule-concurrency-and-deadline.yaml",
+      "sha256": "db0dc047d7e8c073a8b5408bc893ba28645100bf4c17eb33aade2f8c73c954ab"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.2-triggers.yaml",
+      "sha256": "40ac335138b43d8503f27ceeb7dcd8a39a999171a63ac138d688904fb1352bdf"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.3-inputs.yaml",
+      "sha256": "923f77bd57478bb78575b3869e1daf47a7835ab8980d3e6988c0a1fd23ea8f02"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.4.2-agent-reference.yaml",
+      "sha256": "df17b7fe727def34eca3f3a2e45d4425c6efcacf89ea73777708b87be0a8a783"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.4.4-remote-agent.yaml",
+      "sha256": "b7dabea50c4138f52dc5592c2b392118a2c1534ebc1417646b4e15485dedab41"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.5.4-action-groups.yaml",
+      "sha256": "f0b0d84d12614b3d219d406e718a2183ebac42a9bb63475444cb9e70474e28ee"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.6.2-command-step-env.yaml",
+      "sha256": "c80e84da51151dff6d35c0318a65d41772609a9763b2103d3d6903b46c9a6ae2"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.6.3-transitive-step-reference.yaml",
+      "sha256": "297feb4ca9a9a428da70263d02488eda67d15fa6d5606e11ec36f76fe49d3b79"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.6.4-command-step-outputs.yaml",
+      "sha256": "a9b5f2a858d022478f38107faac8ecf853ac55c8eb2fa25b2f83ac8c0562d56c"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.6.5-for-each.yaml",
+      "sha256": "60d6861b5770c01bc29cc49986d53ba1e14fb0975fb6adef7b77d184ee610690"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.7-nested-budgets.yaml",
+      "sha256": "56ef2659d16af919f0bbc846ec64d1f01b545d2775ef75f0f2b0f6efe468ad1d"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.8-agent-human-input.yaml",
+      "sha256": "fc8cb0e91d35f51d785cb2eb89a722b771d9760dcabd0eeee2f064e4d20b36a8"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.8-agent-manifest-human-input.yaml",
+      "sha256": "727e0fe3fca42c6e52f38a4fac20b3c159490bcffeafc9072c4644a0b7b26907"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.8-input-step-free-text.yaml",
+      "sha256": "789d099de1b41b9a3b3c56abcb9fe0641cac3c65c45a6cb04c90d10d4726928a"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/5.8-input-step.yaml",
+      "sha256": "b9835f5088497a1281fb931acc9dfb820c2cb20d127f1fc62eeacf62e13a0524"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/6-agent-manifest.yaml",
+      "sha256": "206e60bba698943f18586d9038750e393d1036bb3a4c1003730c45f1eee3b4b7"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/6-agent-prompt-ref.yaml",
+      "sha256": "96a5b8d83d77b2738f96b8272b2b5206453885bb26977fc00dfcb4cf3cf616d7"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/7.10-environments.yaml",
+      "sha256": "4cb0b2e4f9e3714187d47f2de9b62d7f318911533e020183cf455221ae69799b"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/7.2-data-and-model-policy.yaml",
+      "sha256": "f49aa265834276a5ea15862a42be437c98f142c8f9eed546516572d58b83e0f2"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/7.5-permissions.yaml",
+      "sha256": "5e35384719eb4c735c669261ca57210a8017b8697660e76ac0cadf4ee9c95f79"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/7.6-approval-and-separation-of-duties.yaml",
+      "sha256": "a23a8c6c5d14abe101bf85524e2bb3dce0387dd6413e5e7999809e53c1edfd2a"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/8.1-policy-shorthands.yaml",
+      "sha256": "364070959c456bfc0bf12f164446a262e3ff745eab3a5f045e0f55ee8c3c237e"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/8.2-policy-manifest.yaml",
+      "sha256": "bb45faeb613230eb5549554b6fffcb74dd9440d6e703837675d8de482d7a9b2f"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/8.3-conditions.yaml",
+      "sha256": "7cc0861476f840e43e612a9bb562ec74e21d6f9f79fb56af17ad5febd5fbe655"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/9.1-digest-ignores-deployment-fields.yaml",
+      "sha256": "141957ee9d7a9254bb8e3113673c74e6aa77175cc1bdf8771a26d2977d1049aa"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/9.1-digest-verified.yaml",
+      "sha256": "fa892a461a684134f5b230f1d7d8b66069282e2fc7696801ac1a8982995f4b36"
+    },
+    {
+      "path": "conformance/v1alpha3/valid/9.4-pinned-images-security-profile.yaml",
+      "sha256": "e0bd517b673dfeac8f442705c9a585215773ad4ed71c30fd696a96c05c384aed"
+    },
+    {
       "path": "spec/v1alpha1/examples/audit-events.yaml",
       "sha256": "293c50db5e705023295b92252fa91c5870b444e93e64929a346b209625eaa050"
     },
@@ -773,7 +2342,7 @@
     },
     {
       "path": "spec/v1alpha1/examples/invoice-processing.workflow.yaml",
-      "sha256": "507d98b300eeea9eacffd32760af437b12ca239b200a2aed2128540b09b3908f"
+      "sha256": "abd430e44b8619c52913f6442c5db9369fe4d1bc750cf93933d51dcb7ca6b9c1"
     },
     {
       "path": "spec/v1alpha1/examples/no-production-autonomy.policy.yaml",
@@ -813,7 +2382,7 @@
     },
     {
       "path": "spec/v1alpha2/examples/invoice-processing.workflow.yaml",
-      "sha256": "fd7e4a97dd76030bf9352bc723ccb1602257ebc0249b4b23dceb165d633ed2e2"
+      "sha256": "424983672f64906f2a29ef09fb1f761b05ac295284cbda0ac13577f94832a876"
     },
     {
       "path": "spec/v1alpha2/examples/no-production-autonomy.policy.yaml",
@@ -826,6 +2395,50 @@
     {
       "path": "spec/v1alpha2/examples/vulnerability-fixer.workflow.yaml",
       "sha256": "f424cfa73dd6a70045c98d186f4a2b67ba0410be6a0155e9a54a01ee2251b5ea"
+    },
+    {
+      "path": "spec/v1alpha3/examples/audit-events.yaml",
+      "sha256": "293c50db5e705023295b92252fa91c5870b444e93e64929a346b209625eaa050"
+    },
+    {
+      "path": "spec/v1alpha3/examples/conformance-statement.yaml",
+      "sha256": "2155d0e93b0fc2987d6a35f29263271fce0cb90898d44ee5478ec9ed91d7b4ab"
+    },
+    {
+      "path": "spec/v1alpha3/examples/eu-data-residency.policy.yaml",
+      "sha256": "14f73254c927058c013770909a3f484395be56c1af36447accb882009f7385a4"
+    },
+    {
+      "path": "spec/v1alpha3/examples/execution-record.yaml",
+      "sha256": "6bf6fca9fbfa498bea9263c4aa1b643bfdebab1704767f93478b7a3795262672"
+    },
+    {
+      "path": "spec/v1alpha3/examples/image-review.workflow.yaml",
+      "sha256": "fc6ff728462f3e17cb66c8a891a14091f54e65105a8b09a2dbce6512ed84a71c"
+    },
+    {
+      "path": "spec/v1alpha3/examples/invoice-extractor.agent.yaml",
+      "sha256": "8c8d7d840700d1f341aaff93193ca07bcadf990b288a3ab511a035f390e241a2"
+    },
+    {
+      "path": "spec/v1alpha3/examples/invoice-processing.workflow.yaml",
+      "sha256": "c1244eff64c6f4ea6a2bbb938c00d1c1e95201d306e95e02a264259e180d8e76"
+    },
+    {
+      "path": "spec/v1alpha3/examples/no-production-autonomy.policy.yaml",
+      "sha256": "4cbacc33b5f7ed8363ee96ff8fbf5dc38b7078c7e1eebedd09cad04d1b703949"
+    },
+    {
+      "path": "spec/v1alpha3/examples/security-review.a2a.workflow.yaml",
+      "sha256": "3c309afe5945eec46f5474f323e99b9292577e5fc8237f09f2e1fb1a7ddb06ee"
+    },
+    {
+      "path": "spec/v1alpha3/examples/vulnerability-fixer.run.yaml",
+      "sha256": "75141d56ceec76eb7a4a84597be77680982c56654e060bf7aae139a72e2c40d7"
+    },
+    {
+      "path": "spec/v1alpha3/examples/vulnerability-fixer.workflow.yaml",
+      "sha256": "fda12f98b7903e6884c48b5c89e6a2e1b6177c85ba10de1d7d2db26e3abd20cb"
     }
   ]
 }

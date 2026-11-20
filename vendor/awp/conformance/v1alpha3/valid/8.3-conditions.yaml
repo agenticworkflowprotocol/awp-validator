@@ -1,0 +1,42 @@
+# Conformance case 8.3-conditions
+# Spec section 8.3: All condition attributes and operators; ordering operators on ordered attributes.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+kind: Policy
+metadata:
+  name: conformance-policy
+spec:
+  version: 1.0.0
+  owner:
+    team: governance-team
+  rules:
+    - id: c1
+      effect: deny
+      when:
+        action:
+          equals: github.*
+        environment.name:
+          equals: production
+        risk.level:
+          gte: high
+        data.classification:
+          gt: internal
+          lt: secret
+        destination.provider:
+          equals: x
+        destination.region:
+          notEquals: EU
+        model.provider:
+          equals: ollama
+        model.name:
+          in:
+            - qwen3
+        actor.type:
+          equals: agent
+        workflow.name:
+          equals: w
+        step.id:
+          equals: s
+        agent.id:
+          notIn:
+            - a

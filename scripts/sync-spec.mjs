@@ -2,8 +2,8 @@
 // Copies the normative AWP artefacts this validator is built on from a checkout of the
 // specification repository into vendor/awp/ and records commit and SHA-256 hashes in
 // PROVENANCE.json. One commit of the specification provides every supported API version: one
-// schema and one example directory per version, one set of semantic rules and one conformance
-// suite for all of them. The vendored files are never edited by hand: update them with this
+// schema, one example directory and one conformance suite per version, and one set of semantic
+// rules for all of them. The vendored files are never edited by hand: update them with this
 // script and review the diff.
 //
 //   node scripts/sync-spec.mjs <path-to-agenticworkflowprotocol.org-checkout>
@@ -21,9 +21,12 @@ const SOURCES = [
   'LICENSE-SPEC',
   ...API_VERSIONS.map((v) => `schema/awp.${v}.json`),
   'conformance/semantic.mjs',
+  'conformance/human-input.mjs',
+  'conformance/migrate.mjs',
   'conformance/index.json',
   'conformance/valid',
   'conformance/invalid',
+  ...API_VERSIONS.slice(1).map((v) => `conformance/${v}`),
   ...API_VERSIONS.map((v) => `spec/${v}/examples`),
 ];
 

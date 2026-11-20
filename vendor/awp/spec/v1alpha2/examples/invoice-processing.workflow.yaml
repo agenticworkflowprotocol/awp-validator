@@ -37,9 +37,6 @@ spec:
     - type: event
       source: mailbox.invoices
       eventType: message.received
-    - type: schedule
-      cron: "0 6 * * 1-5"
-      timezone: Europe/Berlin
 
   inputs:
     - name: invoice
