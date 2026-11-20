@@ -119,6 +119,7 @@ test('v1alpha3: governance fields in spec, forEach as in v1alpha2, migration fro
   assert.equal(document.metadata.version, undefined);
   const v3 = validateText(stringify(document)).documents[0];
   assert.equal(v3.awp, 'v1alpha3');
+  assert.equal(v3.version, '0.1.0', 'the version comes from spec in v1alpha3');
   assert.deepEqual(v3.diagnostics.filter((d) => d.severity === 'error'), []);
   assert.ok(schemas.v1alpha3.$defs.ForEach, 'v1alpha3 has step iteration');
   // v1alpha1 layout is rejected in v1alpha3: version belongs to spec there.

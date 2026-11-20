@@ -56,10 +56,13 @@ function diagnostic({ severity, code, message, path, section }, extra = {}) {
 function identity(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
   const meta = value.metadata && typeof value.metadata === 'object' ? value.metadata : {};
+  const spec = value.spec && typeof value.spec === 'object' ? value.spec : {};
+  // From v1alpha3 on the version is a spec field (Kubernetes resource model, spec 4.2).
+  const version = versionOf(value) === 'v1alpha3' ? spec.version : meta.version;
   return {
     ...(typeof value.kind === 'string' ? { kind: value.kind } : {}),
     ...(typeof meta.name === 'string' ? { name: meta.name } : {}),
-    ...(typeof meta.version === 'string' ? { version: meta.version } : {}),
+    ...(typeof version === 'string' ? { version } : {}),
   };
 }
 
