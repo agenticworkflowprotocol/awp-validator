@@ -6,11 +6,10 @@
 export const API_VERSIONS = ['v1alpha1', 'v1alpha2', 'v1alpha3'];
 
 /**
- * The current draft. v1alpha3 is a proposed draft built from AEPs that are not accepted
- * (decision D20 of the specification), so the default schema export and the examples of the
- * website stay on v1alpha2.
+ * The current draft (decision D22 of the specification): the default schema export, the version an
+ * unsupported apiVersion is checked against, and the examples of the website.
  */
-export const API_VERSION = 'v1alpha2';
+export const API_VERSION = 'v1alpha3';
 
 const API_GROUP = 'awp.agenticworkflowprotocol.org/';
 

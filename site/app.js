@@ -3,15 +3,15 @@ import { KNOWN_PROFILES, formatJson, isOk, validateText } from './lib/awp-valida
 
 const SPEC_URL = 'https://agenticworkflowprotocol.org/specification/';
 const DEBOUNCE_MS = 300;
-const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha2
+const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
 kind: Workflow
 metadata:
   name: hello-workflow
+spec:
   version: 0.1.0
   owner:
     team: example-team
   classification: internal
-spec:
   budget:
     maxCostUsd: 1.00
     maxSteps: 10

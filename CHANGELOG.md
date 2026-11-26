@@ -4,6 +4,18 @@ All notable changes are documented in this file. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-11-25
+
+### Changed
+
+- **Breaking:** `v1alpha3` is the current draft (decision D22 of the specification). `API_VERSION`,
+  the default `schema` and the export `./schema.json` are now `v1alpha3`; an unsupported
+  `apiVersion` is checked against `v1alpha3` and rejected at `/apiVersion`. Use
+  `./schema/v1alpha2.json` or `schemas.v1alpha2` for the previous default.
+- `v1alpha1` and `v1alpha2` documents are validated exactly as before, against the schema of their
+  own `apiVersion`; the vendored specification is updated to commit `c8f79b1` (D22 merged); schemas and semantic rules are unchanged.
+- The website starts with a `v1alpha3` manifest and shows the `v1alpha3` examples.
+
 ## [0.2.0] - 2026-11-20
 
 ### Added
