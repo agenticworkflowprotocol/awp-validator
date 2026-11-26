@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { API_VERSIONS, KNOWN_PROFILES, UsageError, migrateToV1alpha3, provenance, schema, schemas, validateManifest, validateText } from '../src/index.js';
+import { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, migrateToV1alpha3, provenance, schema, schemas, validateManifest, validateText } from '../src/index.js';
 import { parse as parseFirst, stringify } from 'yaml';
 
 const VALID = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
@@ -41,8 +41,10 @@ test('each document is validated against the schema of its own apiVersion', () =
   assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2', 'v1alpha3']);
   assert.equal(validateText(V2).documents[0].awp, 'v1alpha2');
   assert.equal(validateText(V2).documents[0].valid, true);
-  const unknown = validateText(VALID.replace('/v1alpha1', '/v1alpha99')).documents[0];
-  assert.equal(unknown.awp, 'v1alpha2', 'an unsupported version is checked against the current draft');
+  // A document in the layout of the current draft with an unsupported apiVersion: only the version is wrong.
+  const current = stringify(migrateToV1alpha3(parseFirst(VALID)).document);
+  const unknown = validateText(current.replace('/v1alpha3', '/v1alpha99')).documents[0];
+  assert.equal(unknown.awp, 'v1alpha3', 'an unsupported version is checked against the current draft');
   assert.deepEqual(unknown.diagnostics.map((d) => [d.code, d.path]), [['schema.const', '/apiVersion']]);
 });
 
@@ -106,7 +108,8 @@ test('unknown profiles are a usage error', () => {
 test('schema, profiles and provenance are exported', () => {
   assert.equal(schema.$schema, 'https://json-schema.org/draft/2020-12/schema');
   assert.deepEqual(KNOWN_PROFILES, ['core', 'governance', 'audit', 'security', 'mcp', 'a2a', 'interaction']);
-  assert.equal(schema.$id, 'https://agenticworkflowprotocol.org/schema/awp.v1alpha2.json', 'the default schema is the current draft');
+  assert.equal(schema.$id, 'https://agenticworkflowprotocol.org/schema/awp.v1alpha3.json', 'the default schema is the current draft');
+  assert.equal(API_VERSION, 'v1alpha3');
   assert.match(provenance.source.commit, /^[0-9a-f]{40}$/);
 });
 

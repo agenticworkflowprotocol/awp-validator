@@ -1,6 +1,6 @@
 {
   "name": "@agenticworkflowprotocol/validator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Reference validator and CLI for Agentic Workflow Protocol (AWP) manifests: YAML rules, JSON Schema and semantic checks per conformance profile, digest verification and machine-readable diagnostics.",
   "license": "Apache-2.0",
   "type": "module",
@@ -35,7 +35,7 @@
       "types": "./types/index.d.ts",
       "default": "./dist/browser/awp-validator.mjs"
     },
-    "./schema.json": "./vendor/awp/schema/awp.v1alpha2.json",
+    "./schema.json": "./vendor/awp/schema/awp.v1alpha3.json",
     "./schema/v1alpha1.json": "./vendor/awp/schema/awp.v1alpha1.json",
     "./schema/v1alpha2.json": "./vendor/awp/schema/awp.v1alpha2.json",
     "./schema/v1alpha3.json": "./vendor/awp/schema/awp.v1alpha3.json",
