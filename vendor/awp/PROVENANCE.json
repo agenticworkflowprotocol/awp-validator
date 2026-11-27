@@ -9,8 +9,8 @@
   ],
   "source": {
     "repository": "https://github.com/agenticworkflowprotocol/agenticworkflowprotocol.org",
-    "commit": "46f76bfd723a6b3b66ea746958d30e9221a1ee0c",
-    "commitDate": "2026-11-27T07:29:40+01:00"
+    "commit": "058c2673f4899512c7d7e24fda0a21c6484cfc8b",
+    "commitDate": "2026-11-27T07:35:18+01:00"
   },
   "licenses": {
     "Apache-2.0": "code, JSON schema, conformance manifests and examples (LICENSE)",
