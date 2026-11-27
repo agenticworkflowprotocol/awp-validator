@@ -3,7 +3,7 @@
 // uses a precompiled one (no eval). Results follow the diagnostics of the AWP CLI output formats,
 // section 3 (docs/cli.md in the specification repository).
 import { KNOWN_PROFILES, semanticCheck } from '../vendor/awp/conformance/semantic.mjs';
-import { versionOf } from './versions.js';
+import { API_VERSIONS, versionOf } from './versions.js';
 import { loadDocuments, positionAt, positionOf } from './yaml.js';
 
 export { API_VERSION, API_VERSIONS } from './versions.js';
@@ -58,7 +58,7 @@ function identity(value) {
   const meta = value.metadata && typeof value.metadata === 'object' ? value.metadata : {};
   const spec = value.spec && typeof value.spec === 'object' ? value.spec : {};
   // From v1alpha3 on the version is a spec field (Kubernetes resource model, spec 4.2).
-  const version = versionOf(value) === 'v1alpha3' ? spec.version : meta.version;
+  const version = API_VERSIONS.indexOf(versionOf(value)) >= API_VERSIONS.indexOf('v1alpha3') ? spec.version : meta.version;
   return {
     ...(typeof value.kind === 'string' ? { kind: value.kind } : {}),
     ...(typeof meta.name === 'string' ? { name: meta.name } : {}),

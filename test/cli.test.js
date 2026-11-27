@@ -98,7 +98,7 @@ test('--strict fails on warnings, --quiet prints only errors', () => {
 });
 
 test('--version and --help', () => {
-  assert.match(run(['--version']).out, /^awp-validator \d+\.\d+\.\d+ \(AWP v1alpha1, v1alpha2, v1alpha3, specification [0-9a-f]{7}\)\n$/);
+  assert.match(run(['--version']).out, /^awp-validator \d+\.\d+\.\d+ \(AWP v1alpha1, v1alpha2, v1alpha3, v1alpha4, specification [0-9a-f]{7}\)\n$/);
   assert.match(run(['--help']).out, /Usage: awp validate/);
 });
 

@@ -4,6 +4,31 @@ All notable changes are documented in this file. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-11-27
+
+### Added
+
+- AWP `v1alpha4` (decision D23 of the specification): `v1alpha3` plus step
+  conditions (`when`, spec 3.12) and workflow steps (`type: workflow`, spec 5.6.6), with the new
+  diagnostics `when.syntax`, `when.limit-exceeded`, `when.forbidden-segment`, `when.unknown-root`,
+  `when.unknown-step`, `when.not-a-dependency`, `when.undeclared-output`, `step.workflow-output`
+  and the warning `when.undeclared-input`.
+- `schemas.v1alpha4`, the export `./schema/v1alpha4.json` and `migrateToV1alpha4` (mechanical
+  migration of `v1alpha1`, `v1alpha2` and `v1alpha3` manifests).
+- Tests run the `v1alpha4` conformance suite and examples against the Node.js build and the
+  browser bundle.
+
+### Changed
+
+- **Breaking:** `v1alpha4` is the current draft (decision D24 of the specification). `API_VERSION`,
+  the default `schema` and the export `./schema.json` are now `v1alpha4`; an unsupported
+  `apiVersion` is checked against `v1alpha4` and rejected at `/apiVersion`. Use
+  `./schema/v1alpha3.json` or `schemas.v1alpha3` for the previous default.
+- `v1alpha1`, `v1alpha2` and `v1alpha3` documents are validated exactly as before, against the
+  schema of their own `apiVersion`. The vendored specification includes `conformance/conditions.mjs`
+  and is updated to commit `058c267` (D23 merged); D24 changes no vendored schema or rule.
+- The website starts with a `v1alpha4` manifest and shows the `v1alpha4` examples.
+
 ## [0.3.0] - 2026-11-25
 
 ### Changed

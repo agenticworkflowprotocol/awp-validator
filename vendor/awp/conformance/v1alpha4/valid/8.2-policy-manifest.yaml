@@ -1,0 +1,31 @@
+# Conformance case 8.2-policy-manifest
+# Spec section 8.2: Policy manifest with requireApproval and deny rules.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: Policy
+metadata:
+  name: conformance-policy
+spec:
+  version: 1.0.0
+  owner:
+    team: governance-team
+  rules:
+    - id: deploy-needs-approval
+      when:
+        action:
+          equals: production.deploy
+      effect: requireApproval
+      approval:
+        approvers:
+          - role: release-manager
+    - id: pd-stays-in-eu
+      when:
+        data.classification:
+          in:
+            - personal
+            - sensitive
+        destination.region:
+          notIn:
+            - EU
+      effect: deny
+      message: Personal data must stay in the EU.

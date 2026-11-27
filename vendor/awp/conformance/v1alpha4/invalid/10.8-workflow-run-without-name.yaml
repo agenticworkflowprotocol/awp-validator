@@ -1,0 +1,14 @@
+# Conformance case 10.8-workflow-run-without-name
+# Spec section 10.8: metadata has name or generateName.
+# Expected: invalid (schema.anyOf at /metadata)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: WorkflowRun
+metadata:
+  namespace: conformance
+spec:
+  workflowRef:
+    name: conformance-base
+    version: 1.0.0
+  inputs:
+    repo: example-org/web-shop
+  environment: staging

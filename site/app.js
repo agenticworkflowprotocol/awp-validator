@@ -3,7 +3,7 @@ import { KNOWN_PROFILES, formatJson, isOk, validateText } from './lib/awp-valida
 
 const SPEC_URL = 'https://agenticworkflowprotocol.org/specification/';
 const DEBOUNCE_MS = 300;
-const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha3
+const STARTER = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
 kind: Workflow
 metadata:
   name: hello-workflow

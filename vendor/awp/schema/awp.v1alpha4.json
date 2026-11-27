@@ -1,0 +1,3797 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agenticworkflowprotocol.org/schema/awp.v1alpha4.json",
+  "title": "Agentic Workflow Protocol manifest (v1alpha4)",
+  "description": "Structural rules of AWP v1alpha4 (spec/v1alpha4/README.md). Rules that JSON Schema cannot express are listed in schema/README.md as semantic validation rules. Per-kind entry points: #/$defs/Workflow, #/$defs/Agent, #/$defs/Policy, #/$defs/WorkflowRun.",
+  "type": "object",
+  "required": [
+    "kind"
+  ],
+  "properties": {
+    "kind": {
+      "enum": [
+        "Workflow",
+        "Agent",
+        "Policy",
+        "WorkflowRun"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "Workflow"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/Workflow"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "Agent"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/Agent"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "Policy"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/Policy"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "WorkflowRun"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/WorkflowRun"
+      }
+    }
+  ],
+  "$defs": {
+    "Name": {
+      "description": "Name (spec 3.4).",
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,62}$"
+    },
+    "Identifier": {
+      "description": "Identifier (spec 3.4).",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "ActionIdentifier": {
+      "description": "Action identifier (spec 5.5.3).",
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)+$"
+    },
+    "ActionKey": {
+      "description": "Action identifier, group identifier or wildcard pattern with a final segment * (spec 5.5.3, 5.5.4).",
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)*(\\.[a-zA-Z0-9_-]+|\\.\\*)$"
+    },
+    "SemVer": {
+      "description": "Semantic Version 2.0.0 (spec 3.5).",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "Duration": {
+      "description": "Duration greater than zero (spec 3.6).",
+      "type": "string",
+      "pattern": "^(?!(?:0+(?:ms|s|m|h|d|w|y))+$)(?:[0-9]+(?:ms|s|m|h|d|w|y))+$"
+    },
+    "Date": {
+      "description": "RFC 3339 full-date (spec 3.7). Calendar validity is a semantic rule.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+    },
+    "Digest": {
+      "description": "Digest <algorithm>:<lowercase hex> (spec 3.8). sha256/sha384/sha512 have fixed lengths; other algorithms are accepted syntactically.",
+      "type": "string",
+      "pattern": "^(sha256:[0-9a-f]{64}|sha384:[0-9a-f]{96}|sha512:[0-9a-f]{128}|(?!sha256:|sha384:|sha512:)[a-z0-9][a-z0-9_+.-]*:[0-9a-f]+)$"
+    },
+    "HttpsUrl": {
+      "description": "HTTPS URL.",
+      "type": "string",
+      "pattern": "^https://[^\\s/?#]+([/?#]\\S*)?$"
+    },
+    "Classification": {
+      "description": "Data class (spec 7.2).",
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "personal",
+        "restricted",
+        "sensitive",
+        "secret"
+      ]
+    },
+    "RiskLevel": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "Expression": {
+      "description": "Expression-enabled string (spec 3.9): only inputs.<name>, steps.<id>.outputs.<name>, execution.id, execution.environment, forEach.item, forEach.item.<key> and forEach.index are allowed inside ${{ }}.",
+      "type": "string",
+      "pattern": "^(?:(?!\\$\\{\\{)[\\s\\S]|\\$\\{\\{ *(?:inputs\\.[a-zA-Z][a-zA-Z0-9_-]{0,62}|steps\\.[a-z][a-z0-9-]{0,62}\\.outputs\\.[^\\s.{}$]+|execution\\.id|execution\\.environment|forEach\\.index|forEach\\.item(?:\\.[a-zA-Z0-9_-]{1,63})*) *\\}\\})*$"
+    },
+    "Approver": {
+      "description": "Exactly one of role or user (spec 7.6).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "role"
+          ],
+          "not": {
+            "required": [
+              "user"
+            ]
+          }
+        },
+        {
+          "required": [
+            "user"
+          ],
+          "not": {
+            "required": [
+              "role"
+            ]
+          }
+        }
+      ]
+    },
+    "SeparationOfDuties": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actorCannotApproveOwnAction": {
+                "type": "boolean"
+              },
+              "initiatorCannotApprove": {
+                "type": "boolean"
+              },
+              "distinctApprovers": {
+                "type": "boolean"
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Approval": {
+      "description": "Workflow-level approval configuration (spec 7.6).",
+      "type": "object",
+      "properties": {
+        "requiredFor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionKey"
+          }
+        },
+        "approvers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Approver"
+          }
+        },
+        "minApprovals": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "onTimeout": {
+          "enum": [
+            "reject",
+            "fail"
+          ]
+        },
+        "message": {
+          "$ref": "#/$defs/Expression"
+        },
+        "separationOfDuties": {
+          "$ref": "#/$defs/SeparationOfDuties"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApprovalStep": {
+      "description": "Payload of an approval step (spec 5.6.1, 7.6): the fields of Approval without requiredFor and separationOfDuties, which apply only at workflow level.",
+      "type": "object",
+      "properties": {
+        "approvers": {
+          "$ref": "#/$defs/Approval/properties/approvers"
+        },
+        "minApprovals": {
+          "$ref": "#/$defs/Approval/properties/minApprovals"
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "onTimeout": {
+          "$ref": "#/$defs/Approval/properties/onTimeout"
+        },
+        "message": {
+          "$ref": "#/$defs/Expression"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Budget": {
+      "description": "Budget (spec 5.7). All limits are positive.",
+      "type": "object",
+      "properties": {
+        "maxCostUsd": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "maxSteps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxDuration": {
+          "$ref": "#/$defs/Duration"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "maxTokens": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxToolCalls": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxConcurrency": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Permissions": {
+      "description": "Permissions (spec 7.5).",
+      "type": "object",
+      "properties": {
+        "default": {
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        },
+        "tools": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)*(\\.[a-zA-Z0-9_-]+|\\.\\*)$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "allow": {
+                "type": "boolean"
+              },
+              "resources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Expression"
+                }
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "required": [
+              "allow"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "egress": {
+              "enum": [
+                "allow",
+                "deny"
+              ]
+            },
+            "allowHosts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "filesystem": {
+          "type": "object",
+          "properties": {
+            "read": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "write": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Name"
+          }
+        },
+        "environments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Model": {
+      "description": "Model object (spec 5.4.3).",
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "approved",
+                "pending",
+                "rejected",
+                "revoked"
+              ]
+            },
+            "expires": {
+              "$ref": "#/$defs/Date"
+            },
+            "approvedBy": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "riskClassification": {
+          "$ref": "#/$defs/RiskLevel"
+        },
+        "evaluation": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "passed",
+                "failed",
+                "pending",
+                "notEvaluated"
+              ]
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "allowedUseCases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "provider",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "PromptRef": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "ToolSource": {
+      "description": "Tool source (spec 5.5.2).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "mcp",
+            "builtin"
+          ]
+        },
+        "server": {
+          "$ref": "#/$defs/Name"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "mcp"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "server"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "builtin"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "name"
+            ]
+          }
+        }
+      ]
+    },
+    "McpServer": {
+      "description": "MCP server (spec 5.5.1).",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Name"
+        },
+        "transport": {
+          "enum": [
+            "stdio",
+            "streamable-http"
+          ]
+        },
+        "url": {
+          "$ref": "#/$defs/HttpsUrl"
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "secretRef": {
+              "$ref": "#/$defs/Name"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "secretRef"
+          ],
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "transport"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "transport": {
+            "const": "streamable-http"
+          }
+        },
+        "required": [
+          "transport"
+        ]
+      },
+      "then": {
+        "required": [
+          "url"
+        ]
+      }
+    },
+    "Secret": {
+      "description": "Secret declaration (spec 7.9). Secret values never appear in manifests.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Name"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "ActionGroups": {
+      "description": "Action groups (spec 5.5.4). Nesting is a semantic rule.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)+$"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/ActionIdentifier"
+        }
+      }
+    },
+    "InlineAgent": {
+      "description": "Inline agent (spec 5.4.1).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "model": {
+          "$ref": "#/$defs/Model"
+        },
+        "instructions": {
+          "type": "string"
+        },
+        "promptRef": {
+          "$ref": "#/$defs/PromptRef"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ToolSource"
+          }
+        },
+        "permissions": {
+          "$ref": "#/$defs/Permissions"
+        },
+        "budget": {
+          "$ref": "#/$defs/Budget"
+        },
+        "humanInput": {
+          "$ref": "#/$defs/HumanInput"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "id",
+        "model"
+      ],
+      "additionalProperties": false,
+      "not": {
+        "required": [
+          "instructions",
+          "promptRef"
+        ]
+      }
+    },
+    "AgentReference": {
+      "description": "Agent reference (spec 5.4.2).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "ref": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/Name"
+            },
+            "version": {
+              "$ref": "#/$defs/SemVer"
+            },
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "permissions": {
+          "$ref": "#/$defs/Permissions"
+        },
+        "budget": {
+          "$ref": "#/$defs/Budget"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "id",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "RemoteAgent": {
+      "description": "Remote agent over A2A (spec 5.4.4).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "protocol": {
+          "const": "a2a"
+        },
+        "endpoint": {
+          "$ref": "#/$defs/HttpsUrl"
+        },
+        "agentCard": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "$ref": "#/$defs/HttpsUrl"
+            },
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "additionalProperties": false
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "secretRef": {
+              "$ref": "#/$defs/Name"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "secretRef"
+          ],
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "id",
+        "protocol",
+        "endpoint"
+      ],
+      "additionalProperties": false
+    },
+    "AgentEntry": {
+      "description": "One entry of spec.agents: agent reference if it has ref, remote agent if it has protocol, otherwise inline agent (spec 5.4).",
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "if": {
+        "required": [
+          "ref"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/AgentReference"
+      },
+      "else": {
+        "if": {
+          "required": [
+            "protocol"
+          ]
+        },
+        "then": {
+          "$ref": "#/$defs/RemoteAgent"
+        },
+        "else": {
+          "$ref": "#/$defs/InlineAgent"
+        }
+      }
+    },
+    "Trigger": {
+      "description": "Trigger (spec 5.2).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "manual",
+            "schedule",
+            "event"
+          ]
+        },
+        "cron": {
+          "type": "string",
+          "pattern": "^\\S+(\\s+\\S+){4}$"
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eventType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "filter": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^.+$"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "concurrencyPolicy": {
+          "enum": [
+            "allow",
+            "forbid",
+            "replace"
+          ]
+        },
+        "startingDeadline": {
+          "$ref": "#/$defs/Duration"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "manual"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "cron"
+                  ]
+                },
+                {
+                  "required": [
+                    "timezone"
+                  ]
+                },
+                {
+                  "required": [
+                    "source"
+                  ]
+                },
+                {
+                  "required": [
+                    "eventType"
+                  ]
+                },
+                {
+                  "required": [
+                    "filter"
+                  ]
+                },
+                {
+                  "required": [
+                    "concurrencyPolicy"
+                  ]
+                },
+                {
+                  "required": [
+                    "startingDeadline"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "schedule"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "cron"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "source"
+                  ]
+                },
+                {
+                  "required": [
+                    "eventType"
+                  ]
+                },
+                {
+                  "required": [
+                    "filter"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "event"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "source",
+              "eventType"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "cron"
+                  ]
+                },
+                {
+                  "required": [
+                    "timezone"
+                  ]
+                },
+                {
+                  "required": [
+                    "concurrencyPolicy"
+                  ]
+                },
+                {
+                  "required": [
+                    "startingDeadline"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Input": {
+      "description": "Workflow input (spec 5.3).",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Name"
+        },
+        "type": {
+          "enum": [
+            "string",
+            "integer",
+            "number",
+            "boolean",
+            "object",
+            "array",
+            "artifact"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "default": {},
+        "description": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": {}
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "string"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "integer"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "number"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "boolean"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "object"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "array"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "default"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Step": {
+      "description": "Workflow step (spec 5.6).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "type": {
+          "enum": [
+            "agent",
+            "command",
+            "approval",
+            "input",
+            "workflow"
+          ]
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Identifier"
+          }
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "when": {
+          "description": "Condition (spec 3.12): the step runs only if it evaluates to true. The whole field is the expression, without ${{ }}.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Output name (spec 5.6.1). Also the file name in $AWP_OUTPUTS (spec 5.6.4).",
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,62}$"
+              },
+              "classification": {
+                "$ref": "#/$defs/Classification"
+              },
+              "description": {
+                "type": "string"
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "budget": {
+          "$ref": "#/$defs/Budget"
+        },
+        "agent": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "task": {
+          "$ref": "#/$defs/Expression"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "env": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Expression"
+          }
+        },
+        "workingDir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "$ref": "#/$defs/ApprovalStep"
+        },
+        "input": {
+          "$ref": "#/$defs/InputStep"
+        },
+        "workflow": {
+          "$ref": "#/$defs/WorkflowCall"
+        },
+        "forEach": {
+          "$ref": "#/$defs/ForEach"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "workflow"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "workflow"
+        ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "agent"
+              ]
+            },
+            {
+              "required": [
+                "task"
+              ]
+            },
+            {
+              "required": [
+                "command"
+              ]
+            },
+            {
+              "required": [
+                "image"
+              ]
+            },
+            {
+              "required": [
+                "env"
+              ]
+            },
+            {
+              "required": [
+                "workingDir"
+              ]
+            },
+            {
+              "required": [
+                "approval"
+              ]
+            },
+            {
+              "required": [
+                "input"
+              ]
+            },
+            {
+              "required": [
+                "forEach"
+              ]
+            }
+          ]
+        }
+      },
+      "else": {
+        "if": {
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "command"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "command"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "agent"
+                ]
+              },
+              {
+                "required": [
+                  "task"
+                ]
+              },
+              {
+                "required": [
+                  "approval"
+                ]
+              },
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "workflow"
+                ]
+              }
+            ]
+          }
+        },
+        "else": {
+          "if": {
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "const": "approval"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "approval"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "agent"
+                  ]
+                },
+                {
+                  "required": [
+                    "task"
+                  ]
+                },
+                {
+                  "required": [
+                    "command"
+                  ]
+                },
+                {
+                  "required": [
+                    "image"
+                  ]
+                },
+                {
+                  "required": [
+                    "env"
+                  ]
+                },
+                {
+                  "required": [
+                    "workingDir"
+                  ]
+                },
+                {
+                  "required": [
+                    "input"
+                  ]
+                },
+                {
+                  "required": [
+                    "forEach"
+                  ]
+                },
+                {
+                  "required": [
+                    "workflow"
+                  ]
+                }
+              ]
+            }
+          },
+          "else": {
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "input"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "input"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "agent"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "task"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "command"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "image"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "env"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "workingDir"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "approval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "forEach"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "workflow"
+                    ]
+                  }
+                ]
+              }
+            },
+            "else": {
+              "required": [
+                "agent"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "command"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "image"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "env"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "workingDir"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "approval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "input"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "workflow"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "DataPolicy": {
+      "description": "Data policy (spec 7.2, 7.3).",
+      "type": "object",
+      "properties": {
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "classification": {
+                "$ref": "#/$defs/Classification"
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "required": [
+              "name",
+              "classification"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "classification": {
+                "$ref": "#/$defs/Classification"
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "required": [
+              "name",
+              "classification"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "restrictions": {
+          "type": "object",
+          "properties": {
+            "externalTransfer": {
+              "enum": [
+                "allow",
+                "deny"
+              ]
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "residency": {
+          "type": "object",
+          "properties": {
+            "allowed": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "processing": {
+          "type": "object",
+          "properties": {
+            "allowedProviders": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "forbiddenProviders": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ModelPolicy": {
+      "description": "Model policy (spec 7.4).",
+      "type": "object",
+      "properties": {
+        "allowedProviders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "allowedModels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "forbiddenModels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "requirements": {
+          "type": "object",
+          "properties": {
+            "approvalStatus": {
+              "enum": [
+                "approved",
+                "pending",
+                "rejected",
+                "revoked"
+              ]
+            },
+            "encryption": {
+              "type": "boolean"
+            },
+            "region": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evaluationStatus": {
+              "enum": [
+                "passed",
+                "failed",
+                "pending",
+                "notEvaluated"
+              ]
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Policies": {
+      "description": "Workflow policy shorthands and includes (spec 8.1).",
+      "type": "object",
+      "properties": {
+        "git": {
+          "type": "object",
+          "properties": {
+            "allowPush": {
+              "type": "boolean"
+            },
+            "allowForcePush": {
+              "type": "boolean"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pullRequest": {
+          "type": "object",
+          "properties": {
+            "allowCreate": {
+              "type": "boolean"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "merge": {
+          "type": "object",
+          "properties": {
+            "allow": {
+              "type": "boolean"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "production": {
+          "type": "object",
+          "properties": {
+            "allow": {
+              "type": "boolean"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/$defs/Name"
+              },
+              "version": {
+                "$ref": "#/$defs/SemVer"
+              },
+              "digest": {
+                "$ref": "#/$defs/Digest"
+              },
+              "extensions": {
+                "$ref": "#/$defs/Extensions"
+              }
+            },
+            "required": [
+              "name",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Audit": {
+      "description": "Audit configuration (spec 10.2).",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "payload": {
+          "enum": [
+            "metadata",
+            "full"
+          ]
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "none",
+                "hash-chain",
+                "signed"
+              ]
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "duration": {
+              "$ref": "#/$defs/Duration"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Environments": {
+      "description": "Environments (spec 7.10). Keys are organizational environment names.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^.+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "autonomy": {
+            "enum": [
+              "unrestricted",
+              "controlled",
+              "approval-required",
+              "prohibited"
+            ]
+          },
+          "autoApprove": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ActionKey"
+            }
+          },
+          "extensions": {
+            "$ref": "#/$defs/Extensions"
+          }
+        },
+        "required": [
+          "autonomy"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "Owner": {
+      "description": "Ownership (spec 7.1).",
+      "type": "object",
+      "properties": {
+        "team": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contact": {
+          "type": "string"
+        },
+        "businessOwner": {
+          "type": "string"
+        },
+        "technicalOwner": {
+          "type": "string"
+        },
+        "dataOwner": {
+          "type": "string"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "team"
+      ],
+      "additionalProperties": false
+    },
+    "Metadata": {
+      "description": "Object metadata (spec 4): the subset of Kubernetes ObjectMeta that authors write. Fields that an object store populates are tolerated and ignored.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/ObjectName"
+        },
+        "namespace": {
+          "$ref": "#/$defs/ObjectName"
+        },
+        "labels": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$",
+            "maxLength": 316
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$",
+            "maxLength": 63
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$",
+            "maxLength": 316
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "uid": {
+          "type": "string"
+        },
+        "resourceVersion": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "integer"
+        },
+        "creationTimestamp": {
+          "type": "string"
+        },
+        "deletionTimestamp": {
+          "type": "string"
+        },
+        "deletionGracePeriodSeconds": {
+          "type": "integer"
+        },
+        "finalizers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerReferences": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "managedFields": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "WorkflowSpec": {
+      "description": "spec of kind Workflow (spec 5.1).",
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/SemVer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/$defs/Owner"
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "risk": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "category": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "additionalProperties": false
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "identity": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Trigger"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Input"
+          }
+        },
+        "budget": {
+          "$ref": "#/$defs/Budget"
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentEntry"
+          }
+        },
+        "mcpServers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpServer"
+          }
+        },
+        "actionGroups": {
+          "$ref": "#/$defs/ActionGroups"
+        },
+        "workflow": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Step"
+          }
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Secret"
+          }
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "environments": {
+          "$ref": "#/$defs/Environments"
+        },
+        "permissions": {
+          "$ref": "#/$defs/Permissions"
+        },
+        "dataPolicy": {
+          "$ref": "#/$defs/DataPolicy"
+        },
+        "modelPolicy": {
+          "$ref": "#/$defs/ModelPolicy"
+        },
+        "approval": {
+          "$ref": "#/$defs/Approval"
+        },
+        "policies": {
+          "$ref": "#/$defs/Policies"
+        },
+        "audit": {
+          "$ref": "#/$defs/Audit"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "agents",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "AgentSpec": {
+      "description": "spec of kind Agent (spec 6).",
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/SemVer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/$defs/Owner"
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "risk": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "category": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "additionalProperties": false
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "identity": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "model": {
+          "$ref": "#/$defs/Model"
+        },
+        "instructions": {
+          "type": "string"
+        },
+        "promptRef": {
+          "$ref": "#/$defs/PromptRef"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ToolSource"
+          }
+        },
+        "mcpServers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpServer"
+          }
+        },
+        "actionGroups": {
+          "$ref": "#/$defs/ActionGroups"
+        },
+        "permissions": {
+          "$ref": "#/$defs/Permissions"
+        },
+        "budget": {
+          "$ref": "#/$defs/Budget"
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Secret"
+          }
+        },
+        "humanInput": {
+          "$ref": "#/$defs/HumanInput"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "model"
+      ],
+      "additionalProperties": false,
+      "not": {
+        "required": [
+          "instructions",
+          "promptRef"
+        ]
+      }
+    },
+    "Condition": {
+      "description": "Policy rule conditions (spec 8.3): each attribute maps to an operator object. Unknown attributes are rejected; ordering operators are limited to data.classification and risk.level.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ActionKey"
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ActionKey"
+              }
+            },
+            "equals": {
+              "$ref": "#/$defs/ActionKey"
+            },
+            "notEquals": {
+              "$ref": "#/$defs/ActionKey"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "environment.name": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "risk.level": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/RiskLevel"
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/RiskLevel"
+              }
+            },
+            "equals": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "notEquals": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "gt": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "gte": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "lt": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "lte": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "data.classification": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Classification"
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Classification"
+              }
+            },
+            "equals": {
+              "$ref": "#/$defs/Classification"
+            },
+            "notEquals": {
+              "$ref": "#/$defs/Classification"
+            },
+            "gt": {
+              "$ref": "#/$defs/Classification"
+            },
+            "gte": {
+              "$ref": "#/$defs/Classification"
+            },
+            "lt": {
+              "$ref": "#/$defs/Classification"
+            },
+            "lte": {
+              "$ref": "#/$defs/Classification"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "destination.provider": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "destination.region": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "model.provider": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "model.name": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "actor.type": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "agent",
+                  "human",
+                  "runtime",
+                  "system"
+                ]
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "agent",
+                  "human",
+                  "runtime",
+                  "system"
+                ]
+              }
+            },
+            "equals": {
+              "enum": [
+                "agent",
+                "human",
+                "runtime",
+                "system"
+              ]
+            },
+            "notEquals": {
+              "enum": [
+                "agent",
+                "human",
+                "runtime",
+                "system"
+              ]
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "workflow.name": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "step.id": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "agent.id": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notEquals": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      }
+    },
+    "Rule": {
+      "description": "Policy rule (spec 8.2).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "when": {
+          "$ref": "#/$defs/Condition"
+        },
+        "effect": {
+          "enum": [
+            "deny",
+            "requireApproval"
+          ]
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "approvers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Approver"
+              }
+            },
+            "minApprovals": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "timeout": {
+              "$ref": "#/$defs/Duration"
+            },
+            "onTimeout": {
+              "enum": [
+                "reject",
+                "fail"
+              ]
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "message": {
+          "type": "string"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "id",
+        "when",
+        "effect"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "effect": {
+            "const": "requireApproval"
+          }
+        },
+        "required": [
+          "effect"
+        ]
+      },
+      "then": {
+        "required": [
+          "approval"
+        ]
+      }
+    },
+    "PolicySpec": {
+      "description": "spec of kind Policy (spec 8.2).",
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/SemVer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/$defs/Owner"
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "risk": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "$ref": "#/$defs/RiskLevel"
+            },
+            "category": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "additionalProperties": false
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "identity": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rule"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    "Workflow": {
+      "description": "A complete manifest of kind Workflow (spec 3.2, 5).",
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "awp.agenticworkflowprotocol.org/v1alpha4"
+        },
+        "kind": {
+          "const": "Workflow"
+        },
+        "metadata": {
+          "$ref": "#/$defs/Metadata"
+        },
+        "spec": {
+          "$ref": "#/$defs/WorkflowSpec"
+        },
+        "status": {
+          "description": "Written by the runtime or object store (shape: ManifestStatus, spec 3.11). Ignored by validators and excluded from the digest (spec 3.2).",
+          "type": "object"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "additionalProperties": false
+    },
+    "Agent": {
+      "description": "A complete manifest of kind Agent (spec 3.2, 6).",
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "awp.agenticworkflowprotocol.org/v1alpha4"
+        },
+        "kind": {
+          "const": "Agent"
+        },
+        "metadata": {
+          "$ref": "#/$defs/Metadata"
+        },
+        "spec": {
+          "$ref": "#/$defs/AgentSpec"
+        },
+        "status": {
+          "description": "Written by the runtime or object store (shape: ManifestStatus, spec 3.11). Ignored by validators and excluded from the digest (spec 3.2).",
+          "type": "object"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "additionalProperties": false
+    },
+    "Policy": {
+      "description": "A complete manifest of kind Policy (spec 3.2, 8.2).",
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "awp.agenticworkflowprotocol.org/v1alpha4"
+        },
+        "kind": {
+          "const": "Policy"
+        },
+        "metadata": {
+          "$ref": "#/$defs/Metadata"
+        },
+        "spec": {
+          "$ref": "#/$defs/PolicySpec"
+        },
+        "status": {
+          "description": "Written by the runtime or object store (shape: ManifestStatus, spec 3.11). Ignored by validators and excluded from the digest (spec 3.2).",
+          "type": "object"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "additionalProperties": false
+    },
+    "Extensions": {
+      "description": "Extension fields (spec 3.3): keys start with x-, values are opaque to AWP. Replaces the x- fields of v1alpha1, which a Kubernetes structural schema cannot express.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^x-[a-zA-Z0-9][a-zA-Z0-9_-]*$"
+      },
+      "additionalProperties": {}
+    },
+    "ObjectName": {
+      "description": "Object name (spec 3.4): a DNS-1123 label.",
+      "type": "string",
+      "maxLength": 63,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+    },
+    "AnswerField": {
+      "description": "One field of an answer schema (spec 5.8): a primitive value, as in MCP elicitation.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "format": {
+          "enum": [
+            "email",
+            "uri",
+            "date",
+            "date-time"
+          ]
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimum": {
+          "type": "number"
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "AnswerSchema": {
+      "description": "Schema of a structured answer (spec 5.8): a flat object of primitive fields, the requested-schema subset of MCP elicitation.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "object"
+        },
+        "properties": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,62}$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/AnswerField"
+          }
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "type",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "InputStep": {
+      "description": "Payload of an input step (spec 5.8): ask a person and wait for the answer.",
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/$defs/Expression"
+        },
+        "answerSchema": {
+          "$ref": "#/$defs/AnswerSchema"
+        },
+        "answerers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Approver"
+          }
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "onTimeout": {
+          "enum": [
+            "fail",
+            "useDefault"
+          ]
+        },
+        "default": {},
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "message",
+        "answerers"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "onTimeout": {
+            "const": "useDefault"
+          }
+        },
+        "required": [
+          "onTimeout"
+        ]
+      },
+      "then": {
+        "required": [
+          "default"
+        ]
+      }
+    },
+    "WorkflowCall": {
+      "description": "Payload of a workflow step (spec 5.6.6): start another workflow of the same scope as a child execution.",
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/ObjectName"
+        },
+        "version": {
+          "description": "Semantic version range of the child workflow. Default: the version the runtime treats as current.",
+          "type": "string",
+          "minLength": 1
+        },
+        "inputs": {
+          "description": "Inputs of the child execution; values are expression-enabled (spec 3.9).",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Expression"
+          }
+        },
+        "wait": {
+          "description": "Wait for the child execution to finish (default true).",
+          "type": "boolean"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "HumanInput": {
+      "description": "Lets an agent ask a person during its step (spec 5.8).",
+      "type": "object",
+      "properties": {
+        "answerers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Approver"
+          }
+        },
+        "timeout": {
+          "$ref": "#/$defs/Duration"
+        },
+        "onTimeout": {
+          "enum": [
+            "return",
+            "fail"
+          ]
+        },
+        "maxRequests": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "answerers"
+      ],
+      "additionalProperties": false
+    },
+    "Timestamp": {
+      "description": "RFC 3339 timestamp (spec 3.7).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "StatusCondition": {
+      "description": "A status condition in the shape of Kubernetes metav1.Condition (spec 3.11).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "maxLength": 316,
+          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+        },
+        "status": {
+          "enum": [
+            "True",
+            "False",
+            "Unknown"
+          ]
+        },
+        "observedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lastTransitionTime": {
+          "description": "When status last changed (RFC 3339).",
+          "$ref": "#/$defs/Timestamp"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 32768
+        }
+      },
+      "required": [
+        "type",
+        "status",
+        "lastTransitionTime",
+        "reason",
+        "message"
+      ]
+    },
+    "ManifestStatus": {
+      "description": "Status a runtime writes on a Workflow, Agent or Policy (spec 3.11). Validators ignore it (spec 3.2).",
+      "type": "object",
+      "properties": {
+        "observedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "digest": {
+          "description": "Digest of the manifest as the runtime validated it (spec 9.1).",
+          "$ref": "#/$defs/Digest"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StatusCondition"
+          }
+        }
+      }
+    },
+    "WorkflowRunStatus": {
+      "description": "Status a runtime writes on a WorkflowRun (spec 10.8). Validators ignore it (spec 3.2).",
+      "type": "object",
+      "properties": {
+        "observedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "executionId": {
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "pending",
+            "running",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "human",
+                "system",
+                "runtime",
+                "agent"
+              ]
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "manual",
+                "schedule",
+                "event"
+              ]
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "scheduledAt": {
+              "description": "Tick time for schedule triggers.",
+              "$ref": "#/$defs/Timestamp"
+            }
+          }
+        },
+        "environment": {
+          "type": "string"
+        },
+        "workflow": {
+          "description": "The manifest the execution is pinned to (spec 10.1).",
+          "type": "object",
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/ObjectName"
+            },
+            "version": {
+              "$ref": "#/$defs/SemVer"
+            },
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            }
+          }
+        },
+        "startedAt": {
+          "description": "Start of the execution.",
+          "$ref": "#/$defs/Timestamp"
+        },
+        "finishedAt": {
+          "description": "End of the execution.",
+          "$ref": "#/$defs/Timestamp"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Identifier"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "running",
+                  "waitingForApproval",
+                  "waitingForInput",
+                  "succeeded",
+                  "failed",
+                  "skipped",
+                  "cancelled"
+                ]
+              },
+              "attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "startedAt": {
+                "description": "Start of the first attempt.",
+                "$ref": "#/$defs/Timestamp"
+              },
+              "finishedAt": {
+                "description": "End of the last attempt.",
+                "$ref": "#/$defs/Timestamp"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "outputs": {
+                "description": "Produced outputs. Values are not stored in status, only references.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "digest": {
+                      "$ref": "#/$defs/Digest"
+                    },
+                    "size": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "classification": {
+                      "$ref": "#/$defs/Classification"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "status"
+            ]
+          }
+        },
+        "usage": {
+          "description": "Usage as in workflow.completed (spec 5.7, 10.4).",
+          "type": "object"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StatusCondition"
+          }
+        }
+      }
+    },
+    "RunMetadata": {
+      "description": "Metadata of a WorkflowRun (spec 10.8): as Metadata, but a client MAY set generateName instead of name.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/ObjectName"
+        },
+        "namespace": {
+          "$ref": "#/$defs/ObjectName"
+        },
+        "labels": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$",
+            "maxLength": 316
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$",
+            "maxLength": 63
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$",
+            "maxLength": 316
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "uid": {
+          "type": "string"
+        },
+        "resourceVersion": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "integer"
+        },
+        "creationTimestamp": {
+          "type": "string"
+        },
+        "deletionTimestamp": {
+          "type": "string"
+        },
+        "deletionGracePeriodSeconds": {
+          "type": "integer"
+        },
+        "finalizers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerReferences": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "managedFields": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "generateName": {
+          "type": "string",
+          "maxLength": 58,
+          "pattern": "^[a-z0-9]([-a-z0-9]*)?$"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "required": [
+            "generateName"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "WorkflowRunSpec": {
+      "description": "Request for one execution of a workflow (spec 10.8).",
+      "type": "object",
+      "properties": {
+        "workflowRef": {
+          "description": "The workflow to run, in the namespace of the WorkflowRun. version and digest are assertions, not selectors.",
+          "type": "object",
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/ObjectName"
+            },
+            "version": {
+              "$ref": "#/$defs/SemVer"
+            },
+            "digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "extensions": {
+              "$ref": "#/$defs/Extensions"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "inputs": {
+          "description": "Input values (spec 5.3).",
+          "type": "object"
+        },
+        "environment": {
+          "description": "Environment name (spec 7.10).",
+          "type": "string",
+          "minLength": 1
+        },
+        "cancel": {
+          "description": "Request to cancel the execution (spec 10.8).",
+          "type": "boolean"
+        },
+        "extensions": {
+          "$ref": "#/$defs/Extensions"
+        }
+      },
+      "required": [
+        "workflowRef"
+      ],
+      "additionalProperties": false
+    },
+    "WorkflowRun": {
+      "description": "An execution of a workflow as an object (spec 10.8).",
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "awp.agenticworkflowprotocol.org/v1alpha4"
+        },
+        "kind": {
+          "const": "WorkflowRun"
+        },
+        "metadata": {
+          "$ref": "#/$defs/RunMetadata"
+        },
+        "spec": {
+          "$ref": "#/$defs/WorkflowRunSpec"
+        },
+        "status": {
+          "description": "Written by the runtime (shape: WorkflowRunStatus). Ignored by validators (spec 3.2).",
+          "type": "object"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "additionalProperties": false
+    },
+    "ForEach": {
+      "description": "Iteration over a list (spec 5.6.5): the step runs once per item, bounded by maxItems and concurrency.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "description": "Exactly one reference to an array input or to an output of a step this step depends on.",
+          "type": "string",
+          "pattern": "^\\$\\{\\{ *(?:inputs\\.[a-zA-Z][a-zA-Z0-9_-]{0,62}|steps\\.[a-z][a-z0-9-]{0,62}\\.outputs\\.[^\\s.{}$]+) *\\}\\}$"
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "items",
+        "maxItems"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

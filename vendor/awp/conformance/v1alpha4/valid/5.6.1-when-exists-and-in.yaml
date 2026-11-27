@@ -1,0 +1,65 @@
+# Conformance case 5.6.1-when-exists-and-in
+# Spec section 3.12: Conditions combine exists(), in with literal lists, comparisons and boolean operators.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      required: true
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 1
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: analyze
+      agent: worker
+      task: Analyze ${{ inputs.repo }}.
+      outputs:
+        - name: report
+        - name: level
+    - id: comment
+      agent: worker
+      dependsOn:
+        - analyze
+      when: 'exists(steps.analyze.outputs.level) && (steps.analyze.outputs.level in ["high", "critical"] || inputs.repo == "example-org/web-shop")'
+      task: Comment on ${{ inputs.repo }}.
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true

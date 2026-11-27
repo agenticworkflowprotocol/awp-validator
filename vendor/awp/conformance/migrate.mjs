@@ -1,10 +1,12 @@
-// Migration of AWP manifests from v1alpha1 or v1alpha2 to v1alpha3 (Kubernetes resource model
-// alignment). v1alpha2 has the layout of v1alpha1 plus forEach, which carries over unchanged.
+// Migration of AWP manifests to v1alpha4. v1alpha1 and v1alpha2 first move to the Kubernetes
+// resource model of v1alpha3 (v1alpha2 has the layout of v1alpha1 plus forEach, which carries over
+// unchanged). v1alpha4 only adds fields to v1alpha3, so from v1alpha3 only apiVersion changes.
 // Pure function on parsed documents; the CLI wrapper is `awp-check.mjs migrate`.
 
 const V1ALPHA1 = 'awp.agenticworkflowprotocol.org/v1alpha1';
 const V1ALPHA2 = 'awp.agenticworkflowprotocol.org/v1alpha2';
 const V1ALPHA3 = 'awp.agenticworkflowprotocol.org/v1alpha3';
+const V1ALPHA4 = 'awp.agenticworkflowprotocol.org/v1alpha4';
 
 // Fields that leave metadata, in the order they are placed at the start of spec.
 const GOVERNANCE_FIELDS = ['version', 'description', 'owner', 'classification', 'purpose', 'risk', 'integrity', 'signature', 'provenance'];
@@ -71,4 +73,16 @@ export function migrateToV1alpha3(doc) {
   if (lifted.kind === 'Policy' && Array.isArray(spec.rules)) spec.rules = migrateRules(spec.rules);
 
   return { document: { apiVersion: V1ALPHA3, kind: lifted.kind, metadata, spec }, notes };
+}
+
+/**
+ * Migrate one parsed v1alpha1, v1alpha2 or v1alpha3 manifest to v1alpha4. Returns { document, notes }
+ * like migrateToV1alpha3.
+ */
+export function migrateToV1alpha4(doc) {
+  if (!isObj(doc) || ![V1ALPHA1, V1ALPHA2, V1ALPHA3].includes(doc.apiVersion)) {
+    throw new Error(`expected apiVersion ${V1ALPHA1}, ${V1ALPHA2} or ${V1ALPHA3}`);
+  }
+  const { document, notes } = doc.apiVersion === V1ALPHA3 ? { document: structuredClone(doc), notes: [] } : migrateToV1alpha3(doc);
+  return { document: { ...document, apiVersion: V1ALPHA4 }, notes };
 }

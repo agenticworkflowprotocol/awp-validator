@@ -1,7 +1,7 @@
 // Types of @agenticworkflowprotocol/validator (Node.js entry and the `./browser` entry).
 
 /** Supported AWP API versions. */
-export type ApiVersion = 'v1alpha1' | 'v1alpha2' | 'v1alpha3';
+export type ApiVersion = 'v1alpha1' | 'v1alpha2' | 'v1alpha3' | 'v1alpha4';
 /** Conformance profiles of AWP (spec 11.2); `interaction` exists from v1alpha3 on. */
 export type Profile = 'core' | 'governance' | 'audit' | 'security' | 'mcp' | 'a2a' | 'interaction';
 
@@ -68,6 +68,8 @@ export class UsageError extends Error {}
 
 /** Mechanical migration of a v1alpha1 or v1alpha2 manifest to v1alpha3 (spec v1alpha3 section 14). */
 export function migrateToV1alpha3(manifest: unknown): { document: Record<string, unknown>; notes: string[] };
+/** Mechanical migration of a v1alpha1, v1alpha2 or v1alpha3 manifest to v1alpha4 (spec v1alpha4 section 14). */
+export function migrateToV1alpha4(manifest: unknown): { document: Record<string, unknown>; notes: string[] };
 
 /** JSON Canonicalization Scheme (RFC 8785) for manifest values. */
 export function jcs(value: unknown): string;
@@ -76,12 +78,12 @@ export function manifestDigest(manifest: unknown, algorithm?: 'sha256' | 'sha384
 
 /** Supported API versions, oldest first. */
 export const API_VERSIONS: ApiVersion[];
-/** The latest supported API version. */
+/** The current draft (`v1alpha4`, decision D24 of the specification). */
 export const API_VERSION: ApiVersion;
 export const KNOWN_PROFILES: Profile[];
 /** The AWP JSON Schemas (draft 2020-12) used by the validator, by API version. */
 export const schemas: Record<ApiVersion, Record<string, unknown>>;
-/** The JSON Schema of the latest supported API version. */
+/** The JSON Schema of the current draft (`API_VERSION`). */
 export const schema: Record<string, unknown>;
 /** Commit and file hashes of the vendored specification artefacts. */
 export const provenance: {

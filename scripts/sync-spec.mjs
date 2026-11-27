@@ -22,6 +22,7 @@ const SOURCES = [
   ...API_VERSIONS.map((v) => `schema/awp.${v}.json`),
   'conformance/semantic.mjs',
   'conformance/human-input.mjs',
+  'conformance/conditions.mjs',
   'conformance/migrate.mjs',
   'conformance/index.json',
   'conformance/valid',
