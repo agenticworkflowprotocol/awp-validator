@@ -4,6 +4,27 @@ All notable changes are documented in this file. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-11-27
+
+### Added
+
+- AWP `v1alpha4`, the next draft (decision D23 of the specification): `v1alpha3` plus step
+  conditions (`when`, spec 3.12) and workflow steps (`type: workflow`, spec 5.6.6), with the new
+  diagnostics `when.syntax`, `when.limit-exceeded`, `when.forbidden-segment`, `when.unknown-root`,
+  `when.unknown-step`, `when.not-a-dependency`, `when.undeclared-output`, `step.workflow-output`
+  and the warning `when.undeclared-input`.
+- `schemas.v1alpha4`, the export `./schema/v1alpha4.json` and `migrateToV1alpha4` (mechanical
+  migration of `v1alpha1`, `v1alpha2` and `v1alpha3` manifests).
+- Tests run the `v1alpha4` conformance suite and examples against the Node.js build and the
+  browser bundle.
+
+### Changed
+
+- The vendored specification includes `conformance/conditions.mjs` and is updated to commit
+  `46f76bf` (branch `feat/v1alpha4-when-workflow-steps`). `v1alpha3` stays the current draft:
+  `API_VERSION`, the default `schema` and `./schema.json` are unchanged, and older versions are
+  validated exactly as before.
+
 ## [0.3.0] - 2026-11-25
 
 ### Changed

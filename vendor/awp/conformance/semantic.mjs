@@ -1,13 +1,15 @@
-// Semantic validation rules of AWP v1alpha1, v1alpha2 and v1alpha3 that JSON Schema cannot express.
+// Semantic validation rules of AWP v1alpha1 to v1alpha4 that JSON Schema cannot express.
 // v1alpha2 adds step iteration (forEach). v1alpha3 also has forEach and differs otherwise only in
 // layout: governance fields live in spec instead of metadata, extension fields in `extensions`
-// objects instead of x- keys, and `status` is ignored.
+// objects instead of x- keys, and `status` is ignored. v1alpha4 has the layout of v1alpha3 plus
+// step conditions (`when`, conformance/conditions.mjs) and workflow steps.
 // Rule catalogue: schema/README.md. Every diagnostic has a stable `code`.
 // Runs on documents that already passed the structural schema of their apiVersion; fields that
 // only exist in v1alpha2 (forEach) cannot reach these rules in a v1alpha1 document.
 
 import { createHash } from 'node:crypto';
 import { checkInputStep } from './human-input.mjs';
+import { checkStepCondition } from './conditions.mjs';
 
 export const KNOWN_PROFILES = ['core', 'governance', 'audit', 'security', 'mcp', 'a2a', 'interaction'];
 
@@ -19,11 +21,16 @@ const ptr = (...parts) => parts.map(p => '/' + esc(p)).join('');
 const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 
 const V1ALPHA3 = 'awp.agenticworkflowprotocol.org/v1alpha3';
+const V1ALPHA4 = 'awp.agenticworkflowprotocol.org/v1alpha4';
+// Versions with the Kubernetes resource model layout (governance fields in spec).
+const KRM_VERSIONS = new Set([V1ALPHA3, V1ALPHA4]);
+// The runtime provides exactly these outputs of a workflow step (v1alpha4 spec 5.6.6).
+const WORKFLOW_STEP_OUTPUTS = new Set(['executionId', 'status']);
 const INTEGRITY_FIELDS = ['integrity', 'signature', 'provenance'];
 
 /** Where the governance fields (version, owner, classification, risk, integrity, ...) live. */
 function governanceOf(doc) {
-  return doc.apiVersion === V1ALPHA3
+  return KRM_VERSIONS.has(doc.apiVersion)
     ? { fields: doc.spec ?? {}, base: 'spec' }
     : { fields: doc.metadata ?? {}, base: 'metadata' };
 }
@@ -38,12 +45,12 @@ export function jcs(value) {
 
 /** The value the digest is computed over (spec 9.1). */
 function digestInput(doc) {
-  if (doc.apiVersion !== V1ALPHA3) {
+  if (!KRM_VERSIONS.has(doc.apiVersion)) {
     const copy = structuredClone(doc);
     if (copy.metadata) for (const f of INTEGRITY_FIELDS) delete copy.metadata[f];
     return copy;
   }
-  // v1alpha3: identity and spec only. Labels, annotations, namespace, store-populated metadata and
+  // v1alpha3 and later: identity and spec only. Labels, annotations, namespace, store-populated metadata and
   // status are changed by deployment tools and object stores, so they are not covered.
   const spec = structuredClone(doc.spec ?? {});
   for (const f of INTEGRITY_FIELDS) delete spec[f];
@@ -73,6 +80,15 @@ function forEachNode(node, fn, path = []) {
       forEachNode(v, fn, [...path, k]);
     }
   }
+}
+
+/** 5.6.6 (v1alpha4): a workflow step declares no outputs other than executionId and status. */
+function checkWorkflowStepOutputs(step, base, err) {
+  (step.outputs ?? []).forEach((o, j) => {
+    if (!WORKFLOW_STEP_OUTPUTS.has(o.name)) {
+      err('step.workflow-output', '5.6.6', ptr(...base, 'outputs', j, 'name'), `a workflow step provides only the outputs executionId and status, not "${o.name}"`);
+    }
+  });
 }
 
 /**
@@ -260,8 +276,8 @@ export function semanticCheck(doc, opts = {}) {
         needProfile('interaction', 'step with type: input', ptr('spec', 'workflow', i), '3.3');
         checkInputStep(s.input, ['spec', 'workflow', i, 'input'], err, ptr);
       }
-      // 5.6.4 (v1alpha3 only): the runtime owns AWP_* variables of command steps
-      for (const k of doc.apiVersion === V1ALPHA3 ? Object.keys(s.env ?? {}) : []) {
+      // 5.6.4 (v1alpha3 and later): the runtime owns AWP_* variables of command steps
+      for (const k of KRM_VERSIONS.has(doc.apiVersion) ? Object.keys(s.env ?? {}) : []) {
         if (k.startsWith('AWP_')) err('step.reserved-env', '5.6.4', ptr('spec', 'workflow', i, 'env', k), `environment variable "${k}" is reserved for the runtime (AWP_ prefix)`);
       }
       if (profiles.has('security') && s.type === 'command' && typeof s.image === 'string' && !/@(sha256:[0-9a-f]{64}|sha384:[0-9a-f]{96}|sha512:[0-9a-f]{128})$/.test(s.image)) {
@@ -321,7 +337,7 @@ export function semanticCheck(doc, opts = {}) {
     // 5.6.4: iteration (v1alpha2)
     const inputTypes = new Map((spec.inputs ?? []).map(i => [i.name, i.type]));
     const agentsById = new Map((spec.agents ?? []).map(a => [a.id, a]));
-    const iterationSection = doc.apiVersion === V1ALPHA3 ? '5.6.5' : '5.6.4';
+    const iterationSection = KRM_VERSIONS.has(doc.apiVersion) ? '5.6.5' : '5.6.4';
     const checkForEach = (s, base) => {
       const f = s.forEach;
       checkExpr(f.items, ptr(...base, 'forEach', 'items'), s.id);
@@ -344,6 +360,11 @@ export function semanticCheck(doc, opts = {}) {
       for (const [k, v] of Object.entries(s.env ?? {})) checkExpr(v, ptr(...base, 'env', k), s.id, iterating);
       checkExpr(s.approval?.message, ptr(...base, 'approval', 'message'), s.id);
       checkExpr(s.input?.message, ptr(...base, 'input', 'message'), s.id);
+      for (const [k, v] of Object.entries(s.workflow?.inputs ?? {})) checkExpr(v, ptr(...base, 'workflow', 'inputs', k), s.id);
+      if (typeof s.when === 'string') {
+        checkStepCondition({ text: s.when, path: ptr(...base, 'when'), stepId: s.id, stepIds, dependencies: closure(s.id), outputsOf, inputNames, err, warn });
+      }
+      if (s.type === 'workflow') checkWorkflowStepOutputs(s, base, err);
       if (typeof s.command === 'string' && s.command.includes('${{')) {
         warn('lint.command-expression', '5.6.2', ptr(...base, 'command'), 'command is not expression-enabled; ${{ }} is passed literally. Use env.');
       }

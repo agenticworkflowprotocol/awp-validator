@@ -3,7 +3,7 @@
 // v1alpha1, vendor/awp/conformance/<v>/ for later versions); the semantic rules are shared.
 
 /** Supported API versions, oldest first. */
-export const API_VERSIONS = ['v1alpha1', 'v1alpha2', 'v1alpha3'];
+export const API_VERSIONS = ['v1alpha1', 'v1alpha2', 'v1alpha3', 'v1alpha4'];
 
 /**
  * The current draft (decision D22 of the specification): the default schema export, the version an

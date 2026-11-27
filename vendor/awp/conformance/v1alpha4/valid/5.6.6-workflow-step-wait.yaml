@@ -1,0 +1,79 @@
+# Conformance case 5.6.6-workflow-step-wait
+# Spec section 5.6.6: A workflow step starts a child workflow with expression-enabled inputs, waits for it and provides executionId and status.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      required: true
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 1
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: analyze
+      agent: worker
+      task: Analyze ${{ inputs.repo }}.
+      outputs:
+        - name: report
+        - name: level
+    - id: fix
+      type: workflow
+      dependsOn:
+        - analyze
+      workflow:
+        ref: cve-fixer
+        version: ^0.5.0
+        inputs:
+          repoUrl: ${{ inputs.repo }}
+          report: Fix ${{ steps.analyze.outputs.report }} in ${{ execution.environment }}.
+        wait: true
+      outputs:
+        - name: executionId
+        - name: status
+    - id: notify
+      agent: worker
+      dependsOn:
+        - fix
+      when: steps.fix.outputs.status == "succeeded"
+      task: Report child execution ${{ steps.fix.outputs.executionId }}.
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true

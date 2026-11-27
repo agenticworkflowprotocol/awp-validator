@@ -1,0 +1,67 @@
+# Conformance case 5.6.5-for-each-items-not-a-dependency
+# Spec section 3.9: forEach.items MUST only reference a step this step depends on.
+# Expected: invalid (expr.not-a-dependency at /spec/workflow/1/forEach/items)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: Workflow
+metadata:
+  name: conformance-base
+spec:
+  version: 1.0.0
+  owner:
+    team: conformance-team
+  classification: internal
+  risk:
+    level: low
+  inputs:
+    - name: repo
+      type: string
+      required: true
+    - name: images
+      type: array
+      required: true
+  budget:
+    maxCostUsd: 1
+    maxSteps: 10
+    maxDuration: 10m
+    resources:
+      maxRetries: 2
+      maxConcurrency: 2
+  secrets:
+    - name: TOOLS_TOKEN
+      source: secret-manager
+      scope:
+        - tools
+  mcpServers:
+    - name: tools
+      transport: streamable-http
+      url: https://mcp.example.com/tools
+      auth:
+        secretRef: TOOLS_TOKEN
+  actionGroups:
+    tools.read:
+      - tools.read_file
+  agents:
+    - id: worker
+      model:
+        provider: ollama
+        name: qwen3
+      tools:
+        - type: mcp
+          server: tools
+  workflow:
+    - id: list
+      agent: worker
+      task: List the files of ${{ inputs.repo }}.
+      outputs:
+        - name: files
+    - id: review
+      agent: worker
+      task: Review ${{ forEach.item }}.
+      forEach:
+        items: ${{ steps.list.outputs.files }}
+        maxItems: 20
+  permissions:
+    default: deny
+    tools:
+      tools.read:
+        allow: true

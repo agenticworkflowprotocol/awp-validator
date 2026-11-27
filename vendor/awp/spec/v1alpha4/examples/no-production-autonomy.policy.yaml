@@ -1,0 +1,31 @@
+# Example: a reusable policy that requires a release manager for production deployments.
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: Policy
+metadata:
+  name: no-production-autonomy
+spec:
+  version: 1.0.0
+  owner:
+    team: platform-governance
+    contact: governance@example.com
+  rules:
+    - id: deploy-needs-release-manager
+      when:
+        action:
+          equals: production.deploy
+      effect: requireApproval
+      approval:
+        approvers:
+          - role: release-manager
+    - id: no-merge-in-production
+      when:
+        action:
+          equals: git.merge
+        environment.name:
+          equals: production
+      effect: requireApproval
+      approval:
+        approvers:
+          - role: release-manager
+          - role: security-reviewer
+        minApprovals: 2

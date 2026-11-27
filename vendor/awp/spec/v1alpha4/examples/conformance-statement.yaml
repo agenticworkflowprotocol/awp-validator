@@ -1,0 +1,21 @@
+# Example: conformance statement published by an implementation.
+implementation:
+  name: example-runtime
+  version: 0.4.0
+  url: https://runtime.example.org
+conformance:
+  awp: v1alpha4
+  profiles:
+    - core
+    - governance
+    - audit
+  limitations:
+    - "audit: integrity mode signed is not supported; hash-chain only"
+  limits:
+    outputSize: 1MiB
+    stepOutputSize: 4MiB
+  executionObjects: true
+  testedWith:
+    suite: awp-conformance
+    version: 0.1.0
+    date: "2026-10-09"

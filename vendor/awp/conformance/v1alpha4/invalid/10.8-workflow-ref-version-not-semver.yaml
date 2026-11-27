@@ -1,0 +1,15 @@
+# Conformance case 10.8-workflow-ref-version-not-semver
+# Spec section 10.8: workflowRef.version is a semantic version.
+# Expected: invalid (schema.pattern at /spec/workflowRef/version)
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: WorkflowRun
+metadata:
+  name: conformance-base-20261119
+  namespace: conformance
+spec:
+  workflowRef:
+    name: conformance-base
+    version: latest
+  inputs:
+    repo: example-org/web-shop
+  environment: staging

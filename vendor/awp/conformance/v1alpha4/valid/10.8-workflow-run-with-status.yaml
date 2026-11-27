@@ -1,0 +1,50 @@
+# Conformance case 10.8-workflow-run-with-status
+# Spec section 10.8: A WorkflowRun may use generateName; validators ignore status written by the runtime.
+# Expected: valid
+apiVersion: awp.agenticworkflowprotocol.org/v1alpha4
+kind: WorkflowRun
+metadata:
+  generateName: conformance-base-
+  namespace: conformance
+  uid: 6f1c9b52-4c1e-4c59-9a43-0b1d2f7a9e10
+  generation: 1
+spec:
+  workflowRef:
+    name: conformance-base
+    version: 1.0.0
+  inputs:
+    repo: example-org/web-shop
+  environment: staging
+status:
+  observedGeneration: 1
+  executionId: awp-exec-01JD6Q8Z5K3M4N5P6Q7R8S9T0V
+  phase: running
+  actor:
+    type: human
+    id: alice@example.com
+  trigger:
+    type: manual
+    index: 0
+  environment: staging
+  workflow:
+    name: conformance-base
+    version: 1.0.0
+    digest: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  startedAt: 2026-11-19T08:00:00Z
+  steps:
+    - id: analyze
+      status: succeeded
+      attempts: 1
+      outputs:
+        - name: report
+          digest: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+          size: 2048
+    - id: apply
+      status: running
+      attempts: 1
+  conditions:
+    - type: Accepted
+      status: "True"
+      reason: Validated
+      message: ""
+      lastTransitionTime: 2026-11-19T08:00:00Z

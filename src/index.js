@@ -6,7 +6,7 @@ import { API_VERSION, API_VERSIONS } from './versions.js';
 
 export { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, resolveProfiles, summarize } from './validator.js';
 export { jcs, manifestDigest } from '../vendor/awp/conformance/semantic.mjs';
-export { migrateToV1alpha3 } from '../vendor/awp/conformance/migrate.mjs';
+export { migrateToV1alpha3, migrateToV1alpha4 } from '../vendor/awp/conformance/migrate.mjs';
 export { formatDiagnostic, formatJson, formatText, isOk } from './format.js';
 
 const vendor = new URL('../vendor/awp/', import.meta.url);

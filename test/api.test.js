@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, migrateToV1alpha3, provenance, schema, schemas, validateManifest, validateText } from '../src/index.js';
+import { API_VERSION, API_VERSIONS, KNOWN_PROFILES, UsageError, migrateToV1alpha3, migrateToV1alpha4, provenance, schema, schemas, validateManifest, validateText } from '../src/index.js';
 import { parse as parseFirst, stringify } from 'yaml';
 
 const VALID = `apiVersion: awp.agenticworkflowprotocol.org/v1alpha1
@@ -38,7 +38,7 @@ const ITERATING = `${V2.trimEnd()}
 `;
 
 test('each document is validated against the schema of its own apiVersion', () => {
-  assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2', 'v1alpha3']);
+  assert.deepEqual(API_VERSIONS, ['v1alpha1', 'v1alpha2', 'v1alpha3', 'v1alpha4']);
   assert.equal(validateText(V2).documents[0].awp, 'v1alpha2');
   assert.equal(validateText(V2).documents[0].valid, true);
   // A document in the layout of the current draft with an unsupported apiVersion: only the version is wrong.
@@ -128,4 +128,31 @@ test('v1alpha3: governance fields in spec, forEach as in v1alpha2, migration fro
   // v1alpha1 layout is rejected in v1alpha3: version belongs to spec there.
   const oldLayout = validateText(withInput.replace('/v1alpha2', '/v1alpha3')).documents[0];
   assert.equal(oldLayout.valid, false);
+});
+
+test('v1alpha4: when conditions and workflow steps, migration from every older version', () => {
+  for (const source of [VALID, V2, stringify(migrateToV1alpha3(parseFirst(VALID)).document)]) {
+    const { document } = migrateToV1alpha4(parseFirst(source));
+    assert.equal(document.apiVersion, 'awp.agenticworkflowprotocol.org/v1alpha4');
+    const v4 = validateText(stringify(document)).documents[0];
+    assert.equal(v4.awp, 'v1alpha4');
+    assert.equal(v4.version, '0.1.0', 'the version comes from spec in v1alpha4');
+    assert.deepEqual(v4.diagnostics.filter((d) => d.severity === 'error'), []);
+  }
+  const base = migrateToV1alpha4(parseFirst(VALID)).document;
+  const withSteps = structuredClone(base);
+  withSteps.spec.workflow[0].outputs = [{ name: 'affected' }];
+  withSteps.spec.workflow.push(
+    { id: 'fix', type: 'workflow', dependsOn: ['greet'], when: 'steps.greet.outputs.affected == true', workflow: { ref: 'cve-fixer', version: '^0.5.0', wait: true } },
+  );
+  const ok = validateText(stringify(withSteps)).documents[0];
+  assert.deepEqual(ok.diagnostics.filter((d) => d.severity === 'error'), []);
+  const notDependency = structuredClone(withSteps);
+  notDependency.spec.workflow[1].dependsOn = [];
+  const bad = validateText(stringify(notDependency)).documents[0];
+  assert.ok(bad.diagnostics.some((d) => d.code === 'when.not-a-dependency' && d.path === '/spec/workflow/1/when'));
+  // when is a v1alpha4 field: the same step is rejected in v1alpha3.
+  const inV3 = validateText(stringify({ ...withSteps, apiVersion: 'awp.agenticworkflowprotocol.org/v1alpha3' })).documents[0];
+  assert.equal(inV3.valid, false);
+  assert.ok(schemas.v1alpha4.$id.endsWith('awp.v1alpha4.json'));
 });
