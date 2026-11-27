@@ -78,12 +78,12 @@ export function manifestDigest(manifest: unknown, algorithm?: 'sha256' | 'sha384
 
 /** Supported API versions, oldest first. */
 export const API_VERSIONS: ApiVersion[];
-/** The latest supported API version. */
+/** The current draft (`v1alpha4`, decision D24 of the specification). */
 export const API_VERSION: ApiVersion;
 export const KNOWN_PROFILES: Profile[];
 /** The AWP JSON Schemas (draft 2020-12) used by the validator, by API version. */
 export const schemas: Record<ApiVersion, Record<string, unknown>>;
-/** The JSON Schema of the latest supported API version. */
+/** The JSON Schema of the current draft (`API_VERSION`). */
 export const schema: Record<string, unknown>;
 /** Commit and file hashes of the vendored specification artefacts. */
 export const provenance: {

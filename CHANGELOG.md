@@ -8,7 +8,7 @@ All notable changes are documented in this file. The format is based on
 
 ### Added
 
-- AWP `v1alpha4`, the next draft (decision D23 of the specification): `v1alpha3` plus step
+- AWP `v1alpha4` (decision D23 of the specification): `v1alpha3` plus step
   conditions (`when`, spec 3.12) and workflow steps (`type: workflow`, spec 5.6.6), with the new
   diagnostics `when.syntax`, `when.limit-exceeded`, `when.forbidden-segment`, `when.unknown-root`,
   `when.unknown-step`, `when.not-a-dependency`, `when.undeclared-output`, `step.workflow-output`
@@ -20,10 +20,14 @@ All notable changes are documented in this file. The format is based on
 
 ### Changed
 
-- The vendored specification includes `conformance/conditions.mjs` and is updated to commit
-  `46f76bf` (branch `feat/v1alpha4-when-workflow-steps`). `v1alpha3` stays the current draft:
-  `API_VERSION`, the default `schema` and `./schema.json` are unchanged, and older versions are
-  validated exactly as before.
+- **Breaking:** `v1alpha4` is the current draft (decision D24 of the specification). `API_VERSION`,
+  the default `schema` and the export `./schema.json` are now `v1alpha4`; an unsupported
+  `apiVersion` is checked against `v1alpha4` and rejected at `/apiVersion`. Use
+  `./schema/v1alpha3.json` or `schemas.v1alpha3` for the previous default.
+- `v1alpha1`, `v1alpha2` and `v1alpha3` documents are validated exactly as before, against the
+  schema of their own `apiVersion`. The vendored specification includes `conformance/conditions.mjs`
+  and is updated to commit `058c267` (D23 merged); D24 changes no vendored schema or rule.
+- The website starts with a `v1alpha4` manifest and shows the `v1alpha4` examples.
 
 ## [0.3.0] - 2026-11-25
 

@@ -35,7 +35,7 @@
       "types": "./types/index.d.ts",
       "default": "./dist/browser/awp-validator.mjs"
     },
-    "./schema.json": "./vendor/awp/schema/awp.v1alpha3.json",
+    "./schema.json": "./vendor/awp/schema/awp.v1alpha4.json",
     "./schema/v1alpha1.json": "./vendor/awp/schema/awp.v1alpha1.json",
     "./schema/v1alpha2.json": "./vendor/awp/schema/awp.v1alpha2.json",
     "./schema/v1alpha3.json": "./vendor/awp/schema/awp.v1alpha3.json",

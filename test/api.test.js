@@ -42,9 +42,9 @@ test('each document is validated against the schema of its own apiVersion', () =
   assert.equal(validateText(V2).documents[0].awp, 'v1alpha2');
   assert.equal(validateText(V2).documents[0].valid, true);
   // A document in the layout of the current draft with an unsupported apiVersion: only the version is wrong.
-  const current = stringify(migrateToV1alpha3(parseFirst(VALID)).document);
-  const unknown = validateText(current.replace('/v1alpha3', '/v1alpha99')).documents[0];
-  assert.equal(unknown.awp, 'v1alpha3', 'an unsupported version is checked against the current draft');
+  const current = stringify(migrateToV1alpha4(parseFirst(VALID)).document);
+  const unknown = validateText(current.replace('/v1alpha4', '/v1alpha99')).documents[0];
+  assert.equal(unknown.awp, 'v1alpha4', 'an unsupported version is checked against the current draft');
   assert.deepEqual(unknown.diagnostics.map((d) => [d.code, d.path]), [['schema.const', '/apiVersion']]);
 });
 
@@ -108,8 +108,8 @@ test('unknown profiles are a usage error', () => {
 test('schema, profiles and provenance are exported', () => {
   assert.equal(schema.$schema, 'https://json-schema.org/draft/2020-12/schema');
   assert.deepEqual(KNOWN_PROFILES, ['core', 'governance', 'audit', 'security', 'mcp', 'a2a', 'interaction']);
-  assert.equal(schema.$id, 'https://agenticworkflowprotocol.org/schema/awp.v1alpha3.json', 'the default schema is the current draft');
-  assert.equal(API_VERSION, 'v1alpha3');
+  assert.equal(schema.$id, 'https://agenticworkflowprotocol.org/schema/awp.v1alpha4.json', 'the default schema is the current draft');
+  assert.equal(API_VERSION, 'v1alpha4');
   assert.match(provenance.source.commit, /^[0-9a-f]{40}$/);
 });
 
